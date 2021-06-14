@@ -1,9 +1,10 @@
+AddCSLuaFile()
 
 SWEP.PrintName = "SCP 966"
-SWEP.Author = "BananowyTasiemiec"
-SWEP.Purpose = "Heal people"
+SWEP.Author = "OverlordAkise"
+SWEP.Purpose = "Slowly kill people"
 SWEP.Category = "SCP"
-SWEP.Instructions = "LMB to eat sleeping people"
+SWEP.Instructions = "LMB to eat sleeping people, Stare at people to make them sleep"
 SWEP.ViewModelFOV = 60
 SWEP.ViewModelFlip = false
 SWEP.ViewModel = ""
