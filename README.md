@@ -26,13 +26,21 @@ SCP173 as everyone knows it. The sh_ file has the small config: every 5 seconds 
 Necessary workshop items:  
 https://steamcommunity.com/sharedfiles/filedetails/?id=827243834 (Playermodel)
 
-**FROM HERE ON WORK IN PROGRESS**
-## SCP 049
-A doctor that kills people if he touches them. (kill-aura like)  
 
+## SCP 049 (untested)
+A doctor that kills people if he touches them. (kill-aura like)  
+You can also mix ingredients and revive dead players with a random effect as your zombie. (SCP 049-2)
   Model
 
-SCP 106
-  Model 1267850660
-  Weapon https://steamcommunity.com/sharedfiles/filedetails/?id=1783768332
+## Hand SWEP
+This is a changed workshop addon. With this swep you can pickup items. I only removed the buggy and not working EMOTE system.  
+
+## Surrender SWEP
+This is a changed workshop addon. I fixed the non-existant Worldmodel and removed unnecessary SWEPs like dab.  
+
+## SCP Names
+This saves a custom name for every job that you play. If you change into a new job you have to enter a name for this specific job. If you then switch to that job again your name will automatically change. This enables you to have multiple "personas" on one server without manually changing names all the time.  
+
+## SCP Code
+This is a simple "Status" addon. Code: Green means "Everything is OK, do your daily stuff" and Code: Red means "we are all about to die".  
   
