@@ -83,7 +83,6 @@ function SWEP:SecondaryAttack()
     local sel1 = nil
     local sel2 = nil
     local window = vgui.Create("DFrame")
-    window = vgui.Create("DFrame")
     window:SetTitle("Mix Medicine")
     window:SetSize(600,400)
     window:Center()
