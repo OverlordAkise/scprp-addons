@@ -30,7 +30,8 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=827243834 (Playermodel)
 ## SCP 049 (untested)
 A doctor that kills people if he touches them. (kill-aura like)  
 You can also mix ingredients and revive dead players with a random effect as your zombie. (SCP 049-2)
-  Model
+Necessary workshop items:
+https://steamcommunity.com/sharedfiles/filedetails/?id=183901628 (Playermodel)
 
 ## Hand SWEP
 This is a changed workshop addon. With this swep you can pickup items. I only removed the buggy and not working EMOTE system.  
