@@ -79,8 +79,8 @@ function SWEP:Think()
     local ply = tr.Entity
     if not ply.loldWalkSpeed then ply.loldWalkSpeed = ply:GetWalkSpeed() end
     if not ply.loldRunSpeed then ply.loldRunSpeed = ply:GetRunSpeed() end
-    ply:SetWalkSpeed(ply:GetWalkSpeed() - ply.loldWalkSpeed/1000)
-    ply:SetRunSpeed(ply:GetRunSpeed() - ply.loldRunSpeed/1000)
+    ply:SetWalkSpeed(ply:GetWalkSpeed() - ply.loldWalkSpeed/600)
+    ply:SetRunSpeed(ply:GetRunSpeed() - ply.loldRunSpeed/600)
     if ply:GetWalkSpeed() < 1 then
       DarkRP.toggleSleep(ply, "force")
     end

@@ -27,6 +27,8 @@ hook.Add("loadCustomDarkRPItems", "luctus_scp999_drp", function()
       PlayerSpawn = function(ply)
         ply:SetHealth(4000)
         ply:SetMaxHealth(4000)
+        ply:StripWeapons()
+        ply:Give("weapon_scp999")
       end,
   })
 end)
