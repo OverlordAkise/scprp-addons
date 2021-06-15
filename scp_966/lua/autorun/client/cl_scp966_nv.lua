@@ -3,6 +3,13 @@
 
 --This is only for Night Vision
 
+local NightVisionJobs = {
+  ["MTF"] = true,
+  ["Gun Dealer"] = true,
+  ["Citizen"] = true,
+  ["SCP 966"] = true,
+}
+
 local flashEnabled = false
 
 function IsNightVisionActive()
@@ -10,8 +17,16 @@ function IsNightVisionActive()
 end
 
 CreateClientConVar("luctus_fullbright", "0", true, false, "Toggles fullbright mode, making the whole map light up like a christmas tree", 0, 1)
+RunConsoleCommand("luctus_fullbright","0")
+hook.Add("InitPostEntity","luctus_fullbright_default",function()
+  RunConsoleCommand("luctus_fullbright","0")
+end)
 
 cvars.AddChangeCallback("luctus_fullbright", function(convar_name, value_old, value_new)
+  if LocalPlayer().getDarkRPVar and LocalPlayer():getDarkRPVar("job") and not NightVisionJobs[LocalPlayer():getDarkRPVar("job")] then
+    print("You don't have nightvision goggles!")
+    return
+  end
   if value_new == "0" then
     flashEnabled = false
     hook.Remove("RenderScreenspaceEffects", "luctus_nv")
@@ -39,11 +54,31 @@ cvars.AddChangeCallback("luctus_fullbright", function(convar_name, value_old, va
   end
 end)
 
-
+hook.Add("OnPlayerChangedTeam","luctus_fullbright_reset", function(ply, beforeNum, afterNum)
+  print("CHANGED TEAM!")
+  print("From: "..RPExtraTeams[beforeNum].name)
+  print("To: "..RPExtraTeams[afterNum].name)
+  print("Cur JobVar: "..LocalPlayer():getDarkRPVar("job"))
+  --switch to
+  if LocalPlayer():getDarkRPVar("job") == "SCP 966" then
+    RunConsoleCommand("luctus_fullbright","1")
+  else
+    RunConsoleCommand("luctus_fullbright","0")
+    flashEnabled = false
+    hook.Remove("RenderScreenspaceEffects", "luctus_nv")
+    if scp966_ply and IsValid(scp966_ply) then
+      scp966_ply:SetNoDraw(true)
+    end
+  end
+end)
 
 
 hook.Add("OnPlayerChat","luctus_fullbright",function(ply,text,team,bdead)
   if ply == LocalPlayer() and text == "!nv" then
+    if not NightVisionJobs[RPExtraTeams[LocalPlayer():Team()].name] then
+      chat.AddText("You don't have nightvision goggles!")
+      return
+    end
     if flashEnabled then
       RunConsoleCommand("luctus_fullbright","0")
     else
