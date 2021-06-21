@@ -198,7 +198,7 @@ function SWEP:PrimaryAttack()
 
   if SERVER and tr.Hit and tr.HitNonWorld and IsValid(hitEnt) then
     if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
-      local owner = player.GetAll()[2]--hitEnt:GetRagdollOwner()
+      local owner = hitEnt:GetRagdollOwner()
       local mixedFunc = scp049_effect_functions[scp049_mixtable[scp049_col_one][scp049_col_two]]
       self.Owner:PrintMessage(HUD_PRINTTALK, "Your mixture was '"..scp049_mixtable[scp049_col_one][scp049_col_two].."'")
       mixedFunc(owner)
