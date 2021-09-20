@@ -131,10 +131,10 @@ if CLIENT then
 
 			local A = OffPos:ToScreen()
 			local B = Pos2:ToScreen()
-
-			surface.DrawRect( A.x -2, A.y -2, 4, 4, MainCol )
-			surface.DrawRect( B.x -2, B.y -2, 4, 4, MainCol )
-			surface.DrawLine( A.x, A.y, B.x, B.y, MainCol )
+      surface.SetDrawColor(MainCol)
+			surface.DrawRect( A.x -2, A.y -2, 4, 4 )
+			surface.DrawRect( B.x -2, B.y -2, 4, 4 )
+			surface.DrawLine( A.x, A.y, B.x, B.y )
 		end
 	end
 end
