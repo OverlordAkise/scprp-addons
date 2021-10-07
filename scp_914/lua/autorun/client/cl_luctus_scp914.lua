@@ -133,6 +133,27 @@ concommand.Add("scp914_config", function(ply, cmd, args)
         net.SendToServer()
       end)
     end):SetIcon( "icon16/delete.png" )
+    menu:AddOption("Edit", function()
+      local inputEnt = line:GetColumnText(2) or ""
+      local outputEnt = line:GetColumnText(2) or ""
+      Derma_StringRequest("Input Entity", "What entity should be put in...", inputEnt, function(text) 
+        inputEnt = text 
+        Derma_StringRequest("Output Entity", "... and what entity should be the output?", outputEnt, function(text) 
+          outputEnt = text
+          net.Start("luctus_scp914_edit")
+            net.WriteString(inputEnt)
+            net.WriteString(outputEnt)
+            net.WriteInt(combo:GetOptionData(combo:GetSelectedID()), 8)
+            net.WriteInt(tonumber(line:GetColumnText(1)), 32)
+          net.SendToServer()
+          timer.Simple(0.1,function()
+            net.Start("luctus_scp914_get")
+              net.WriteInt(scp914CurType,8)
+            net.SendToServer()
+          end)
+        end, function(text) print("") end)
+      end, function(text) print("") end)
+    end):SetIcon( "icon16/arrow_rotate_clockwise.png" )
     menu:Open()
   end
 end)
