@@ -3,7 +3,7 @@
 
 local red_material = CreateMaterial("luctus_red", "VertexLitGeneric", { ["$basetexture"] = "models/debug/debugwhite", ["$model"] = 1, ["$ignorez"] = 1 })
 
-local col = Color(255,0,0)
+local col = Color(255,0,0,255)
 
 scp096_hunted_players = {}
 
@@ -17,6 +17,13 @@ hook.Add("OnPlayerChangedTeam", "luctus_scp096_hunters_update", function(ply, be
     end
 end)
 
+--Code for highlighting player in a halo (around body)
+hook.Add( "PreDrawHalos", "AddStaffHalos", function()
+	halo.Add( player.GetAll(), col, 1, 1, 5, true, true )
+end )
+
+--Code for highlighting the player in red (inside body)
+--[[
 hook.Add("RenderScreenspaceEffects", "luctus_scp096_glow", function()
   for k,v in pairs(scp096_hunted_players) do
     cam.Start3D( EyePos(), EyeAngles() )
@@ -34,5 +41,5 @@ hook.Add("RenderScreenspaceEffects", "luctus_scp096_glow", function()
     cam.End3D()
   end
 end)
-
+--]]
 print("[SCP096] CL loaded!")
