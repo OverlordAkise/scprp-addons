@@ -78,6 +78,8 @@ function ENT:Loot( ply )
 end
 
 function ENT:Use( activator, caller, usetype )
+  if not caller:IsPlayer() then return end
+  if luctus_loot_blacklist_jobs[RPExtraTeams[caller:Team()].name] then return end
   if usetype == USE_ON and not self.BeingUsed and self.NextSearch < CurTime() then
     self:StartUse(caller)
   elseif usetype == USE_OFF and self.BeingUsed then
@@ -110,6 +112,7 @@ function ENT:Think()
 
   if self.BeingUsed then
     if not IsValid(self.UsingPlayer) or !self.UsingPlayer:KeyDown(IN_USE) or self.NextSearch > CurTime() or self.UsingPlayer:GetEyeTraceNoCursor().Entity != self or self:GetPos():DistToSqr(self.UsingPlayer:GetPos()) > 256*256 then self:CancelUse() return end
+    if luctus_loot_blacklist_jobs[RPExtraTeams[self.UsingPlayer:Team()].name] then return end
     if self.NextSound < CurTime() then
       self:EmitSound("npc/combine_soldier/gear5.wav", 50, 100)
       self.NextSound = CurTime() + 1
