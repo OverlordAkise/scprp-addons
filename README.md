@@ -27,11 +27,28 @@ Necessary workshop items:
 https://steamcommunity.com/sharedfiles/filedetails/?id=827243834 (Playermodel)
 
 
-## SCP 049 (untested)
+## SCP 049
 A doctor that kills people if he touches them. (kill-aura like)  
 You can also mix ingredients and revive dead players with a random effect as your zombie. (SCP 049-2)
 Necessary workshop items:
 https://steamcommunity.com/sharedfiles/filedetails/?id=183901628 (Playermodel)
+
+## SCP 966
+966 has night vision and is invisible to players who are not using nightvision goggles.  
+If you look at a player he gets slower and slower until he sleeps. SCP966 can eat him with Leftclick.  
+Specified jobs can do `!nv` and equip night vision goggles to see SCP966. (966 always has collision but is invisible)  
+Necessary workshop items:
+https://steamcommunity.com/sharedfiles/filedetails/?id=940572608 (Playermodel)
+
+## SCP 096
+096 is sad, not able to attack and slow until someone looks at his face.  
+Then he gets a movement speed boost, can attack and sees his victims highlighted in red through walls.  
+You can play sounds with rightclick. (cry during passive phase, scream during attack phase)  
+If you look at a player he gets slower and slower until he sleeps. SCP966 can eat him with Leftclick.  
+Specified jobs can do `!nv` and equip night vision goggles to see SCP966. (966 always has collision but is invisible)  
+Necessary workshop items:
+https://steamcommunity.com/sharedfiles/filedetails/?id=1315125663 (Playermodel)
+https://steamcommunity.com/sharedfiles/filedetails/?id=2488399203 (Weapon Model)
 
 ## Hand SWEP
 This is a changed workshop addon. With this swep you can pickup items. I only removed the buggy and not working EMOTE system.  
