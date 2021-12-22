@@ -1,9 +1,9 @@
-
 AddCSLuaFile()
 
 SWEP.PrintName = "SCP096"
 SWEP.Author = "OverlordAkise, Kilburn, robotboy655, MaxOfS2D & Tenrys"
 SWEP.Purpose = "Weapon for SCP 096"
+SWEP.Category = "SCP"
 
 SWEP.Slot = 0
 SWEP.SlotPos = 4
