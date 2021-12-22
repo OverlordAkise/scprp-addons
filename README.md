@@ -44,8 +44,6 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=940572608 (Playermodel)
 096 is sad, not able to attack and slow until someone looks at his face.  
 Then he gets a movement speed boost, can attack and sees his victims highlighted in red through walls.  
 You can play sounds with rightclick. (cry during passive phase, scream during attack phase)  
-If you look at a player he gets slower and slower until he sleeps. SCP966 can eat him with Leftclick.  
-Specified jobs can do `!nv` and equip night vision goggles to see SCP966. (966 always has collision but is invisible)  
 Necessary workshop items:
 https://steamcommunity.com/sharedfiles/filedetails/?id=1315125663 (Playermodel)
 https://steamcommunity.com/sharedfiles/filedetails/?id=2488399203 (Weapon Model)
