@@ -55,10 +55,6 @@ cvars.AddChangeCallback("luctus_fullbright", function(convar_name, value_old, va
 end)
 
 hook.Add("OnPlayerChangedTeam","luctus_fullbright_reset", function(ply, beforeNum, afterNum)
-  print("CHANGED TEAM!")
-  print("From: "..RPExtraTeams[beforeNum].name)
-  print("To: "..RPExtraTeams[afterNum].name)
-  print("Cur JobVar: "..LocalPlayer():getDarkRPVar("job"))
   --switch to
   if LocalPlayer():getDarkRPVar("job") == "SCP 966" then
     RunConsoleCommand("luctus_fullbright","1")
