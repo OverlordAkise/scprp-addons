@@ -27,7 +27,7 @@ SWEP.AnimPrefix = "rpg"
 SWEP.UseHands = true
 
 SWEP.Spawnable = true
-SWEP.AdminOnly = true
+SWEP.AdminOnly = false
 SWEP.Category = "SCP"
 
 SWEP.Sound = "physics/wood/wood_box_impact_hard3.wav"
