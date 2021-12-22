@@ -20,10 +20,10 @@ function ENT:Use( activator, caller, usetype )
   if activator:IsPlayer() then
     if self.isTaken then return end
     self.isTaken = true
-    activator.scp035_spawnpos = activator:GetPos()
-    activator:changeTeam(TEAM_SCP035, true, false)
     DarkRP.notify(activator, 3, 5, "You put on the mask and became SCP 035!")
-    activator.isSCP035 = true
+    activator:SetNWBool("isSCP035",true)
+    activator.loldJobName = activator:getDarkRPVar("job")
+    activator:setDarkRPVar("job","SCP 035")
     self:Remove()
   end
 end
