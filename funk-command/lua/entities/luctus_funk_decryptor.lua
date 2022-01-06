@@ -22,7 +22,6 @@ function ENT:Initialize()
   if (phys:IsValid()) then   
     phys:Wake()
   end
-  self:SetUseType(SIMPLE_USE)
 end
 
 function ENT:Use(Activator, Caller, UseType, Integer)
