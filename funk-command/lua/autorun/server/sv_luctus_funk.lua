@@ -65,6 +65,7 @@ end)
 net.Receive("luctus_funk_decrypt",function(len,ply)
   local terminal = net.ReadEntity()
   if not terminal or not IsValid(terminal) then return end
+  if terminal:GetClass() ~= "luctus_funk_decryptor" then return end
   if ply:GetPos():Distance(terminal:GetPos()) > 500 then
     DarkRP.notify(ply,1,5,"You are too far away from the decryptor!")
     return
