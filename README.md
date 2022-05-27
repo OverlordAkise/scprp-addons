@@ -1,6 +1,9 @@
 # SCPRP Addons
 GMod LUA addons for the SCPRP gamemode
 
+** DO NOT REUPLOAD MY ADDON! **  
+** Copyright 2022 OverlordAkise. It is not allowed to upload this content on on steam except by the Steam Account OverlordAkise **
+
 **Warning:** Do not change the Names of the SCPs. They have to be named _SCP(SPACE)Number_ for the systems to work.  
 
 For most addons to work you have to add workshop items to your server workshop collection and to the download for clients. These workshop items will be linked for each addon below.  
