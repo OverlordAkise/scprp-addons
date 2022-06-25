@@ -29,6 +29,11 @@ SCP173 as everyone knows it. The sh_ file has the small config: every 5 seconds 
 Necessary workshop items:  
 https://steamcommunity.com/sharedfiles/filedetails/?id=827243834 (Playermodel)
 
+## SCP 131
+SCP131 is basically just a job with a playermodel, nothing special.  
+Necessary workshop items:
+https://steamcommunity.com/sharedfiles/filedetails/?id=935624655 (Playermodel)
+
 
 ## SCP 049
 A doctor that kills people if he touches them. (kill-aura like)  
