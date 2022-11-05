@@ -54,10 +54,25 @@ function LuctusOpenJobBackpackMenu()
         end
         --BlurFunc(self,5)
     end
-    local weaponList = vgui.Create("DPanelList", LBACKMENU)
+    local weaponList = vgui.Create("DScrollPanel", LBACKMENU)
     weaponList:Dock(LEFT)
-    weaponList:SetWide(100)
-    weaponList:EnableVerticalScrollbar(true)
+    weaponList:SetWide(150)
+    local vbar = weaponList:GetVBar()
+    function vbar:Paint() return end
+    
+    function vbar.btnGrip:Paint(w, h)
+        --draw.RoundedBox(0,0,0,w,h,color_white)
+        --draw.RoundedBox(0, 1, 1, w-2, h-2, Color(32, 34, 37))
+    end
+    function vbar.btnUp:Paint(w, h)
+        --draw.RoundedBox(0,0,0,w,h,color_white)
+        --draw.RoundedBox(0, 1, 1, w-2, h-2, Color(32, 34, 37))
+    end
+    function vbar.btnDown:Paint(w, h)
+        --draw.RoundedBox(0,0,0,w,h,color_white)
+        --draw.RoundedBox(0, 1, 1, w-2, h-2, Color(32, 34, 37))
+    end
+    --]]
     
     local bottomList = vgui.Create("DPanel",LBACKMENU)
     bottomList:Dock(BOTTOM)
@@ -65,10 +80,10 @@ function LuctusOpenJobBackpackMenu()
     bottomList:SetPaintBackground(false)
     
     local buyButton = vgui.Create("DButton",bottomList)
-    buyButton:Dock(LEFT)
-    buyButton:SetWide(400-15)
+    buyButton:Dock(RIGHT)
+    buyButton:SetWide(340)
     buyButton:SetCursor("hand")
-    buyButton:SetText("KAUFEN")
+    buyButton:SetText("WÄHLE EINEN GEGENSTAND")
     buyButton:SetTextColor(Color(200, 200, 200))
     buyButton.id = nil
     function buyButton:DoClick()
@@ -107,6 +122,7 @@ function LuctusOpenJobBackpackMenu()
         end
         item.wep = wep
         item.id = k
+        item.price = v[2]
         item.Paint = function(self, w, h)
             if buyButton.id == self.id then
                 surface.SetDrawColor(Color(64, 67, 72,100))
@@ -118,6 +134,7 @@ function LuctusOpenJobBackpackMenu()
         end
         item.DoClick = function(self)
             buyButton.id = self.id
+            buyButton:SetText("KAUFEN FÜR "..self.price)
             icon:SetModel((self.wep and self.wep.WorldModel) or (self.wep and self.wep.model) or "")
             
             --fix camera issues
