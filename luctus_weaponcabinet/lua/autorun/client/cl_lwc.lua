@@ -149,10 +149,9 @@ end
 function LuctusWCAddWeaponIcons(iconList, weplist, catName, cabinEnt)
     for wepClass,_ in pairs(weplist) do
         local wep = weapons.Get(wepClass)
-        if not wep then return end
         
         local icon = iconList:Add("DModelPanel")
-        icon:SetModel(wep.WorldModel)
+        icon:SetModel(wep and wep.WorldModel or "models/error.mdl")
         icon:SetSize(120, 120)
         icon:SetLookAt(icon.Entity:GetPos()+Vector(10,0,0))
         icon:SetFOV(30)
@@ -163,10 +162,11 @@ function LuctusWCAddWeaponIcons(iconList, weplist, catName, cabinEnt)
         bg:SetSize(120, 120)
         bg:SetText("")
         bg.wep = wepClass
+        bg.wepvalid = wep and true or false --disable buying if nil
         bg.catName = catName
         bg.cabinEnt = cabinEnt
         bg:SetTextColor(accent_col)
-        bg.wepname = wep.PrintName
+        bg.wepname = wep and wep.PrintName or "ERROR\n"..wepClass
         bg.Paint = function(self,w,h)
             if (self.Hovered) then
                 self:SetText(self.wepname)
@@ -177,6 +177,7 @@ function LuctusWCAddWeaponIcons(iconList, weplist, catName, cabinEnt)
             end
         end
         bg.DoClick = function(self)
+            if not self.wepvalid then return end
             if not LocalPlayer():HasWeapon(self.wep) then
                 table.insert(wcLastTime,{self.catName,self.wep})
                 net.Start("luctus_weaponcabinet")
