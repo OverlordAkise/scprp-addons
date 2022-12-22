@@ -4,6 +4,9 @@
 --How many weapons you can retrieve in one life
 LUCTUS_WEAPONCABINET_MAX = 3
 
+--Should players keep weapons over respawn in same job?
+LUCTUS_WEAPONCABINET_KEEPWEPS = true
+
 --The weapons and which job can retrieve them
 LUCTUS_WEAPONCABINET = {
     ["Big Guns"] = {

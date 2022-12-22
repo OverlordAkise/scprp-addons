@@ -5,10 +5,20 @@ util.AddNetworkString("luctus_weaponcabinet")
 util.AddNetworkString("luctus_weaponcabinet_r")
 
 hook.Add("PlayerSpawn","luctus_weaponcabinet_reset",function(ply)
-    ply.luctus_wc = 0
+    timer.Simple(0.1,function() --safety
+        if LUCTUS_WEAPONCABINET_KEEPWEPS then
+            if not table.IsEmpty(ply.luctus_wc_weps) then
+                for k,v in pairs(ply.luctus_wc_weps) do
+                    ply:Give(k)
+                end
+            end
+        else
+            ply.luctus_wc_weps = {}
+        end
+    end)
 end)
 hook.Add("PlayerInitialSpawn","luctus_weaponcabinet_reset",function(ply)
-    ply.luctus_wc = 0
+    ply.luctus_wc_weps = {}
 end)
 
 net.Receive("luctus_weaponcabinet",function(len,ply)
@@ -19,12 +29,15 @@ net.Receive("luctus_weaponcabinet",function(len,ply)
     local ent = net.ReadEntity()
     if ent:GetClass() ~= "luctus_weaponcabinet" then return end
     if ent:GetPos():Distance(ply:GetPos()) > 512 then return end
-    if ply.luctus_wc >= LUCTUS_WEAPONCABINET_MAX then return end
+    if table.Count(ply.luctus_wc_weps) >= LUCTUS_WEAPONCABINET_MAX then
+        DarkRP.notify(ply,1,5,"You took out too many weapons already!")
+        return
+    end
     local wep = net.ReadString()
     if ply:HasWeapon(wep) then return end
     if not LUCTUS_WEAPONCABINET_S[cat]["weps"][wep] then return end
-    ply.luctus_wc = ply.luctus_wc + 1
     ply:Give(wep)
+    ply.luctus_wc_weps[wep] = true
 end)
 
 net.Receive("luctus_weaponcabinet_r",function(len,ply)
@@ -34,8 +47,14 @@ net.Receive("luctus_weaponcabinet_r",function(len,ply)
     local wep = net.ReadString()
     if ply:HasWeapon(wep) then
         ply:StripWeapon(wep)
-        ply.luctus_wc = math.max(0, ply.luctus_wc-1)
+        if ply.luctus_wc_weps[wep] then
+            ply.luctus_wc_weps[wep] = nil
+        end
     end
+end)
+
+hook.Add("OnPlayerChangedTeam", "luctus_wc_reset_weps", function(ply, beforeNum, afterNum)
+    ply.luctus_wc_weps = {}
 end)
 
 print("[luctus_weaponcabinet] sv loaded")
