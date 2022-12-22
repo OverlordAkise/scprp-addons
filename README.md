@@ -8,6 +8,10 @@ GMod LUA addons for the SCPRP gamemode
 
 For most addons to work you have to add workshop items to your server workshop collection and to the download for clients. These workshop items will be linked for each addon below.  
 
+## Amnestika
+You need the following workshop addon for the syringe model:  
+https://steamcommunity.com/sharedfiles/filedetails/?id=2595071184
+
 ## SCP 035
 A simple mask entity that, if you press E on it, makes you SCP 035. If you die you leave a mask again, enabling the next person to put it on.
 Necessary workshop items:  
