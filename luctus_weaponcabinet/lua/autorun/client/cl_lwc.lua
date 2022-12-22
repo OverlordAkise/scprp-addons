@@ -169,8 +169,13 @@ function LuctusWCAddWeaponIcons(iconList, weplist, catName, cabinEnt)
         bg.wepname = wep and wep.PrintName or "ERROR\n"..wepClass
         bg.Paint = function(self,w,h)
             if (self.Hovered) then
-                self:SetText(self.wepname)
-                draw.RoundedBox(0, 0, 0, w, h, Color(66, 70, 77))
+                if LocalPlayer():HasWeapon(self.wep) then
+                    self:SetText("Return:\n"..self.wepname)
+                    draw.RoundedBox(0, 0, 0, w, h, Color(166, 70, 77))
+                else
+                    self:SetText(self.wepname)
+                    draw.RoundedBox(0, 0, 0, w, h, Color(66, 70, 77))
+                end
             else
                 DrawHighlightBorder(self,w,h)
                 self:SetText("")

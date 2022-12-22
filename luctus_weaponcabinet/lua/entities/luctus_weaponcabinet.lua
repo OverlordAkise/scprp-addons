@@ -24,9 +24,8 @@ function ENT:Initialize()
     self:PhysicsInit( SOLID_VPHYSICS )     
     self:SetMoveType( MOVETYPE_VPHYSICS )  
     self:SetSolid( SOLID_VPHYSICS )
-
+    self:SetUseType(SIMPLE_USE) --optimized
     local p = self:GetPos()
-    --p.z = p.z + 55
     self:SetPos(p)
 
     local phys = self:GetPhysicsObject()
