@@ -71,7 +71,7 @@ function SWEP:PrimaryAttack( right )
 
 	self:UpdateNextIdle()
 	self:DealDamage()
-  self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self:SetNextPrimaryFire( CurTime() + 0.2 ) --0.9
 	self:SetNextSecondaryFire( CurTime() + 0.2 ) --0.9
 end
@@ -212,6 +212,7 @@ end
 
 function SWEP:Think()
   if CLIENT then return end
+  if self.Owner:GetNWBool("scp096_bag",false) then return end
   if self.next_think > CurTime() then return end
   self.next_think = CurTime() + 0.3
   
