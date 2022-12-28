@@ -58,6 +58,7 @@ end)
 
 if BAGMODEL then BAGMODEL:Remove() end
 BAGMODEL = ClientsideModel( "models/props_junk/garbage_bag001a.mdl" )
+BAGMODEL:SetNoDraw(true)
 
 hook.Add( "PostPlayerDraw" , "luctus_scp096_bag" , function( ply )
     if ply:GetNWBool("scp096_bag",false) and ply ~= LocalPlayer() then
@@ -88,8 +89,6 @@ hook.Add( "PostPlayerDraw" , "luctus_scp096_bag" , function( ply )
         BAGMODEL:DrawModel()
         BAGMODEL:SetRenderOrigin()
         BAGMODEL:SetRenderAngles()
-    else
-        BAGMODEL:SetPos(Vector(0,0,0))
     end    
 end)
 
