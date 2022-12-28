@@ -5,7 +5,7 @@ local red_material = CreateMaterial("luctus_red", "VertexLitGeneric", { ["$baset
 
 local col = Color(255,0,0,255)
 
---scp096_hunted_players = {}
+scp096_hunted_players = {}
 
 net.Receive("luctus_scp096_update",function()
     scp096_hunted_players = net.ReadTable()
