@@ -1,4 +1,8 @@
+--Luctus SCP096 System
+--Made by OverlordAkise
+
 AddCSLuaFile()
+
 SWEP.PrintName = "Bag (SCP096 ReC)"
 SWEP.Weight = 5
 SWEP.AutoSwitchTo = false
@@ -15,6 +19,9 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
+
+SWEP.Spawnable = true
+SWEP.AdminOnly = false
 
 SWEP.Author = "OverlordAkise"
 SWEP.Contact = "OverlordAkise@Steam"
