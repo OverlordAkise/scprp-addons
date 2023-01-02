@@ -8,7 +8,7 @@ hook.Add("HUDPaint","luctus_airsoft_hp",function()
     local ply = LocalPlayer()
     local hp = ply:GetNWInt("luctus_airsoft_hp",100)
     if ply:GetNWBool("luctus_airsoft_active",false) then
-        draw.SimpleTextOutlined(math.max(hp,0), "DermaLarge", ScrW()/2, ScrH()*0.75, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, color_black)
+        draw.SimpleTextOutlined(math.floor(math.max(hp,0)), "DermaLarge", ScrW()/2, ScrH()*0.75, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, color_black)
     end
     if hp < 1 then
         draw.SimpleTextOutlined("UNCONSCIOUS", "DermaLarge", ScrW()/2, ScrH()*0.6, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, color_black)
