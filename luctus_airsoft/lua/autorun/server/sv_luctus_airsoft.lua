@@ -27,8 +27,8 @@ end)
 
 function LuctusAirsoftRagdoll(ply)
     ply:CreateRagdoll()
-    ply:Spectate(OBS_MODE_CHASE)
-    ply:SpectateEntity(ply:GetRagdollEntity())
+    ply:Spectate(OBS_MODE_FREEZECAM)
+    --ply:SpectateEntity(ply:GetRagdollEntity())
     ply.airsoft_weapons = {}
     for k,v in pairs(ply:GetWeapons()) do
         table.insert(ply.airsoft_weapons,v:GetClass())
