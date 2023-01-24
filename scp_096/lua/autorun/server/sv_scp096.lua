@@ -39,7 +39,8 @@ hook.Add("PlayerUse", "luctus_scp096_bagremover", function(ply, ent)
         ply:Give("weapon_recontain_bag")
     end
 end)
-hook.Add("PostPlayerDeath","luctus_scp096_plynil", function(ply)
+
+function Luctus096HandlePlayerDeath(ply)
     luctus_update_hunted(ply,false)
     if ply == scp096_ply then
         scp096_ply:StopSound( "096/scream.wav" )
@@ -52,7 +53,11 @@ hook.Add("PostPlayerDeath","luctus_scp096_plynil", function(ply)
     if ply:GetNWBool("scp096_bag",false) then
         ply:SetNWBool("scp096_bag",false)
     end
-end)
+end
+
+hook.Add("PostPlayerDeath", "luctus_scp096_plynil", Luctus096HandlePlayerDeath)
+--gdeathsystem:
+hook.Add("MedicSys_PlayerDeath", "luctus_scp096_plynil_gd", Luctus096HandlePlayerDeath)
 
 
 

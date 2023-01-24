@@ -38,12 +38,16 @@ hook.Add("OnPlayerChangedTeam", "luctus_get_scp173", function(ply, beforeNum, af
 end)
 
 hook.Add("InitPostEntity", "luctus_scp173", function()
+  local gdsys = MedConfig and true or false
   timer.Create("luctus_scp173_can_move", 0.1, 0, function()
     if scp173_ply and IsValid(scp173_ply) then
       for k,v in pairs(player.GetAll()) do
         if v == scp173_ply then continue end
-        --print("Checking "..v:Nick())
-        if v:GetPos():DistToSqr(scp173_ply:GetPos()) < SCP173_BLINK_RANGE and v:Alive() then
+        local alive = v:Alive()
+        if gdsys then
+            alive = not v._IsDead
+        end
+        if v:GetPos():DistToSqr(scp173_ply:GetPos()) < SCP173_BLINK_RANGE and alive then
           --print(v:Nick().." is in range and alive!")
           v.luctus_near_scp173 = true
           if v.luctus_blinking then continue end --not watching scp173
