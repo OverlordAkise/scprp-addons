@@ -37,6 +37,7 @@ local HitSound = Sound( "Flesh.ImpactHard" )
 
 function SWEP:Initialize()
 	self:SetHoldType( "normal" )
+    self.isGDeathSystem = MedConfig and true or false
 end
 
 function SWEP:SetupDataTables()
@@ -221,7 +222,11 @@ function SWEP:Think()
 
   local players = {}
   for k,v in pairs(entities_in_view) do
-    if v:IsPlayer() then
+    if not v:IsPlayer() then continue end
+    local alive = v:Alive()
+    if gdsys then
+      alive = not v._IsDead
+    if alive then
       --print(self.Owner:GetAngles())
       --print(v:GetAngles())
       local phi = math.abs(self.Owner:GetAngles()[2] - v:GetAngles()[2]) % 360;
