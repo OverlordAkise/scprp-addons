@@ -226,6 +226,7 @@ function SWEP:Think()
     local alive = v:Alive()
     if gdsys then
       alive = not v._IsDead
+    end
     if alive then
       --print(self.Owner:GetAngles())
       --print(v:GetAngles())
