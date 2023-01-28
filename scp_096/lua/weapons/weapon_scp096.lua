@@ -41,18 +41,14 @@ function SWEP:Initialize()
 end
 
 function SWEP:SetupDataTables()
-
 	self:NetworkVar( "Float", 0, "NextMeleeAttack" )
 	self:NetworkVar( "Float", 1, "NextIdle" )
 	self:NetworkVar( "Int", 2, "Combo" )
-
 end
 
 function SWEP:UpdateNextIdle()
-
 	local vm = self.Owner:GetViewModel()
 	self:SetNextIdle( CurTime() + vm:SequenceDuration() / vm:GetPlaybackRate() )
-
 end
 
 function SWEP:PrimaryAttack( right )
@@ -178,13 +174,10 @@ function SWEP:DealDamage()
 end
 
 function SWEP:OnDrop()
-
 	self:Remove() -- You can't drop fists
-
 end
 
 function SWEP:Deploy()
-
 	local speed = GetConVarNumber( "sv_defaultdeployspeed" )
 
 	local vm = self.Owner:GetViewModel()
@@ -200,15 +193,11 @@ function SWEP:Deploy()
 	end
 
 	return true
-
 end
 
 function SWEP:Holster()
-
 	self:SetNextMeleeAttack( 0 )
-
 	return true
-
 end
 
 function SWEP:Think()
@@ -239,5 +228,4 @@ function SWEP:Think()
       end
     end
   end
-  
 end
