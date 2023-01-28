@@ -20,12 +20,13 @@ surface.CreateFont( "luctus_scp_code_hud_font", {
     shadow = true,
     additive = false,
     outline = false,
-} )
+})
 
 hook.Add("HUDPaint","luctus_scp_code",function()
     surface.SetFont("luctus_scp_code_hud_font")
     local wx, wy = surface.GetTextSize("Code: "..LUCTUS_CODE_CURRENT)
-    draw.RoundedBox(0, ScrW()-wx-10, 125, wx+10, 40, Color(0,0,0,240))
+    draw.RoundedBox(10, ScrW()-wx-10, 125, wx+10, 40, Color(0, 195, 165))
+    draw.RoundedBox(10, ScrW()-wx-10+1, 125+1, wx+10-2, 40-2, Color(26,26,26))
     draw.DrawText("Code: "..LUCTUS_CODE_CURRENT, "luctus_scp_code_hud_font", ScrW() - 5, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_RIGHT)
 end)
 
@@ -35,9 +36,13 @@ hook.Add("InitPostEntity", "luctus_scp_code", function()
 end)
 
 net.Receive("luctus_scp_code", function()
-  local curcode = net.ReadString()
-  if not LUCTUS_SCP_CODES[curcode] then return end
-  LUCTUS_CODE_CURRENT_COLOR = LUCTUS_SCP_CODES[curcode][1]
-  LUCTUS_CODE_CURRENT = curcode
-  chat.AddText(LUCTUS_CODE_CURRENT_COLOR, LUCTUS_SCP_CODES[curcode][2])
+    local curcode = net.ReadString()
+    if not LUCTUS_SCP_CODES[curcode] then return end
+    LUCTUS_CODE_CURRENT_COLOR = LUCTUS_SCP_CODES[curcode][1]
+    LUCTUS_CODE_CURRENT = curcode
+    chat.AddText(LUCTUS_CODE_CURRENT_COLOR, LUCTUS_SCP_CODES[curcode][2])
+    --sound
+    if LUCTUS_SCP_CODES[curcode][3] then
+        surface.PlaySound(LUCTUS_SCP_CODES[curcode][3])
+    end
 end)

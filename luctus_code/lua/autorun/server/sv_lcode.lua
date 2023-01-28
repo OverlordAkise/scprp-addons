@@ -21,6 +21,7 @@ hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team)
         net.Start("luctus_scp_code")
             net.WriteString(code)
         net.Broadcast()
+        PrintMessage(HUD_PRINTCENTER, "Code "..code)
         DarkRP.notify(player.GetAll(),1,5,"Code "..code.." wurde ausgerufen!")
         return ""
     end

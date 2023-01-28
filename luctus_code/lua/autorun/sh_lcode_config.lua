@@ -5,14 +5,17 @@ LUCTUS_SCP_CODES = {
     ["green"] = {
         Color(0,255,0),
         "Es herrscht nun Code Green! Es kann ohne verschärfte Sicherheitsmassnahmen gearbeitet werden.",
+        "HL1/fvox/deactivated.wav",
     },
     ["yellow"] = {
         Color(255,255,0),
-        "Es herrscht nun Code Yellow! Bitte achten sie auf auffälligkeiten und melden diese sofort!",
+        "Es herrscht nun Code Yellow! Bitte achten sie auf Auffälligkeiten und melden diese sofort!",
+        "HL1/fvox/warning.wav",
     },
     ["red"] = {
         Color(255,0,0),
         "Es herrscht nun Code Red! Bitte bleiben sie in ihren Räumen und versperren sie die Türen!",
+        "HL1/fvox/evacuate_area.wav",
     },
 }
 
