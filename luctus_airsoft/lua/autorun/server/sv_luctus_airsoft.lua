@@ -14,9 +14,16 @@ hook.Add("PlayerSay","luctus_airsoft",function(ply,text,team)
     end
 end)
 
-hook.Add("ScalePlayerDamage","luctus_airsoft",function(ply, hitgroup, dmginfo )
+hook.Add("ScalePlayerDamage","luctus_airsoft",function(ply, hitgroup, dmginfo)
     local atk = dmginfo:GetAttacker()
     if atk:IsPlayer() and atk:GetNWBool("luctus_airsoft_active",false) then
+        ply:SetNWInt("luctus_airsoft_hp",ply:GetNWInt("luctus_airsoft_hp",100)-dmginfo:GetDamage())
+        if ply:GetNWInt("luctus_airsoft_hp",100) < 1 then
+            LuctusAirsoftRagdoll(ply)
+        end
+        return true
+    end
+    if atk:IsPlayer() and IsValid(atk:GetActiveWeapon()) and atk:GetActiveWeapon().IsAirsoft then
         ply:SetNWInt("luctus_airsoft_hp",ply:GetNWInt("luctus_airsoft_hp",100)-dmginfo:GetDamage())
         if ply:GetNWInt("luctus_airsoft_hp",100) < 1 then
             LuctusAirsoftRagdoll(ply)
