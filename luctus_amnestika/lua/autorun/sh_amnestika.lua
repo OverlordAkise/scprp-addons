@@ -8,9 +8,13 @@
 
 --STRENGTH should always be between 1 and 10, didn't test it for higher!
 AMNESTIKA_LEVELS = {
-  --[LEVEL] = {STRENGTH, TIME, TEXT FOR PLAYER}
-    ["A"] = {1, 3, "You forget everything that happened in the last 2 hours!"},
-    ["B"] = {5, 5, "You forget everything that happened in the last 12 hours!"},
+  --[LEVEL] = {TIME, TEXT FOR PLAYER}
+    ["A"] = {3, "You forget everything that happened in the last 2 hours!"},
+    ["B"] = {5, "You forget everything that happened in the last 12 hours!"},
+    ["C"] = {5, "You forget everything that happened in the last 24 hours!"},
+    ["D"] = {10, "You forget everything that happened in the last 48 hours!"},
+    ["E"] = {15, "You forget everything that happened in the last 96 hours!"},
+    ["F"] = {30, "You forget everything!"},
 }
 
 -- CONFIG end
