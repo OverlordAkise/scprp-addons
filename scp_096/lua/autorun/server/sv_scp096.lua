@@ -73,11 +73,13 @@ function luctus_update_hunted(ply,newHunted)
     end
 
     if #scp096_hunted_players > 0 then
+        if not scp096_hunting and new then
+            scp096_ply:EmitSound( "096/scream.wav" ) --only scream if triggered first time
+        end
         scp096_hunting = true
         if new then
             scp096_ply:SetRunSpeed(600)
             scp096_ply:SetWalkSpeed(600)
-            scp096_ply:EmitSound( "096/scream.wav" )
             scp096_ply:GetActiveWeapon():SetHoldType( "fist" )
         end
     else
