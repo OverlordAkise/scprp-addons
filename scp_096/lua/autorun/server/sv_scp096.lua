@@ -33,12 +33,6 @@ hook.Add("PlayerDisconnected", "luctus_scp096_plynil", function(ply)
         scp096_hunted_players = {}
     end
 end)
-hook.Add("PlayerUse", "luctus_scp096_bagremover", function(ply, ent)
-    if IsValid(ent) and ent:IsPlayer() and ent:GetNWBool("scp096_bag",false) then
-        ent:SetNWBool("scp096_bag",false)
-        ply:Give("weapon_recontain_bag")
-    end
-end)
 
 function Luctus096HandlePlayerDeath(ply)
     luctus_update_hunted(ply,false)
@@ -97,6 +91,9 @@ function luctus_update_hunted(ply,newHunted)
     end
 end
 
+
+--Recontainment logic
+
 function LuctusRecontain096SCP(ply)
     ply:SetNWBool("scp096_bag",true)
     --remove hunt if applicable
@@ -114,7 +111,20 @@ function LuctusRecontain096SCP(ply)
     end
 end
 
+hook.Add("PlayerUse", "luctus_scp096_bagremover", function(ply, ent)
+    if IsValid(ent) and ent:IsPlayer() and ent:GetNWBool("scp096_bag",false) then
+        ent:SetNWBool("scp096_bag",false)
+        ply:Give("weapon_recontain_bag")
+    end
+end)
 
+function LuctusRecontain096Remove(ply)
+    ply:SetNWBool("scp096_bag",false)
+end
+
+hook.Add("PostPlayerDeath", "luctus_scp096_rec", LuctusRecontain096Remove)
+--gdeathsystem:
+hook.Add("MedicSys_PlayerDeath", "luctus_scp096_rec_gd", LuctusRecontain096Remove)
 
 
 print("[SCP096] SV Loaded!")
