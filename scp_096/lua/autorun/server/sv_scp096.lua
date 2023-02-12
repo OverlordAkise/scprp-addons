@@ -114,7 +114,7 @@ end
 hook.Add("PlayerUse", "luctus_scp096_bagremover", function(ply, ent)
     if IsValid(ent) and ent:IsPlayer() and ent:GetNWBool("scp096_bag",false) then
         ent:SetNWBool("scp096_bag",false)
-        ply:Give("weapon_recontain_bag")
+        ply:Give("weapon_scp096_rec")
     end
 end)
 
