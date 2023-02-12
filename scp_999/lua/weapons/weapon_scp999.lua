@@ -99,7 +99,6 @@ function SWEP:EmitParticles(ply)
     local pos = ply:GetPos()+Vector(0,0,40)
     local emitter = ParticleEmitter(pos, false)
     for i=0,200 do
-        chat.AddText(i)
         local mat = Material("icon16/heart.png")
         local particle = emitter:Add( mat, pos + Vector(math.random(-10, 10), math.random(-10, 10), math.random(-10, 10)))
         if particle then
