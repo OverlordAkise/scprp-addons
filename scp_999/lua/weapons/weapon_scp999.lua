@@ -96,7 +96,6 @@ end )
 
 function SWEP:EmitParticles(ply)
     if SERVER then return end
-    chat.AddText("SWEP:EmitParticles")
     local pos = ply:GetPos()+Vector(0,0,40)
     local emitter = ParticleEmitter(pos, false)
     for i=0,200 do
