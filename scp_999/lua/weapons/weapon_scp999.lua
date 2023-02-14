@@ -48,57 +48,62 @@ function SWEP:Holster()
 end
 
 function SWEP:PrimaryAttack()
-	local owner = self.Owner
+    local owner = self.Owner
 
-	tr = {}
-	tr.start = owner:GetShootPos()
-	tr.endpos = owner:GetShootPos() + ( owner:GetAimVector() * 95 )
-	tr.filter = owner
-	tr.mask = MASK_SHOT
-	trace = util.TraceLine( tr )
+    tr = {}
+    tr.start = owner:GetShootPos()
+    tr.endpos = owner:GetShootPos() + (owner:GetAimVector() * 95)
+    tr.filter = owner
+    tr.mask = MASK_SHOT
+    trace = util.TraceLine(tr)
 
-	if ( trace.Hit ) then
+    if trace.Hit then
 
-		if trace.Entity:IsPlayer() then
-			local ply = trace.Entity
-			if ply:Health() <= ply:GetMaxHealth() - 50 then
-				ply:SetHealth(ply:Health() + 50)
-			else
-				ply:SetHealth(ply:GetMaxHealth())
-			end
-            self:EmitParticles(ply)
-			if ( CLIENT ) then return end
-			self.Owner:EmitSound("scp999/scp999_"..math.random(1,6)..".mp3", 75)
-			self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+        if trace.Entity:IsPlayer() then
+            local ply = trace.Entity
+            if ply:Health() <= ply:GetMaxHealth() - 50 then
+                ply:SetHealth(ply:Health() + 50)
+            else
+                ply:SetHealth(ply:GetMaxHealth())
+            end
             
-		end
-	end
+            if CLIENT then return end
+            net.Start("luctus_scp999_hearts")
+                net.WriteEntity(owner)
+            net.Broadcast()
+            self.Owner:EmitSound("scp999/scp999_"..math.random(1,6)..".mp3", 75)
+            self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+            
+        end
+    end
 end
 
 function SWEP:SecondaryAttack()
-	if ( CLIENT ) then return end
-	self.Owner:EmitSound("scp999/scp999_"..math.random(1,6)..".mp3", 75)
-	self.Weapon:SetNextSecondaryFire( CurTime() + self.Secondary.Delay )
+    if CLIENT then return end
+    self.Owner:EmitSound("scp999/scp999_"..math.random(1,6)..".mp3", 75)
+    self.Weapon:SetNextSecondaryFire( CurTime() + self.Secondary.Delay )
 end
 
 local damagesoundcooldown = SWEP.DamageSoundCoolDown
 
-hook.Add( "EntityTakeDamage", "EntityDamageExample", function( target, dmginfo )
-	if target:IsPlayer() and target:HasWeapon("bt_scp999") then
-		if target:GetActiveWeapon():GetClass() == "bt_scp999" then
-			if damagesoundcooldown <= CurTime() then
-				damagesoundcooldown = CurTime() + 5
-				target:EmitSound("scp999/scp999_damage.mp3", 75)
-			end
-		end
-	end
-end )
+hook.Add( "EntityTakeDamage", "EntityDamageExample", function(target, dmginfo)
+    if target:IsPlayer() and target:HasWeapon("bt_scp999") then
+        if target:GetActiveWeapon():GetClass() == "bt_scp999" then
+            if damagesoundcooldown <= CurTime() then
+                damagesoundcooldown = CurTime() + 5
+                target:EmitSound("scp999/scp999_damage.mp3", 75)
+            end
+        end
+    end
+end)
 
-function SWEP:EmitParticles(ply)
-    if SERVER then return end
-    local pos = ply:GetPos()+Vector(0,0,40)
+if SERVER then return end
+
+net.Receive("luctus_scp999_hearts",function()
+    local scpPly = net.ReadEntity()
+    local pos = scpPly:GetPos()+Vector(0,0,40)
     local emitter = ParticleEmitter(pos, false)
-    for i=0,200 do
+    for i=0,100 do
         local mat = Material("icon16/heart.png")
         local particle = emitter:Add( mat, pos + Vector(math.random(-10, 10), math.random(-10, 10), math.random(-10, 10)))
         if particle then
@@ -111,5 +116,5 @@ function SWEP:EmitParticles(ply)
             particle:SetGravity(Vector(math.Rand(-10, 10), math.Rand(-10, 10), math.Rand(-20, 20)))
         end
     end
-	emitter:Finish()
-end
+    emitter:Finish()
+end)
