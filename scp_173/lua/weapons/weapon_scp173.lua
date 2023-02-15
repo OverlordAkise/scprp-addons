@@ -1,3 +1,6 @@
+--Luctus SCP173 System
+--Made by OverlordAkise
+
 AddCSLuaFile()
 
 if CLIENT then
@@ -67,13 +70,8 @@ end
 
 -- Ram action when ramming a door
 local function ramDoor(ply, trace, ent)
-    if ply:EyePos():DistToSqr(trace.HitPos) > 2025 then return false end
-    local allowed = true
-    if CLIENT then return allowed end
-    -- Do we have a warrant for this player?
-    if not allowed then
-        return false
-    end
+    if ply:EyePos():DistToSqr(trace.HitPos) > 256*256 then return false end
+    if CLIENT then return true end
 
     ent:keysUnLock()
     ent:Fire("open", "", .6)
@@ -86,7 +84,7 @@ end
 local function ramVehicle(ply, trace, ent)
     if ply:EyePos():DistToSqr(trace.HitPos) > 10000 then return false end
 
-    if CLIENT then return false end -- Ideally this would return true after ent:GetDriver() check
+    if CLIENT then return false end
 
     local driver = ent:GetDriver()
     if not IsValid(driver) or not driver.ExitVehicle then return false end
@@ -119,89 +117,81 @@ local function getRamFunction(ply, trace)
 end
 
 function SWEP:SecondaryAttack()
-  if not IsFirstTimePredicted() then return end
-  local Owner = self:GetOwner()
+    if not IsFirstTimePredicted() then return end
+    local Owner = self:GetOwner()
+    if not IsValid(Owner) then return end
+    
+    self:SetNextPrimaryFire(CurTime() + 0.1)
+    Owner:LagCompensation(true)
+    local trace = Owner:GetEyeTrace()
+    Owner:LagCompensation(false)
+    local hasRammed = getRamFunction(Owner, trace)()
+    if SERVER then
+        hook.Call("onDoorRamUsed", GAMEMODE, hasRammed, Owner, trace)
+    end
 
-  if not IsValid(Owner) then return end
+    if not hasRammed then return end
 
-  self:SetNextPrimaryFire(CurTime() + 0.1)
-
-  Owner:LagCompensation(true)
-  local trace = Owner:GetEyeTrace()
-  Owner:LagCompensation(false)
-
-  local hasRammed = getRamFunction(Owner, trace)()
-  if SERVER then
-    hook.Call("onDoorRamUsed", GAMEMODE, hasRammed, Owner, trace)
-  end
-
-  if not hasRammed then return end
-
-  self:SetNextPrimaryFire(CurTime() + 2.5)
-
-  self:SetTotalUsedMagCount(self:GetTotalUsedMagCount() + 1)
-
-  Owner:SetAnimation(PLAYER_ATTACK1)
-  Owner:EmitSound(self.Sound)
-  Owner:ViewPunch(Angle(-10, math.Round(util.SharedRandom("DarkRP_DoorRam" .. self:EntIndex() .. "_" .. self:GetTotalUsedMagCount(), -5, 5)), 0))
+    self:SetNextPrimaryFire(CurTime() + 2.5)
+    self:SetTotalUsedMagCount(self:GetTotalUsedMagCount() + 1)
+    Owner:SetAnimation(PLAYER_ATTACK1)
+    Owner:EmitSound(self.Sound)
+    Owner:ViewPunch(Angle(-10, math.Round(util.SharedRandom("DarkRP_DoorRam" .. self:EntIndex() .. "_" .. self:GetTotalUsedMagCount(), -5, 5)), 0))
 end
 
 function SWEP:PrimaryAttack()
-  if not IsValid(self:GetOwner()) then return end
+    if not IsValid(self:GetOwner()) then return end
 
-  self:GetOwner():LagCompensation(true)
+    self:GetOwner():LagCompensation(true)
 
-  local spos = self:GetOwner():GetShootPos()
-  local sdest = spos + (self:GetOwner():GetAimVector() * 70)
+    local spos = self:GetOwner():GetShootPos()
+    local sdest = spos + (self:GetOwner():GetAimVector() * 70)
 
-  local kmins = Vector(1,1,1) * -10
-  local kmaxs = Vector(1,1,1) * 10
+    local kmins = Vector(1,1,1) * -10
+    local kmaxs = Vector(1,1,1) * 10
 
-  local tr = util.TraceHull({start=spos, endpos=sdest, filter=self:GetOwner(), mask=MASK_SHOT_HULL, mins=kmins, maxs=kmaxs})
+    local tr = util.TraceHull({start=spos, endpos=sdest, filter=self:GetOwner(), mask=MASK_SHOT_HULL, mins=kmins, maxs=kmaxs})
 
-  -- Hull might hit environment stuff that line does not hit
-  if not IsValid(tr.Entity) then
-    tr = util.TraceLine({start=spos, endpos=sdest, filter=self:GetOwner(), mask=MASK_SHOT_HULL})
-  end
-
-  local hitEnt = tr.Entity
-
-  -- effects
-  if IsValid(hitEnt) then
-    self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
-
-    local edata = EffectData()
-    edata:SetStart(spos)
-    edata:SetOrigin(tr.HitPos)
-    edata:SetNormal(tr.Normal)
-    edata:SetEntity(hitEnt)
-
-    if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
-       util.Effect("BloodImpact", edata)
+    -- Hull might hit environment stuff that line does not hit
+    if not IsValid(tr.Entity) then
+        tr = util.TraceLine({start=spos, endpos=sdest, filter=self:GetOwner(), mask=MASK_SHOT_HULL})
     end
-  else
-    self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
-  end
 
-  if SERVER then
-    self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
-  end
+    local hitEnt = tr.Entity
 
+    -- effects
+    if IsValid(hitEnt) then
+        self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 
-  if SERVER and tr.Hit and tr.HitNonWorld and IsValid(hitEnt) then
-    if hitEnt:IsPlayer() then
-      local dmg = DamageInfo()
-      dmg:SetDamage(5000)
-      dmg:SetAttacker(self:GetOwner())
-      dmg:SetInflictor(self.Weapon or self)
-      dmg:SetDamageForce(self:GetOwner():GetAimVector() * 5)
-      dmg:SetDamagePosition(self:GetOwner():GetPos())
-      dmg:SetDamageType(DMG_SLASH)
+        local edata = EffectData()
+        edata:SetStart(spos)
+        edata:SetOrigin(tr.HitPos)
+        edata:SetNormal(tr.Normal)
+        edata:SetEntity(hitEnt)
 
-      hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
-      self:GetOwner():EmitSound(self.KillSound)
+        if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
+            util.Effect("BloodImpact", edata)
+        end
+    else
+        self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
     end
-  end
 
-  self:GetOwner():LagCompensation(false)
+    if SERVER then
+        self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
+    end
+
+
+    if SERVER and tr.Hit and tr.HitNonWorld and IsValid(hitEnt) and hitEnt:IsPlayer() then
+        local dmg = DamageInfo()
+        dmg:SetDamage(5000)
+        dmg:SetAttacker(self:GetOwner())
+        dmg:SetInflictor(self.Weapon or self)
+        dmg:SetDamageForce(self:GetOwner():GetAimVector() * 5)
+        dmg:SetDamagePosition(self:GetOwner():GetPos())
+        dmg:SetDamageType(DMG_SLASH)
+
+        hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
+        self:GetOwner():EmitSound(self.KillSound)
+    end
+    self:GetOwner():LagCompensation(false)
 end

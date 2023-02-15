@@ -1,3 +1,6 @@
+--Luctus SCP173 System
+--Made by OverlordAkise
+
 DarkRP.createCategory{
   name = "SCP",
   categorises = "jobs",
