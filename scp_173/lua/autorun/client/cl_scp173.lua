@@ -34,5 +34,4 @@ hook.Add("InitPostEntity","lucid_scp173_createmove",function()
     end)
 end)
 
-
 print("[SCP173] CL Loaded!")

@@ -2,13 +2,12 @@
 --Made by OverlordAkise
 
 util.AddNetworkString("luctus_scp173_blink")
-resource.AddWorkshop("827243834") -- SCP173
+resource.AddWorkshop("827243834") -- SCP173 model
 
 scp173_ply = scp173_ply or false
-local scp173_canmove = scp173_canmove or false
+scp173_canmove = scp173_canmove or false
   
 hook.Add("OnPlayerChangedTeam", "luctus_get_scp173", function(ply, beforeNum, afterNum)
-
     --switch to scp173
     if RPExtraTeams[afterNum].name == "SCP 173" then
         scp173_ply = ply
@@ -22,7 +21,8 @@ hook.Add("OnPlayerChangedTeam", "luctus_get_scp173", function(ply, beforeNum, af
         ply:Freeze(false)
         luctus_createBlinkTimer(ply)
     end
-  
+    
+    --[[
     --switch to scp131 (eyes that don't blink)
     if RPExtraTeams[afterNum].name == "SCP 131-A" or RPExtraTeams[afterNum].name == "SCP 131-B" then
         timer.Remove(ply:SteamID().."_blink")
@@ -33,50 +33,50 @@ hook.Add("OnPlayerChangedTeam", "luctus_get_scp173", function(ply, beforeNum, af
     if RPExtraTeams[beforeNum].name == "SCP 131-A" or RPExtraTeams[beforeNum].name == "SCP 131-B" then
         luctus_createBlinkTimer(ply)
     end
+    --]]
 end)
 
 hook.Add("InitPostEntity", "luctus_scp173", function()
     local gdsys = MedConfig and true or false
     timer.Create("luctus_scp173_can_move", 0.1, 0, function()
-        if scp173_ply and IsValid(scp173_ply) then
-            for k,v in pairs(player.GetAll()) do
-                if v == scp173_ply then continue end
-                local alive = v:Alive()
-                if gdsys then
-                    alive = not v._IsDead
-                end
-                if v:GetPos():DistToSqr(scp173_ply:GetPos()) < SCP173_BLINK_RANGE and alive then
-                    v.luctus_near_scp173 = true
-                    if v.luctus_blinking then continue end --not watching scp173
+        if not scp173_ply or not IsValid(scp173_ply) then return end
+        for k,v in pairs(player.GetAll()) do
+            if v == scp173_ply then continue end
+            local alive = v:Alive()
+            if gdsys then
+                alive = not v._IsDead
+            end
+            if v:GetPos():DistToSqr(scp173_ply:GetPos()) > SCP173_BLINK_RANGE or not alive then
+                v.luctus_near_scp173 = false
+                continue
+            end
+            v.luctus_near_scp173 = true
+            if v.luctus_blinking then continue end
 
-                    local directionAngCos = math.cos(math.pi / 3) 
-                    local aimVector = v:GetAimVector()
-                    local entVector = scp173_ply:GetPos() - v:GetShootPos() 
-                    local angCos = aimVector:Dot(entVector) / entVector:Length()
-                    if (angCos >= directionAngCos) then --watching scp173 with eyes angle
-                        --print("Schaut in Richtung SCP-173!")
-                        local g, i = util.TraceLine{
-                            start = v:EyePos() + v:EyeAngles():Forward() * 15,
-                            endpos = scp173_ply:EyePos()
-                            }, util.TraceLine{
-                            start = v:LocalToWorld(v:OBBCenter()),
-                            endpos = scp173_ply:LocalToWorld(scp173_ply:OBBCenter()),
-                            filter = v
-                        }
+            --Eye Angles check
+            local directionAngCos = math.cos(math.pi / 3) 
+            local entVector = scp173_ply:GetPos() - v:GetShootPos() 
+            local angCos = v:GetAimVector():Dot(entVector) / entVector:Length()
+            if angCos >= directionAngCos then
+                local g, i = util.TraceLine{
+                    start = v:EyePos() + v:EyeAngles():Forward() * 15,
+                    endpos = scp173_ply:EyePos()
+                    }, util.TraceLine{
+                    start = v:LocalToWorld(v:OBBCenter()),
+                    endpos = scp173_ply:LocalToWorld(scp173_ply:OBBCenter()),
+                    filter = v
+                }
 
-                        if g.Entity == scp173_ply or i.Entity == scp173_ply then
-                            scp173_canmove = false
-                            scp173_ply:Freeze(true)
-                            return
-                        end
-                    end
-                else
-                    v.luctus_near_scp173 = false
+                if g.Entity == scp173_ply or i.Entity == scp173_ply then
+                    scp173_canmove = false
+                    scp173_ply:Freeze(true)
+                    return
                 end
             end
-            --scp173 can move if no player sees it (no return till now)
-            scp173_ply:Freeze(false)
-        end
+        end--for loop
+        
+        --scp173 can move if no player sees it (no return till now)
+        scp173_ply:Freeze(false)
     end)
 end)
 
@@ -88,17 +88,15 @@ end)
 
 function luctus_createBlinkTimer(ply)
     timer.Create(ply:SteamID().."_blink", SCP173_BLINK_INTERVAL, 0, function()
-        if scp173_ply and IsValid(scp173_ply) then
-            if ply.luctus_near_scp173 then
-                ply.luctus_blinking = true
-                net.Start("luctus_scp173_blink")
-                    net.WriteFloat(SCP173_BLINK_DURATION)
-                net.Send(ply)
-                timer.Simple(SCP173_BLINK_DURATION, function()
-                    ply.luctus_blinking = false
-                end)
-            end
-        end
+        if not scp173_ply or not IsValid(scp173_ply) then return end
+        if not ply.luctus_near_scp173 then return end
+        ply.luctus_blinking = true
+        net.Start("luctus_scp173_blink")
+            net.WriteFloat(SCP173_BLINK_DURATION)
+        net.Send(ply)
+        timer.Simple(SCP173_BLINK_DURATION, function()
+            ply.luctus_blinking = false
+        end)
     end)
 end
  
