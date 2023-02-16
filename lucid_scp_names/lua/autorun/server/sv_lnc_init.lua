@@ -2,11 +2,6 @@
 --Made by OverlordAkise
 
 util.AddNetworkString("luctus_scpnames")
-util.AddNetworkString("luctus_checkscpnames")
-
-hook.Add("onPlayerFirstJoined","luctus_scpnames",function(ply, data)
-    ply.luctusShouldNameChange = true
-end)
 
 hook.Add("PostGamemodeLoaded","luctus_scpnames",function()
     sql.Query("CREATE TABLE IF NOT EXISTS luctus_scpnames( steamid TEXT, jobcmd TEXT, jobname TEXT )")
@@ -44,31 +39,6 @@ hook.Add("OnPlayerChangedTeam","luctus_scpnames_save", function(ply, beforeNum, 
         end)
     end
 end) 
-
-net.Receive("luctus_checkscpnames", function(len,ply)
-    if IsValid(ply) and ply.luctusShouldNameChange then
-        net.Start("luctus_scpnames")
-        net.Send(ply)
-        return
-    end
-    --Get default job name
-    local djob = GAMEMODE.DefaultTeam
-    if not djob or djob < 1 then return end
-    local djobtable = RPExtraTeams[djob]
-    if not djobtable then return end
-    local djobname = djobtable.command
-    if not djobname then return end
-    
-    local jobname = sql.QueryValue("SELECT jobname FROM luctus_scpnames WHERE steamid = "..sql.SQLStr(ply:SteamID()).." AND jobcmd = "..sql.SQLStr(djobname))
-    if jobname == false then
-        print("[luctus_scpnames] ERROR DURING SQL ONJOIN NAMECHANGE!")
-        print(sql.LastError())
-        return
-    end
-    if jobname then
-        ply:setRPName(jobname, false)
-    end
-end)
 
 net.Receive("luctus_scpnames", function(len,ply)
     local fname = net.ReadString()

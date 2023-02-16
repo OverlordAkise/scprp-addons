@@ -32,11 +32,6 @@ local oneNameJobs = {
 
 --CONFIG END
 
-hook.Add("InitPostEntity", "luctus_scpnames", function()
-    net.Start("luctus_checkscpnames")
-    net.SendToServer()
-end)
-
 net.Receive("luctus_scpnames",function()
     if IsValid(NameFrame) then 
         NameFrame:Close()
