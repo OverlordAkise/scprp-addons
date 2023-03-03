@@ -72,11 +72,14 @@ end
 local function ramDoor(ply, trace, ent)
     if ply:EyePos():DistToSqr(trace.HitPos) > 256*256 then return false end
     if CLIENT then return true end
-
+    if ent:GetClass() == "prop_dynamic" then
+        if ent:GetParent() and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "func_door" then
+            ent = ent:GetParent()
+        end
+    end
     ent:keysUnLock()
     ent:Fire("open", "", .6)
     ent:Fire("setanimation", "open", .6)
-
     return true
 end
 
