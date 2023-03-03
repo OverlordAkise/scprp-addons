@@ -235,7 +235,7 @@ function SWEP:Think()
       local distance = phi > 180 and 360 - phi or phi;
       --PrintMessage(3,distance)
       --From side to side: 90 <-> 90 degrees, middle: 180degrees
-      if distance > 135 then
+      if distance > 135 and self.Owner:IsLineOfSightClear(v) then
         luctus_update_hunted(v,true)
       end
     end
