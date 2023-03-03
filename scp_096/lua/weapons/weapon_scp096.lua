@@ -36,168 +36,180 @@ local SwingSound = Sound( "WeaponFrag.Throw" )
 local HitSound = Sound( "Flesh.ImpactHard" )
 
 function SWEP:Initialize()
-	self:SetHoldType( "normal" )
+    self:SetHoldType( "normal" )
     self.isGDeathSystem = MedConfig and true or false
 end
 
 function SWEP:SetupDataTables()
-	self:NetworkVar( "Float", 0, "NextMeleeAttack" )
-	self:NetworkVar( "Float", 1, "NextIdle" )
-	self:NetworkVar( "Int", 2, "Combo" )
+    self:NetworkVar( "Float", 0, "NextMeleeAttack" )
+    self:NetworkVar( "Float", 1, "NextIdle" )
+    self:NetworkVar( "Int", 2, "Combo" )
 end
 
 function SWEP:UpdateNextIdle()
-	local vm = self.Owner:GetViewModel()
-	self:SetNextIdle( CurTime() + vm:SequenceDuration() / vm:GetPlaybackRate() )
+    local vm = self.Owner:GetViewModel()
+    self:SetNextIdle( CurTime() + vm:SequenceDuration() / vm:GetPlaybackRate() )
 end
 
 function SWEP:PrimaryAttack( right )
-  if #scp096_hunted_players == 0 then return end
-	self.Owner:SetAnimation( PLAYER_ATTACK1 )
-  local right = true
-	local anim = "fists_left"
-	if ( right ) then anim = "fists_right" end
-	if ( self:GetCombo() >= 2 ) then
-		anim = "fists_uppercut"
-	end
+    if #scp096_hunted_players == 0 then return end
+    self.Owner:SetAnimation( PLAYER_ATTACK1 )
+    local right = true
+    local anim = "fists_left"
+    if ( right ) then anim = "fists_right" end
+    if ( self:GetCombo() >= 2 ) then
+        anim = "fists_uppercut"
+    end
 
-	local vm = self.Owner:GetViewModel()
-	vm:SendViewModelMatchingSequence( vm:LookupSequence( anim ) )
+    local vm = self.Owner:GetViewModel()
+    vm:SendViewModelMatchingSequence( vm:LookupSequence( anim ) )
 
-	self:EmitSound( SwingSound )
+    self:EmitSound( SwingSound )
 
-	self:UpdateNextIdle()
-	self:DealDamage()
-	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-	self:SetNextPrimaryFire( CurTime() + 0.2 ) --0.9
-	self:SetNextSecondaryFire( CurTime() + 0.2 ) --0.9
+    self:UpdateNextIdle()
+    self:DealDamage()
+    self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+    self:SetNextPrimaryFire( CurTime() + 0.2 ) --0.9
+    self:SetNextSecondaryFire( CurTime() + 0.2 ) --0.9
 end
 
 function SWEP:SecondaryAttack()
-  if SERVER then
-    self.Owner:StopSound( "096/scream.wav" )
-    self.Owner:StopSound( "096/crying1.wav" )
-    if scp096_hunting then
-      self.Owner:EmitSound( "096/scream.wav" )
-    else
-      self.Owner:EmitSound( "096/crying1.wav" )
+    if SERVER then
+        self.Owner:StopSound( "096/scream.wav" )
+        self.Owner:StopSound( "096/crying1.wav" )
+        if scp096_hunting then
+            self.Owner:EmitSound( "096/scream.wav" )
+        else
+            self.Owner:EmitSound( "096/crying1.wav" )
+        end
     end
-  end
-  self:SetNextSecondaryFire( CurTime() + 2)
+    self:SetNextSecondaryFire( CurTime() + 2)
 end
 
 function SWEP:Reload()
-  if SERVER then
-    self.Owner:StopSound( "096/scream.wav" )
-    self.Owner:StopSound( "096/crying1.wav" )
-  end
+    if SERVER then
+        self.Owner:StopSound( "096/scream.wav" )
+        self.Owner:StopSound( "096/crying1.wav" )
+    end
+end
+
+local function ramDoor(ply, trace, ent)
+    if ply:EyePos():DistToSqr(trace.HitPos) > 10000 then return false end
+    if CLIENT then return true end
+    if ent:GetClass() == "prop_dynamic" then
+        if ent:GetParent() and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "func_door" then
+            ent = ent:GetParent()
+        end
+    end
+    ent:keysUnLock()
+    ent:Fire("open", "", .6)
+    ent:Fire("setanimation", "open", .6)
+    return true
 end
 
 local phys_pushscale = GetConVar( "phys_pushscale" )
-
 function SWEP:DealDamage()
 
-	local anim = self:GetSequenceName(self.Owner:GetViewModel():GetSequence())
+    local anim = self:GetSequenceName(self.Owner:GetViewModel():GetSequence())
 
-	self.Owner:LagCompensation( true )
+    local tr = util.TraceLine( {
+        start = self.Owner:GetShootPos(),
+        endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.HitDistance,
+        filter = self.Owner,
+        mask = MASK_SHOT_HULL
+    } )
 
-	local tr = util.TraceLine( {
-		start = self.Owner:GetShootPos(),
-		endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.HitDistance,
-		filter = self.Owner,
-		mask = MASK_SHOT_HULL
-	} )
+    if ( !IsValid( tr.Entity ) ) then
+        tr = util.TraceHull( {
+            start = self.Owner:GetShootPos(),
+            endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.HitDistance,
+            filter = self.Owner,
+            mins = Vector( -10, -10, -8 ),
+            maxs = Vector( 10, 10, 8 ),
+            mask = MASK_SHOT_HULL
+        } )
+    end
 
-	if ( !IsValid( tr.Entity ) ) then
-		tr = util.TraceHull( {
-			start = self.Owner:GetShootPos(),
-			endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.HitDistance,
-			filter = self.Owner,
-			mins = Vector( -10, -10, -8 ),
-			maxs = Vector( 10, 10, 8 ),
-			mask = MASK_SHOT_HULL
-		} )
-	end
+    -- We need the second part for single player because SWEP:Think is ran shared in SP
+    if ( tr.Hit && !( game.SinglePlayer() && CLIENT ) ) then
+        self:EmitSound( HitSound )
+    end
 
-	-- We need the second part for single player because SWEP:Think is ran shared in SP
-	if ( tr.Hit && !( game.SinglePlayer() && CLIENT ) ) then
-		self:EmitSound( HitSound )
-	end
+    local hit = false
+    local scale = phys_pushscale:GetFloat()
+    
+    if SERVER and IsValid(tr.Entity) and tr.Entity:isDoor() then
+        ramDoor(self.Owner,tr,tr.Entity)
+    end
 
-	local hit = false
-	local scale = phys_pushscale:GetFloat()
+    if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0 ) ) then
+        local dmginfo = DamageInfo()
 
-	if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0 ) ) then
-		local dmginfo = DamageInfo()
+        local attacker = self.Owner
+        if ( !IsValid( attacker ) ) then attacker = self end
+        dmginfo:SetAttacker( attacker )
 
-		local attacker = self.Owner
-		if ( !IsValid( attacker ) ) then attacker = self end
-		dmginfo:SetAttacker( attacker )
+        dmginfo:SetInflictor( self )
+        dmginfo:SetDamage(9999)
 
-		dmginfo:SetInflictor( self )
-		dmginfo:SetDamage(9999)
+        if ( anim == "fists_left" ) then
+            dmginfo:SetDamageForce( self.Owner:GetRight() * 4912 * scale + self.Owner:GetForward() * 9998 * scale ) -- Yes we need those specific numbers
+        elseif ( anim == "fists_right" ) then
+            dmginfo:SetDamageForce( self.Owner:GetRight() * -4912 * scale + self.Owner:GetForward() * 9989 * scale )
+        elseif ( anim == "fists_uppercut" ) then
+            dmginfo:SetDamageForce( self.Owner:GetUp() * 5158 * scale + self.Owner:GetForward() * 10012 * scale )
+            dmginfo:SetDamage( math.random( 12, 24 ) )
+        end
 
-		if ( anim == "fists_left" ) then
-			dmginfo:SetDamageForce( self.Owner:GetRight() * 4912 * scale + self.Owner:GetForward() * 9998 * scale ) -- Yes we need those specific numbers
-		elseif ( anim == "fists_right" ) then
-			dmginfo:SetDamageForce( self.Owner:GetRight() * -4912 * scale + self.Owner:GetForward() * 9989 * scale )
-		elseif ( anim == "fists_uppercut" ) then
-			dmginfo:SetDamageForce( self.Owner:GetUp() * 5158 * scale + self.Owner:GetForward() * 10012 * scale )
-			dmginfo:SetDamage( math.random( 12, 24 ) )
-		end
+        SuppressHostEvents( NULL ) -- Let the breakable gibs spawn in multiplayer on client
+        tr.Entity:TakeDamageInfo( dmginfo )
+        SuppressHostEvents( self.Owner )
 
-		SuppressHostEvents( NULL ) -- Let the breakable gibs spawn in multiplayer on client
-		tr.Entity:TakeDamageInfo( dmginfo )
-		SuppressHostEvents( self.Owner )
+        hit = true
 
-		hit = true
+    end
 
-	end
+    if ( IsValid( tr.Entity ) ) then
+        local phys = tr.Entity:GetPhysicsObject()
+        if ( IsValid( phys ) ) then
+            phys:ApplyForceOffset( self.Owner:GetAimVector() * 80 * phys:GetMass() * scale, tr.HitPos )
+        end
+    end
 
-	if ( IsValid( tr.Entity ) ) then
-		local phys = tr.Entity:GetPhysicsObject()
-		if ( IsValid( phys ) ) then
-			phys:ApplyForceOffset( self.Owner:GetAimVector() * 80 * phys:GetMass() * scale, tr.HitPos )
-		end
-	end
-
-	if ( SERVER ) then
-		if ( hit && anim != "fists_uppercut" ) then
-			self:SetCombo( self:GetCombo() + 1 )
-		else
-			self:SetCombo( 0 )
-		end
-	end
-
-	self.Owner:LagCompensation( false )
-
+    if ( SERVER ) then
+        if ( hit && anim != "fists_uppercut" ) then
+            self:SetCombo( self:GetCombo() + 1 )
+        else
+            self:SetCombo( 0 )
+        end
+    end
 end
 
 function SWEP:OnDrop()
-	self:Remove() -- You can't drop fists
+    self:Remove()
 end
 
 function SWEP:Deploy()
-	local speed = GetConVarNumber( "sv_defaultdeployspeed" )
+    local speed = GetConVarNumber( "sv_defaultdeployspeed" )
 
-	local vm = self.Owner:GetViewModel()
-	vm:SendViewModelMatchingSequence( vm:LookupSequence( "fists_draw" ) )
-	vm:SetPlaybackRate( speed )
+    local vm = self.Owner:GetViewModel()
+    vm:SendViewModelMatchingSequence( vm:LookupSequence( "fists_draw" ) )
+    vm:SetPlaybackRate( speed )
 
-	self:SetNextPrimaryFire( CurTime() + vm:SequenceDuration() / speed )
-	self:SetNextSecondaryFire( CurTime() + vm:SequenceDuration() / speed )
-	self:UpdateNextIdle()
+    self:SetNextPrimaryFire( CurTime() + vm:SequenceDuration() / speed )
+    self:SetNextSecondaryFire( CurTime() + vm:SequenceDuration() / speed )
+    self:UpdateNextIdle()
 
-	if ( SERVER ) then
-		self:SetCombo( 0 )
-	end
+    if ( SERVER ) then
+        self:SetCombo( 0 )
+    end
 
-	return true
+    return true
 end
 
 function SWEP:Holster()
-	self:SetNextMeleeAttack( 0 )
-	return true
+    self:SetNextMeleeAttack( 0 )
+    return true
 end
 
 function SWEP:Think()
@@ -207,7 +219,7 @@ function SWEP:Think()
   self.next_think = CurTime() + 0.3
   
   --StartPos, Direction, Size(Range), Degrees(Angle)
-	local entities_in_view = ents.FindInCone( self.Owner:EyePos(), self.Owner:GetAimVector(), 200, math.cos( math.rad( 15 ) ) )
+    local entities_in_view = ents.FindInCone( self.Owner:EyePos(), self.Owner:GetAimVector(), 200, math.cos( math.rad( 15 ) ) )
 
   local players = {}
   for k,v in pairs(entities_in_view) do
