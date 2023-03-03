@@ -1,6 +1,9 @@
 --Luctus SCP173 System
 --Made by OverlordAkise
 
+--PrimaryAttack is made by the TTT developers of the knife
+--SecondaryAttack is made by the DarkRP developer (FPTje)
+
 AddCSLuaFile()
 
 if CLIENT then
@@ -36,20 +39,16 @@ SWEP.Category = "SCP"
 SWEP.Sound = "physics/wood/wood_box_impact_hard3.wav"
 SWEP.KillSound = "player/pl_fallpain1.wav"
 
-SWEP.Primary.ClipSize = -1      -- Size of a clip
-SWEP.Primary.DefaultClip = 0        -- Default number of bullets in a clip
-SWEP.Primary.Automatic = false      -- Automatic/Semi Auto
+SWEP.Primary.ClipSize = -1
+SWEP.Primary.DefaultClip = 0
+SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = ""
 
-SWEP.Secondary.ClipSize = -1        -- Size of a clip
-SWEP.Secondary.DefaultClip = 0     -- Default number of bullets in a clip
-SWEP.Secondary.Automatic = false     -- Automatic/Semi Auto
+SWEP.Secondary.ClipSize = -1
+SWEP.Secondary.DefaultClip = 0
+SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = ""
 
---[[---------------------------------------------------------
-Name: SWEP:Initialize()
-Desc: Called when the weapon is first loaded
----------------------------------------------------------]]
 function SWEP:Initialize()
     self:SetHoldType("normal")
 end
@@ -70,7 +69,7 @@ end
 
 -- Ram action when ramming a door
 local function ramDoor(ply, trace, ent)
-    if ply:EyePos():DistToSqr(trace.HitPos) > 256*256 then return false end
+    if ply:EyePos():DistToSqr(trace.HitPos) > 10000 then return false end
     if CLIENT then return true end
     if ent:GetClass() == "prop_dynamic" then
         if ent:GetParent() and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "func_door" then
@@ -83,40 +82,24 @@ local function ramDoor(ply, trace, ent)
     return true
 end
 
--- Ram action when ramming a vehicle
-local function ramVehicle(ply, trace, ent)
-    if ply:EyePos():DistToSqr(trace.HitPos) > 10000 then return false end
-
-    if CLIENT then return false end
-
-    local driver = ent:GetDriver()
-    if not IsValid(driver) or not driver.ExitVehicle then return false end
-
-    driver:ExitVehicle()
-    ent:keysLock()
-
-    return true
-end
-
 -- Decides the behaviour of the ram function for the given entity
 local function getRamFunction(ply, trace)
     local ent = trace.Entity
+    if not IsValid(ent) then return false end
     if SERVER then
-      if trace.Entity:GetName() == "173_containment_door_l" or trace.Entity:GetName() == "173_containment_door_r" then
-      DarkRP.notify(ply,1,5,"Dieses Tool darf nicht zum Breach benutzt werden!")
-      return fp{fn.Id, false} end
+        if trace.Entity:GetName() == "173_containment_door_l" or trace.Entity:GetName() == "173_containment_door_r" then
+            DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
+            return false
+        end
     end
-    if not IsValid(ent) then return fp{fn.Id, false} end
-
     local override = hook.Call("canDoorRam", nil, ply, trace, ent)
-
-    return
-        override ~= nil     and fp{fn.Id, override}                                 or
-        ent:isDoor()        and fp{ramDoor, ply, trace, ent}                        or
-        ent:IsVehicle()     and fp{ramVehicle, ply, trace, ent}                     or
-        ent:GetPhysicsObject():IsValid() and not ent:GetPhysicsObject():IsMoveable()
-                                         and fp{ramProp, ply, trace, ent}           or
-        fp{fn.Id, false} -- no ramming was performed
+    if override ~= nil then
+        return override
+    end
+    if ent:isDoor() then    
+        return ramDoor(ply, trace, ent)
+    end
+    return false
 end
 
 function SWEP:SecondaryAttack()
@@ -124,22 +107,16 @@ function SWEP:SecondaryAttack()
     local Owner = self:GetOwner()
     if not IsValid(Owner) then return end
     
-    self:SetNextPrimaryFire(CurTime() + 0.1)
-    Owner:LagCompensation(true)
+    self:SetNextSecondaryFire(CurTime() + 1)
     local trace = Owner:GetEyeTrace()
-    Owner:LagCompensation(false)
-    local hasRammed = getRamFunction(Owner, trace)()
+    local hasRammed = getRamFunction(Owner, trace)
     if SERVER then
         hook.Call("onDoorRamUsed", GAMEMODE, hasRammed, Owner, trace)
     end
 
     if not hasRammed then return end
-
-    self:SetNextPrimaryFire(CurTime() + 2.5)
-    self:SetTotalUsedMagCount(self:GetTotalUsedMagCount() + 1)
     Owner:SetAnimation(PLAYER_ATTACK1)
     Owner:EmitSound(self.Sound)
-    Owner:ViewPunch(Angle(-10, math.Round(util.SharedRandom("DarkRP_DoorRam" .. self:EntIndex() .. "_" .. self:GetTotalUsedMagCount(), -5, 5)), 0))
 end
 
 function SWEP:PrimaryAttack()
