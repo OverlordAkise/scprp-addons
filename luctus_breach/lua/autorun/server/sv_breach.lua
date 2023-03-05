@@ -1,4 +1,4 @@
---Luctus Breach (Minimal Version)
+--Luctus Breach
 --Made by OverlordAkise
 
 
@@ -26,6 +26,8 @@ LUCTUS_BREACH_JOBS = {
 
 --CONFIG END
 
+LuctusLog = LuctusLog or function()end
+
 local function NotifyPlayer(ply,text)
     ply:PrintMessage(3,text)
     DarkRP.notify(ply, 1, 5, text)
@@ -44,6 +46,7 @@ end)
 
 function LuctusBreachDo(ply)
     NotifyPlayer(ply,"[breach] Opening doors for you...")
+    LuctusLog("Breach",ply:Nick().."("..ply:SteamID()..") just breached as "..team.GetName(ply:Team()))
     ply.canbreach = false
     CreateBreachTimer(ply)
     for k,v in pairs(LUCTUS_BREACH_JOBS[ply:getJobTable().name]) do
@@ -60,6 +63,7 @@ function LuctusBreachDo(ply)
 end
 
 function LuctusBreachSeekApproval(breacher)
+    LuctusLog("Breach",breacher:Nick().."("..breacher:SteamID()..") requested to breach as "..team.GetName(breacher:Team()))
     for k,v in pairs(player.GetAll()) do
         if not LUCTUS_BREACH_APPROVER[v:GetUserGroup()] then continue end
         NotifyPlayer(v,"[breach] '"..breacher:Nick().."' wants to breach!")
@@ -97,6 +101,7 @@ hook.Add("PlayerSay", "BreachCommand", function(ply, text)
             if v.breachid and v.breachid == name[2] then
                 LuctusBreachDo(v)
                 NotifyPlayer(ply,"[breach] Successfully approved!")
+                LuctusLog("Breach",ply:Nick().."("..ply:SteamID()..") approved breach request of "..v:Nick().."("..v:SteamID()..") as "..team.GetName(v:Team()))
                 return
             end
         end
