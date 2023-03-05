@@ -7,6 +7,10 @@ surface.CreateFont( "scpCode", {
   weight = 850
 })
 
+hook.Add("LuctusLogAddCategory","luctus_scpcodesys_gui",function()
+    table.insert(lucid_log_quickfilters,"CodeSystem")
+end)
+
 local scpCodeMaterial = scp_code_materials["green"]
 
 net.Receive("SCPCodes", function(ply)
