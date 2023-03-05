@@ -43,6 +43,7 @@ function Luctus096HandlePlayerDeath(ply)
         net.Start("luctus_scp096_update")
             net.WriteTable({})
         net.Send(scp096_ply)
+        LuctusLog("SCP096",ply:Nick().."("..ply:SteamID()..") died as SCP096, rage ended.")
     end
     if ply:GetNWBool("scp096_bag",false) then
         ply:SetNWBool("scp096_bag",false)
@@ -60,15 +61,18 @@ function luctus_update_hunted(ply,newHunted)
     if newHunted and not table.HasValue(scp096_hunted_players,ply) then
         table.insert(scp096_hunted_players,ply)
         new = true
+        LuctusLog("SCP096",ply:Nick().."("..ply:SteamID()..") is being hunted by SCP096.")
     end
     if not newHunted and table.HasValue(scp096_hunted_players,ply) then
         table.RemoveByValue(scp096_hunted_players,ply)
         new = true
+        LuctusLog("SCP096",ply:Nick().."("..ply:SteamID()..") is not being hunted by SCP096 anymore.")
     end
 
     if #scp096_hunted_players > 0 then
         if not scp096_hunting and new then
             scp096_ply:EmitSound( "096/scream.wav" ) --only scream if triggered first time
+            LuctusLog("SCP096",ply:Nick().."("..ply:SteamID()..") enraged SCP096.")
         end
         scp096_hunting = true
         if new then
@@ -82,6 +86,7 @@ function luctus_update_hunted(ply,newHunted)
             scp096_ply:SetRunSpeed(240)
             scp096_ply:SetWalkSpeed(160)
             scp096_ply:GetActiveWeapon():SetHoldType( "normal" )
+            LuctusLog("SCP096",ply:Nick().."("..ply:SteamID()..") ended rage of SCP096.")
         end
     end
     if new then
@@ -108,6 +113,7 @@ function LuctusRecontain096SCP(ply)
         net.Start("luctus_scp096_update")
             net.WriteTable(scp096_hunted_players)
         net.Send(scp096_ply)
+        LuctusLog("SCP096",ply:Nick().."("..ply:SteamID()..") recontained SCP096.")
     end
 end
 
@@ -115,6 +121,9 @@ hook.Add("PlayerUse", "luctus_scp096_bagremover", function(ply, ent)
     if IsValid(ent) and ent:IsPlayer() and ent:GetNWBool("scp096_bag",false) then
         ent:SetNWBool("scp096_bag",false)
         ply:Give("weapon_scp096_rec")
+        if scp096_ply and scp096_ply == ent then
+            LuctusLog("SCP096",ply:Nick().."("..ply:SteamID()..") removed the bag from SCP096.")
+        end
     end
 end)
 
