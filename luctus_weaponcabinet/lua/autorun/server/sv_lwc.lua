@@ -4,6 +4,8 @@
 util.AddNetworkString("luctus_weaponcabinet")
 util.AddNetworkString("luctus_weaponcabinet_r")
 
+LuctusLog = LuctusLog or function()end
+
 hook.Add("PlayerSpawn","luctus_weaponcabinet_reset",function(ply)
     timer.Simple(0.1,function() --safety
         if LUCTUS_WEAPONCABINET_KEEPWEPS then
@@ -38,6 +40,7 @@ net.Receive("luctus_weaponcabinet",function(len,ply)
     if not LUCTUS_WEAPONCABINET_S[cat]["weps"][wep] then return end
     ply:Give(wep)
     ply.luctus_wc_weps[wep] = true
+    LuctusLog("Weaponcabin",ply:Nick().."("..ply:SteamID()..") used weaponcabinet to get a "..wep)
 end)
 
 net.Receive("luctus_weaponcabinet_r",function(len,ply)
@@ -50,6 +53,7 @@ net.Receive("luctus_weaponcabinet_r",function(len,ply)
         if ply.luctus_wc_weps[wep] then
             ply.luctus_wc_weps[wep] = nil
         end
+        LuctusLog("Weaponcabin",ply:Nick().."("..ply:SteamID()..") used weaponcabinet to return a "..wep)
     end
 end)
 
