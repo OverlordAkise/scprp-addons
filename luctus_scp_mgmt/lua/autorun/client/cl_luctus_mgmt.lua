@@ -240,5 +240,9 @@ function LuctusOpenSCPMGMT()
     end
 end
 
+hook.Add("LuctusLogAddCategory","luctus_scpmgmt",function()
+    table.insert(lucid_log_quickfilters,"SCPMGMT")
+end)
+
 print("[SCPMGMT] CL loaded!")
 
