@@ -5,6 +5,8 @@ util.AddNetworkString("luctus_scp_code")
 
 LUCTUS_SCP_CODE_CURRENT = LUCTUS_SCP_CODE_DEFAULT
 
+LuctusLog = LuctusLog or function()end
+
 hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team) 
     if string.Split(text," ")[1] == "!code" then
         if not LUCTUS_SCP_CODE_ALLOWEDJOBS[ply:getJobTable().name] 
@@ -23,6 +25,7 @@ hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team)
         net.Broadcast()
         PrintMessage(HUD_PRINTCENTER, "Code "..code)
         DarkRP.notify(player.GetAll(),1,5,"Code "..code.." wurde ausgerufen!")
+        LuctusLog("CodeSystem",ply:Nick().."("..ply:SteamID()..") changed the code to "..LUCTUS_SCP_CODE_CURRENT..".")
         return ""
     end
     --[[

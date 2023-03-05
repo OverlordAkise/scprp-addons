@@ -22,6 +22,10 @@ surface.CreateFont( "luctus_scp_code_hud_font", {
     outline = false,
 })
 
+hook.Add("LuctusLogAddCategory","luctus_scpcodesys",function()
+    table.insert(lucid_log_quickfilters,"CodeSystem")
+end)
+
 hook.Add("HUDPaint","luctus_scp_code",function()
     surface.SetFont("luctus_scp_code_hud_font")
     local wx, wy = surface.GetTextSize("Code: "..LUCTUS_CODE_CURRENT)
