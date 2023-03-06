@@ -12,6 +12,8 @@ resource.AddWorkshop("2488399203") -- SCP096 Hand model
 
 util.AddNetworkString("luctus_scp096_update")
 
+LuctusLog = LuctusLog or function()end
+
 scp096_ply = nil
 scp096_hunted_players = {}
 scp096_hunting = false
