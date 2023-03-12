@@ -42,7 +42,7 @@ net.Receive("luctus_amnestika",function()
     local vfunc = LUCTUS_AMNESTIKA_FUNCS[amnestika_type]
     hook.Add("RenderScreenspaceEffects", "luctus_amnestika_blur", function()
         --Trial and error below me
-        vfunc
+        vfunc()
         draw.SimpleTextOutlined(AMNESTIKA_LEVELS[amnestika_type][2], "DermaLarge", w, h, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, color_black)
     end)
     timer.Simple(AMNESTIKA_LEVELS[amnestika_type][1],function()
