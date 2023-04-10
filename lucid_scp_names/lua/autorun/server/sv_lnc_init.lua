@@ -41,6 +41,10 @@ hook.Add("OnPlayerChangedTeam","luctus_scpnames_save", function(ply, beforeNum, 
 end) 
 
 net.Receive("luctus_scpnames", function(len,ply)
+    if not ply.scpnamecd then ply.scpnamecd = 0 end
+    if ply.scpnamecd > CurTime() then return end
+    ply.scpnamecd = CurTime()+10
+    
     local fname = net.ReadString()
     local lname = net.ReadString()
     local newName = fname
