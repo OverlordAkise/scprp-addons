@@ -55,8 +55,8 @@ net.Receive("luctus_scpnames", function(len,ply)
             DarkRP.notify(ply,1,5,"Error: Name '"..m.."'")
         elseif ans == true then
             DarkRP.notify(ply,1,5,"Error: Name 'already taken'")
-        --elseif fname:match("%W") then
-        --  DarkRP.notify(ply,1,5,"Error: Name 'has illegal characters'")
+        elseif newName:match("[a-zA-ZöäüÖÄÜß ]*") then
+          DarkRP.notify(ply,1,5,"Error: Name 'has illegal characters'")
         else
             ply:setRPName(newName)
             net.Start("luctus_scpnames")
