@@ -43,7 +43,7 @@ end)
 net.Receive("luctus_scpnames", function(len,ply)
     if not ply.scpnamecd then ply.scpnamecd = 0 end
     if ply.scpnamecd > CurTime() then return end
-    ply.scpnamecd = CurTime()+10
+    ply.scpnamecd = CurTime()+1
     
     local fname = net.ReadString()
     local lname = net.ReadString()
@@ -51,16 +51,18 @@ net.Receive("luctus_scpnames", function(len,ply)
     if lname ~= "" then
         newName = fname.." "..lname
     end
+    if newName == "" then
+        DarkRP.notify(ply,1,5,"Error: Name can not be empty")
+        return
+    end
     print("[luctus_scpnames] "..ply:Nick().." wants to change his name to "..newName)
-    local b,m = hook.Run("CanChangeRPName",ply,newName)
+    local b,m = CheckRPName(newName)
     DarkRP.retrieveRPNames(newName,function(ans)
         --print(ans)
         if b == false then
             DarkRP.notify(ply,1,5,"Error: Name '"..m.."'")
         elseif ans == true then
-            DarkRP.notify(ply,1,5,"Error: Name 'already taken'")
-        elseif newName:match("[a-zA-ZöäüÖÄÜß\"_- ]*") then
-          DarkRP.notify(ply,1,5,"Error: Name 'has illegal characters'")
+            DarkRP.notify(ply,1,5,"Error: Name already taken")
         else
             ply:setRPName(newName)
             net.Start("luctus_scpnames")
@@ -68,5 +70,14 @@ net.Receive("luctus_scpnames", function(len,ply)
         end
     end)
 end)
+
+function CheckRPName(name)
+    if LUCTUS_SCPNAMES_NOTALLOWED[string.lower(name)] then return false, DarkRP.getPhrase("forbidden_name") end
+    if not string.match(name, "^[a-zA-ZЀ-џ0-9öäüÖÄÜß\"-_ ]+$") then return false, DarkRP.getPhrase("illegal_characters") end
+
+    local len = string.len(name)
+    if len > 30 then return false, DarkRP.getPhrase("too_long") end
+    if len < 3 then return false,  DarkRP.getPhrase("too_short") end
+end
 
 print("[luctus_scpnames] sv loaded")

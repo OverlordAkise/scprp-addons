@@ -1,37 +1,6 @@
 --Luctus Name Change
 --Made by OverlordAkise
 
---CONFIG:
-
---Which names should have only one name field
-local oneNameJobs = {
-    ["Serpents Hand Commander"] = true,
-    ["Serpents Hand Medic"] = true,
-    ["Serpents Hand Assault"] = true,
-    ["Serpents Hand Heavy"] = true,
-    ["Chaos Insurgency"] = true,
-    ["Chaos Insurgency Commander"] = true,
-    ["Chaos Insurgency Medic"] = true,
-    ["Chaos Insurgency Hund"] = true,
-    ["SCP 999"] = true,
-    ["SCP 173"] = true,
-    ["SCP 131"] = true,
-    ["SCP 008-1"] = true,
-    ["SCP 106"] = true,
-    ["SCP 682"] = true,
-    ["SCP 035"] = true,
-    ["SCP 527"] = true,
-    ["SCP 9527"] = true,
-    ["MTF E6"] = true,
-    ["MTF Gamma12"] = true,
-    ["MTF Nu7"] = true,
-    ["MTF E9"] = true,
-    ["MTF Epsilon 11"] = true,
-    ["Alpha 1"] = true,
-}
-
---CONFIG END
-
 net.Receive("luctus_scpnames",function()
     if IsValid(NameFrame) then 
         NameFrame:Close()
@@ -59,7 +28,7 @@ net.Receive("luctus_scpnames",function()
     fname:SetPlaceholderText( "Nickname" )
   
     local lname = nil
-    if not oneNameJobs[LocalPlayer():getJobTable().name] then
+    if not LUCTUS_SCPNAMES_ONLYFIRSTNAME[LocalPlayer():getJobTable().name] then
         lname = vgui.Create( "DTextEntry", NameFrame )
         lname:SetPos( parent_x/2 - 80, parent_y/2 - 20 ) 
         lname:SetSize( 160 , 30 )
@@ -74,7 +43,7 @@ net.Receive("luctus_scpnames",function()
     BuyButton.DoClick = function() 
         net.Start("luctus_scpnames")
         net.WriteString(fname:GetValue())
-        if oneNameJobs[LocalPlayer():getJobTable().name] then
+        if LUCTUS_SCPNAMES_ONLYFIRSTNAME[LocalPlayer():getJobTable().name] then
             net.WriteString("")
         else
             net.WriteString(lname:GetValue())
