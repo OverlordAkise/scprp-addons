@@ -21,9 +21,11 @@ AMNESTIKA_LEVELS = {
 
 function LoadAmnestikas()
     for k,v in pairs(AMNESTIKA_LEVELS) do
-        local SWEP = weapons.Get("weapon_amnestika")
+        local _SWEP = weapons.Get("weapon_amnestika")
+        SWEP = table.Copy(_SWEP)
         SWEP.Spawnable = true
         SWEP.myclass = "weapon_amnestika_"..string.lower(k)
+        SWEP.ClassName = "weapon_amnestika_"..string.lower(k)
         SWEP.mytype = k
         SWEP.PrintName = "Amnestika "..k
         weapons.Register(SWEP,"weapon_amnestika_"..string.lower(k))
