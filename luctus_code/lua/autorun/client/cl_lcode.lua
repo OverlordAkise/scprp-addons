@@ -4,7 +4,7 @@
 LUCTUS_CODE_CURRENT_COLOR = Color(0,255,0)
 LUCTUS_CODE_CURRENT = "green"
 
-surface.CreateFont( "luctus_scp_code_hud_font", {
+surface.CreateFont("luctus_scp_code_hud_font",{
     font = "Arial",
     extended = false,
     size = 30,
@@ -26,12 +26,35 @@ hook.Add("LuctusLogAddCategory","luctus_scpcodesys",function()
     table.insert(lucid_log_quickfilters,"CodeSystem")
 end)
 
+
+local function DrawBox(x, y, w, h, edgeSize)
+    draw.RoundedBox(0, x, y, w, h, borderCol)
+    draw.RoundedBox(0, x+1, y+1, w-2, h-2, frameCol)
+end
+
+local font = "luctus_scp_code_hud_font"
+local borderCol = Color(0, 195, 165)
+local frameCol = Color(26,26,26)
+
+if EdgeHUD then
+    print("[luctus_activity] edgehud found, loading design")
+    font = "EdgeHUD:OutdatedWindow:Title"
+    DrawBox = function(x,y,width,height,edgeSize,col)
+        surface.SetDrawColor(EdgeHUD.Colors["Black_Transparent"])
+        surface.DrawRect(x, y, width, height)
+        surface.SetDrawColor(EdgeHUD.Colors["White_Outline"])
+        surface.DrawOutlinedRect(x, y, width, height)
+        surface.SetDrawColor(EdgeHUD.Colors["White_Corners"])
+        EdgeHUD.DrawEdges(x,y,width,height,10)
+    end
+end
+
+
 hook.Add("HUDPaint","luctus_scp_code",function()
     surface.SetFont("luctus_scp_code_hud_font")
     local wx, wy = surface.GetTextSize("Code: "..LUCTUS_CODE_CURRENT)
-    draw.RoundedBox(10, ScrW()-wx-10, 125, wx+10, 40, Color(0, 195, 165))
-    draw.RoundedBox(10, ScrW()-wx-10+1, 125+1, wx+10-2, 40-2, Color(26,26,26))
-    draw.DrawText("Code: "..LUCTUS_CODE_CURRENT, "luctus_scp_code_hud_font", ScrW() - 5, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_RIGHT)
+    DrawBox(ScrW()-wx-20, 125, wx+20, 40)
+    draw.DrawText("Code: "..LUCTUS_CODE_CURRENT, font, ScrW() - 10, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_RIGHT)
 end)
 
 hook.Add("InitPostEntity", "luctus_scp_code", function()
