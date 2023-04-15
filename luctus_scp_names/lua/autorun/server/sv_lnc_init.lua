@@ -45,12 +45,7 @@ net.Receive("luctus_scpnames", function(len,ply)
     if ply.scpnamecd > CurTime() then return end
     ply.scpnamecd = CurTime()+1
     
-    local fname = net.ReadString()
-    local lname = net.ReadString()
-    local newName = fname
-    if lname ~= "" then
-        newName = fname.." "..lname
-    end
+    local newName = net.ReadString()
     if newName == "" then
         DarkRP.notify(ply,1,5,"Error: Name can not be empty")
         return
