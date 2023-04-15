@@ -40,6 +40,7 @@ if EdgeHUD then
     print("[luctus_activity] edgehud found, loading design")
     font = "EdgeHUD:OutdatedWindow:Title"
     DrawBox = function(x,y,width,height,edgeSize,col)
+        if not EdgeHUD.Colors or not EdgeHUD.Colors["White_Corners"] then return end
         surface.SetDrawColor(EdgeHUD.Colors["Black_Transparent"])
         surface.DrawRect(x, y, width, height)
         surface.SetDrawColor(EdgeHUD.Colors["White_Outline"])
