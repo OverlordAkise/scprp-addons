@@ -82,7 +82,35 @@ function SWEP:PrimaryAttack()
     end
 end
 
-function SWEP:SecondaryAttack() end
+function SWEP:SecondaryAttack()
+    if not IsFirstTimePredicted() then return end
+    self:SetNextSecondaryFire(CurTime() + 1)
+    if CLIENT then return end
+    local ply = self:GetOwner()
+    if not IsValid(ply) then return end
+    local trace = ply:GetEyeTrace()
+    local ent = trace.Entity
+    if not IsValid(ent) then return end
+    if not ent:isDoor() then return end
+    if ply:EyePos():Distance(trace.HitPos) > 512 then return end
+    if hook.Call("canDoorRam", nil, ply, trace, ent) ~= nil then return end
+    
+    if SCP966_UNBREACHABLE[ent:GetName()] or SCP966_UNBREACHABLE[ent:MapCreationID()] then
+        DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
+        return false
+    end
+    
+    --SCP doors:
+    if ent:GetClass() == "prop_dynamic" and ent:GetParent() and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "func_door" then
+        ent = ent:GetParent()
+    end
+    ent:keysUnLock()
+    ent:Fire("open", "", .6)
+    ent:Fire("setanimation", "open", .6)
+    
+    hook.Run("onDoorRamUsed", true, ply, trace)
+    ply:EmitSound("ambient/materials/metal_stress"..math.random(1,5)..".wav")
+end
 
 if CLIENT then return end
 function SWEP:Think()
