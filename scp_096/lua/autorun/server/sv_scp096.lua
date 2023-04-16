@@ -19,12 +19,12 @@ scp096_hunted_players = {}
 scp096_hunting = false
 
 hook.Add("OnPlayerChangedTeam","luctus_scp096", function(ply, beforeNum, afterNum)
-    if RPExtraTeams[afterNum] and RPExtraTeams[afterNum].name == "SCP 096" then
+    if string.EndsWith(RPExtraTeams[afterNum].name,"096") then
         scp096_ply = ply
     end
-    if RPExtraTeams[beforeNum] and RPExtraTeams[beforeNum].name == "SCP 096" then
-        scp096_ply:StopSound( "096/scream.wav" )
-        scp096_ply:StopSound( "096/crying1.wav" )
+    if string.EndsWith(RPExtraTeams[beforeNum].name,"096") then
+        scp096_ply:StopSound("096/scream.wav")
+        scp096_ply:StopSound("096/crying1.wav")
         scp096_ply = nil
         scp096_hunted_players = {}
     end
@@ -39,8 +39,8 @@ end)
 function Luctus096HandlePlayerDeath(ply)
     luctus_update_hunted(ply,false)
     if ply == scp096_ply then
-        scp096_ply:StopSound( "096/scream.wav" )
-        scp096_ply:StopSound( "096/crying1.wav" )
+        scp096_ply:StopSound("096/scream.wav")
+        scp096_ply:StopSound("096/crying1.wav")
         scp096_hunted_players = {}
         net.Start("luctus_scp096_update")
             net.WriteTable({})

@@ -12,7 +12,7 @@ net.Receive("luctus_scp096_update",function()
 end)
 
 hook.Add("OnPlayerChangedTeam", "luctus_scp096_hunters_update", function(ply, before, after)
-    if RPExtraTeams[before] and RPExtraTeams[before].name == "SCP 096" then
+    if string.EndsWith(RPExtraTeams[before].name,"096") then
         scp096_hunted_players = {}
     end
 end)
