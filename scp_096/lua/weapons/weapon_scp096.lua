@@ -52,6 +52,13 @@ function SWEP:UpdateNextIdle()
 end
 
 function SWEP:PrimaryAttack( right )
+    --Door Logic
+    local tr = self:GetOwner():GetEyeTrace()
+    if SERVER and IsValid(tr.Entity) and tr.Entity:isDoor() then
+        self:OpenDoor()
+        self:SetNextPrimaryFire(CurTime()+0.2)
+        return
+    end
     if #scp096_hunted_players == 0 then return end
     self.Owner:SetAnimation( PLAYER_ATTACK1 )
     local right = true
@@ -73,14 +80,16 @@ function SWEP:PrimaryAttack( right )
     self:SetNextSecondaryFire( CurTime() + 0.2 ) --0.9
 end
 
+
+
 function SWEP:SecondaryAttack()
     if SERVER then
-        self.Owner:StopSound( "096/scream.wav" )
-        self.Owner:StopSound( "096/crying1.wav" )
+        self.Owner:StopSound("096/scream.wav")
+        self.Owner:StopSound("096/crying1.wav")
         if scp096_hunting then
-            self.Owner:EmitSound( "096/scream.wav" )
+            self.Owner:EmitSound("096/scream.wav")
         else
-            self.Owner:EmitSound( "096/crying1.wav" )
+            self.Owner:EmitSound("096/crying1.wav")
         end
     end
     self:SetNextSecondaryFire( CurTime() + 2)
@@ -88,24 +97,39 @@ end
 
 function SWEP:Reload()
     if SERVER then
-        self.Owner:StopSound( "096/scream.wav" )
-        self.Owner:StopSound( "096/crying1.wav" )
+        self.Owner:StopSound("096/scream.wav")
+        self.Owner:StopSound("096/crying1.wav")
     end
 end
 
-local function ramDoor(ply, trace, ent)
-    if ply:EyePos():DistToSqr(trace.HitPos) > 10000 then return false end
-    if CLIENT then return true end
-    if ent:GetClass() == "prop_dynamic" then
-        if ent:GetParent() and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "func_door" then
-            ent = ent:GetParent()
-        end
+function SWEP:OpenDoor(ply,tr,ent)
+    local ply = self:GetOwner()
+    if not IsValid(ply) then return end
+    local trace = ply:GetEyeTrace()
+    local ent = trace.Entity
+    if not IsValid(ent) then return end
+    if not ent:isDoor() then return end
+    if ply:EyePos():Distance(trace.HitPos) > 512 then return end
+    if hook.Call("canDoorRam", nil, ply, trace, ent) ~= nil then return end
+    
+    if SCP096_UNBREACHABLE[trace.Entity:GetName()] or SCP096_UNBREACHABLE[trace.Entity:MapCreationID()] then
+        DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
+        return false
+    end
+    
+    --SCP doors:
+    if ent:GetClass() == "prop_dynamic" and ent:GetParent() and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "func_door" then
+        ent = ent:GetParent()
     end
     ent:keysUnLock()
     ent:Fire("open", "", .6)
     ent:Fire("setanimation", "open", .6)
-    return true
+    
+    hook.Run("onDoorRamUsed", true, ply, trace)
+    --ply:EmitSound(self.Sound)
+    ply:EmitSound("ambient/materials/metal_stress"..math.random(1,5)..".wav")
 end
+
 
 local phys_pushscale = GetConVar( "phys_pushscale" )
 function SWEP:DealDamage()
@@ -137,10 +161,6 @@ function SWEP:DealDamage()
 
     local hit = false
     local scale = phys_pushscale:GetFloat()
-    
-    if SERVER and IsValid(tr.Entity) and tr.Entity:isDoor() then
-        ramDoor(self.Owner,tr,tr.Entity)
-    end
 
     if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0 ) ) then
         local dmginfo = DamageInfo()
