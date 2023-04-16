@@ -105,18 +105,20 @@ function SWEP:PrimaryAttack()
     local owner = self:GetOwner()
     local tr = owner:GetEyeTrace()
     local hitEnt = tr.Entity
+    if not IsValid(hitEnt) then return end
+    if owner:GetPos():Distance(hitEnt:GetPos()) > 256 then return end
     -- effect
-    if IsValid(hitEnt) and hitEnt:IsPlayer() then
+    if hitEnt:IsPlayer() then
         local edata = EffectData()
         edata:SetStart(owner:GetShootPos())
         edata:SetOrigin(tr.HitPos)
         edata:SetNormal(tr.Normal)
         edata:SetEntity(hitEnt)
         util.Effect("BloodImpact", edata)
-    end
-    if SERVER and IsValid(hitEnt) and hitEnt:IsPlayer() then
-        hitEnt:TakeDamage(99997, owner, self)
+        if SERVER then
+            hitEnt:TakeDamage(99997, owner, self)
         owner:EmitSound(self.KillSound)
+        end
     end
     self:SetNextPrimaryFire(CurTime() + 0.2)
 end
