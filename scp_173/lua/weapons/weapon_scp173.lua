@@ -1,9 +1,6 @@
 --Luctus SCP173 System
 --Made by OverlordAkise
 
---PrimaryAttack is made by the TTT developers of the knife
---SecondaryAttack is made by the DarkRP developer (FPTje)
-
 AddCSLuaFile()
 
 if CLIENT then
@@ -117,7 +114,7 @@ function SWEP:PrimaryAttack()
         util.Effect("BloodImpact", edata)
         if SERVER then
             hitEnt:TakeDamage(99997, owner, self)
-        owner:EmitSound(self.KillSound)
+            owner:EmitSound(self.KillSound)
         end
     end
     self:SetNextPrimaryFire(CurTime() + 0.2)
