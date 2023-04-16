@@ -10,7 +10,6 @@ SCP049_SAVE_PMODELS = {
 }
 
 --Which doors SCP049 shouldnt be able to open
---Hint: 049 takes 3s to open a door
 SCP049_UNBREACHABLE = {
     ["049_door_new"] = true,
     ["049_containment_door_r"] = true,

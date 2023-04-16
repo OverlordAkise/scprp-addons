@@ -218,8 +218,9 @@ function SWEP:PrimaryAttack()
         end
         
         print("[DEBUG]",ply.scp049_col_one,ply.scp049_col_two,scp049_mixtable[ply.scp049_col_one][ply.scp049_col_two])
-        local mixedFunc = scp049_effect_functions[scp049_mixtable[ply.scp049_col_one][ply.scp049_col_two]]
-        ply:PrintMessage(HUD_PRINTTALK, "Your mixture was '"..scp049_mixtable[ply.scp049_col_one][ply.scp049_col_two].."'")
-        LuctusSCP049SpawnZombie(mixedFunc,deadPlayer)
+        local mixName = scp049_mixtable[ply.scp049_col_one][ply.scp049_col_two]
+        local mixedFunc = scp049_effect_functions[mixName]
+        ply:PrintMessage(HUD_PRINTTALK, "Your mixture was '"..mixName.."'")
+        LuctusSCP049SpawnZombie(mixedFunc,deadPlayer,mixName)
     end
 end
