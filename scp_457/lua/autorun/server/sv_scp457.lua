@@ -29,7 +29,6 @@ hook.Add("OnPlayerChangedTeam", "luctus_scp457", function(ply, beforeNum, afterN
 end)
 
 function LuctusSCP457Burn()
-    print("[DEBUG]","Running 457 timer",scp457_ply,IsValid(scp457_ply),CurTime(),scp457_ply.lNoBurn,(CurTime() < scp457_ply.lNoBurn))
     if not scp457_ply or not IsValid(scp457_ply) then return end
     if CurTime() < scp457_ply.lNoBurn then return end
     scp457_ply:Ignite(1,LUCTUS_SCP457_IGNITE_RADIUS)
