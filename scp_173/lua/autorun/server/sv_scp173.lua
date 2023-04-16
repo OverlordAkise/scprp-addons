@@ -9,31 +9,19 @@ scp173_canmove = scp173_canmove or false
   
 hook.Add("OnPlayerChangedTeam", "luctus_get_scp173", function(ply, beforeNum, afterNum)
     --switch to scp173
-    if RPExtraTeams[afterNum].name == "SCP 173" then
+    
+    if string.EndsWith(RPExtraTeams[afterNum].name,"173") then
         scp173_ply = ply
         timer.Remove(ply:SteamID().."_blink")
         ply.luctus_blinking = false
         ply.luctus_near_scp173 = false
     end
     --switch from scp173
-    if RPExtraTeams[beforeNum].name == "SCP 173" then
+    if string.EndsWith(RPExtraTeams[beforeNum].name,"173") then
         scp173_ply = false
         ply:Freeze(false)
         luctus_createBlinkTimer(ply)
     end
-    
-    --[[
-    --switch to scp131 (eyes that don't blink)
-    if RPExtraTeams[afterNum].name == "SCP 131-A" or RPExtraTeams[afterNum].name == "SCP 131-B" then
-        timer.Remove(ply:SteamID().."_blink")
-        ply.luctus_blinking = false
-        ply.luctus_near_scp173 = false
-    end
-    --switch from scp131
-    if RPExtraTeams[beforeNum].name == "SCP 131-A" or RPExtraTeams[beforeNum].name == "SCP 131-B" then
-        luctus_createBlinkTimer(ply)
-    end
-    --]]
 end)
 
 hook.Add("InitPostEntity", "luctus_scp173", function()

@@ -36,8 +36,10 @@ SWEP.Spawnable = true
 SWEP.AdminOnly = false
 SWEP.Category = "SCP"
 
-SWEP.Sound = "physics/wood/wood_box_impact_hard3.wav"
-SWEP.KillSound = "player/pl_fallpain1.wav"
+--currently random metal stress
+SWEP.Sound = "physics/wood/wood_box_impact_hard3.wav" 
+
+SWEP.KillSound = "npc/barnacle/neck_snap2.wav"
 
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = 0
@@ -67,111 +69,54 @@ function SWEP:PreDrawViewModel()
     return true
 end
 
--- Ram action when ramming a door
-local function ramDoor(ply, trace, ent)
-    if ply:EyePos():DistToSqr(trace.HitPos) > 10000 then return false end
-    if CLIENT then return true end
-    if ent:GetClass() == "prop_dynamic" then
-        if ent:GetParent() and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "func_door" then
-            ent = ent:GetParent()
-        end
+function SWEP:SecondaryAttack()
+    if not IsFirstTimePredicted() then return end
+    self:SetNextSecondaryFire(CurTime() + 1)
+    if CLIENT then return end
+    local ply = self:GetOwner()
+    if not IsValid(ply) then return end
+    local trace = ply:GetEyeTrace()
+    local ent = trace.Entity
+    if not IsValid(ent) then return end
+    if not ent:isDoor() then return end
+    if ply:EyePos():Distance(trace.HitPos) > 512 then return end
+    if hook.Call("canDoorRam", nil, ply, trace, ent) ~= nil then return end
+    
+    if SCP173_UNBREACHABLE[trace.Entity:GetName()] or SCP173_UNBREACHABLE[trace.Entity:MapCreationID()] then
+        DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
+        return false
+    end
+    
+    --SCP doors:
+    if ent:GetClass() == "prop_dynamic" and ent:GetParent() and IsValid(ent:GetParent()) and ent:GetParent():GetClass() == "func_door" then
+        ent = ent:GetParent()
     end
     ent:keysUnLock()
     ent:Fire("open", "", .6)
     ent:Fire("setanimation", "open", .6)
-    return true
-end
-
--- Decides the behaviour of the ram function for the given entity
-local function getRamFunction(ply, trace)
-    local ent = trace.Entity
-    if not IsValid(ent) then return false end
-    if SERVER then
-        if trace.Entity:GetName() == "173_containment_door_l" or trace.Entity:GetName() == "173_containment_door_r" then
-            DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
-            return false
-        end
-    end
-    local override = hook.Call("canDoorRam", nil, ply, trace, ent)
-    if override ~= nil then
-        return override
-    end
-    if ent:isDoor() then    
-        return ramDoor(ply, trace, ent)
-    end
-    return false
-end
-
-function SWEP:SecondaryAttack()
-    if not IsFirstTimePredicted() then return end
-    local Owner = self:GetOwner()
-    if not IsValid(Owner) then return end
     
-    self:SetNextSecondaryFire(CurTime() + 1)
-    local trace = Owner:GetEyeTrace()
-    local hasRammed = getRamFunction(Owner, trace)
-    if SERVER then
-        hook.Call("onDoorRamUsed", GAMEMODE, hasRammed, Owner, trace)
-    end
-
-    if not hasRammed then return end
-    Owner:SetAnimation(PLAYER_ATTACK1)
-    Owner:EmitSound(self.Sound)
+    hook.Run("onDoorRamUsed", true, ply, trace)
+    --ply:EmitSound(self.Sound)
+    ply:EmitSound("ambient/materials/metal_stress"..math.random(1,5)..".wav")
 end
 
 function SWEP:PrimaryAttack()
     if not IsValid(self:GetOwner()) then return end
-
-    self:GetOwner():LagCompensation(true)
-
-    local spos = self:GetOwner():GetShootPos()
-    local sdest = spos + (self:GetOwner():GetAimVector() * 70)
-
-    local kmins = Vector(1,1,1) * -10
-    local kmaxs = Vector(1,1,1) * 10
-
-    local tr = util.TraceHull({start=spos, endpos=sdest, filter=self:GetOwner(), mask=MASK_SHOT_HULL, mins=kmins, maxs=kmaxs})
-
-    -- Hull might hit environment stuff that line does not hit
-    if not IsValid(tr.Entity) then
-        tr = util.TraceLine({start=spos, endpos=sdest, filter=self:GetOwner(), mask=MASK_SHOT_HULL})
-    end
-
+    local owner = self:GetOwner()
+    local tr = owner:GetEyeTrace()
     local hitEnt = tr.Entity
-
-    -- effects
-    if IsValid(hitEnt) then
-        self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
-
+    -- effect
+    if IsValid(hitEnt) and hitEnt:IsPlayer() then
         local edata = EffectData()
-        edata:SetStart(spos)
+        edata:SetStart(owner:GetShootPos())
         edata:SetOrigin(tr.HitPos)
         edata:SetNormal(tr.Normal)
         edata:SetEntity(hitEnt)
-
-        if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
-            util.Effect("BloodImpact", edata)
-        end
-    else
-        self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
+        util.Effect("BloodImpact", edata)
     end
-
-    if SERVER then
-        self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
+    if SERVER and IsValid(hitEnt) and hitEnt:IsPlayer() then
+        hitEnt:TakeDamage(99997, owner, self)
+        owner:EmitSound(self.KillSound)
     end
-
-
-    if SERVER and tr.Hit and tr.HitNonWorld and IsValid(hitEnt) and hitEnt:IsPlayer() then
-        local dmg = DamageInfo()
-        dmg:SetDamage(5000)
-        dmg:SetAttacker(self:GetOwner())
-        dmg:SetInflictor(self.Weapon or self)
-        dmg:SetDamageForce(self:GetOwner():GetAimVector() * 5)
-        dmg:SetDamagePosition(self:GetOwner():GetPos())
-        dmg:SetDamageType(DMG_SLASH)
-
-        hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
-        self:GetOwner():EmitSound(self.KillSound)
-    end
-    self:GetOwner():LagCompensation(false)
+    self:SetNextPrimaryFire(CurTime() + 0.2)
 end
