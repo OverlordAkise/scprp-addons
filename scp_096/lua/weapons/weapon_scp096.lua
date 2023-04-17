@@ -245,7 +245,7 @@ function SWEP:Think()
   for k,v in pairs(entities_in_view) do
     if not v:IsPlayer() then continue end
     local alive = v:Alive()
-    if gdsys then
+    if MedConfig then
       alive = not v._IsDead
     end
     if alive then

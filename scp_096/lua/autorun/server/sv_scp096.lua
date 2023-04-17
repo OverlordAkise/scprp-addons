@@ -54,7 +54,7 @@ end
 
 hook.Add("PostPlayerDeath", "luctus_scp096_plynil", Luctus096HandlePlayerDeath)
 --gdeathsystem:
-hook.Add("MedicSys_PlayerDeath", "luctus_scp096_plynil_gd", Luctus096HandlePlayerDeath)
+hook.Add("PlayerDeath.g", "luctus_scp096_plynil_gd", Luctus096HandlePlayerDeath)
 
 
 
@@ -135,7 +135,20 @@ end
 
 hook.Add("PostPlayerDeath", "luctus_scp096_rec", LuctusRecontain096Remove)
 --gdeathsystem:
-hook.Add("MedicSys_PlayerDeath", "luctus_scp096_rec_gd", LuctusRecontain096Remove)
+hook.Add("PlayerDeath.g", "luctus_scp096_rec_gd", LuctusRecontain096Remove)
 
+
+
+if LUCTUS_SCP096_GDEATHSYSTEM then
+    local meta = FindMetaTable("Player")
+    meta.oldTurnIntoRagdoll = meta.TurnIntoRagdoll
+    function meta:TurnIntoRagdoll(knof, vel, dmg, time)
+        if (MedConfig.EnableRagdoll and !self:IsKnocked()) then
+            hook.Run("PlayerDeath.g",self)
+        end
+        self:oldTurnIntoRagdoll(knof,vel,dmg,time)
+    end
+    print("[SCP096] Added hook to gDeathSystem")
+end
 
 print("[SCP096] SV Loaded!")
