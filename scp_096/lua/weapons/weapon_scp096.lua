@@ -109,7 +109,7 @@ function SWEP:OpenDoor(ply,tr,ent)
     local ent = trace.Entity
     if not IsValid(ent) then return end
     if not ent:isDoor() then return end
-    if ply:EyePos():Distance(trace.HitPos) > 512 then return end
+    if ply:EyePos():Distance(trace.HitPos) > 128 then return end
     if hook.Call("canDoorRam", nil, ply, trace, ent) ~= nil then return end
     
     if SCP096_UNBREACHABLE[trace.Entity:GetName()] or SCP096_UNBREACHABLE[trace.Entity:MapCreationID()] then

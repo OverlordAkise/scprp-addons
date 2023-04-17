@@ -189,7 +189,7 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime()+0.2)
     local ply = self:GetOwner()
     local trace = ply:GetEyeTrace()
-    if ply:EyePos():Distance(trace.HitPos) > 512 then return end
+    if ply:EyePos():Distance(trace.HitPos) > 128 then return end
     local ent = trace.Entity
     if not IsValid(ent) then return end
     
