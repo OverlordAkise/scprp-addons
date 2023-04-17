@@ -33,6 +33,7 @@ SWEP.SlotPos = 0
 SWEP.Spawnable = true
 SWEP.AdminSpawnable = false
 
+LuctusLog = LuctusLog or function()end
 
 function SWEP:Initialize()
     self:SetHoldType("normal")
@@ -69,16 +70,18 @@ function SWEP:PrimaryAttack()
         owner:SetHealth(math.min(owner:GetMaxHealth(),owner:Health()+LUCTUS_SCP966_HPGAINED))
         self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
         trace.Entity:TakeDamage(99998, self.Owner, self)
+        LuctusLog("scp",owner:Nick().."("..owner:SteamID()..") as SCP966 ate "..ply:Nick().."("..ply:SteamID()..")")
     end
     if SERVER and trace.Hit and trace.Entity and IsValid(trace.Entity) and trace.Entity:IsPlayer() then
         local ply = trace.Entity
         if ply:GetWalkSpeed() > LUCTUS_SCP966_WALKSPEEDNEEDED then return end
         if LUCTUS_SCP966_GDEATHSYSTEM then
-            ply:TakeDamage(99999, self.Owner, self)
+            ply:TakeDamage(99999, owner, self)
         else
             DarkRP.toggleSleep(ply, "force")
         end
         self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+        LuctusLog("scp",owner:Nick().."("..owner:SteamID()..") as SCP966 sleep'd "..ply:Nick().."("..ply:SteamID()..")")
     end
 end
 
