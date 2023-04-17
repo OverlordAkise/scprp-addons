@@ -92,8 +92,4 @@ hook.Add( "PostPlayerDraw" , "luctus_scp096_bag" , function( ply )
     end    
 end)
 
-hook.Add("LuctusLogAddCategory","luctus_scp096",function()
-    table.insert(lucid_log_quickfilters,"SCP096")
-end)
-
 print("[SCP096] CL loaded!")
