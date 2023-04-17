@@ -3,6 +3,7 @@
 
 util.AddNetworkString("luctus_scp049_mixing")
 resource.AddWorkshop("183901628") -- SCP049 Playermodel
+LuctusLog = LuctusLog or function()end
 
 scp049_effects = {
     ["Nothing"] = 60,
@@ -37,7 +38,9 @@ scp049_effect_functions = {
     end,
 }
 
-function LuctusSCP049SpawnZombie(mixedFunc,ply,funcName)
+function LuctusSCP049SpawnZombie(mixedFunc,ply,funcName,scpPly)
+    if not ply or not IsValid(ply) then return end
+    LuctusLog("scp",scpPly:Nick().."("..scpPly:SteamID()..") SCP049-revived "..ply:Nick().."("..ply:SteamID()..")".." with mixture "..funcName)
     local spawnPos = ply:GetPos()
     ply:Spawn()
     timer.Simple(0.1,function()--needed for spawnPos
