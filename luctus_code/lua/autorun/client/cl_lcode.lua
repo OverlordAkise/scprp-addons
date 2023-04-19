@@ -27,14 +27,16 @@ hook.Add("LuctusLogAddCategory","luctus_scpcodesys",function()
 end)
 
 
-local function DrawBox(x, y, w, h, edgeSize)
-    draw.RoundedBox(0, x, y, w, h, borderCol)
-    draw.RoundedBox(0, x+1, y+1, w-2, h-2, frameCol)
-end
+
 
 local font = "luctus_scp_code_hud_font"
 local borderCol = Color(0, 195, 165)
 local frameCol = Color(26,26,26)
+
+local function DrawBox(x, y, w, h, edgeSize)
+    draw.RoundedBox(0, x, y, w, h, borderCol)
+    draw.RoundedBox(0, x+1, y+1, w-2, h-2, frameCol)
+end
 
 if EdgeHUD then
     print("[luctus_activity] edgehud found, loading design")

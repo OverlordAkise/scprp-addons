@@ -19,6 +19,7 @@ hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team)
             DarkRP.notify(ply,1,5,"Dieser Code existiert nicht!")
             return
         end
+        local oldCode = LUCTUS_SCP_CODE_CURRENT
         LUCTUS_SCP_CODE_CURRENT = code
         net.Start("luctus_scp_code")
             net.WriteString(code)
@@ -26,6 +27,12 @@ hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team)
         PrintMessage(HUD_PRINTCENTER, "Code "..code)
         DarkRP.notify(player.GetAll(),1,5,"Code "..code.." wurde ausgerufen!")
         LuctusLog("CodeSystem",ply:Nick().."("..ply:SteamID()..") changed the code to "..LUCTUS_SCP_CODE_CURRENT..".")
+        if oldCode == LUCTUS_SCP_CODE_LOCKDOWN then
+            DarkRP.unLockdown(Entity(0))
+        end
+        if code == LUCTUS_SCP_CODE_LOCKDOWN then
+            DarkRP.lockdown(Entity(0))
+        end
         return ""
     end
     --[[

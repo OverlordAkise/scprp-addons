@@ -39,4 +39,8 @@ LUCTUS_SCP_CODE_ALLOWEDRANKS = {
 --The code after a server restart, has to exist in the config above!
 LUCTUS_SCP_CODE_DEFAULT = "green"
 
+--Which code should also start a DarkRP lockdown? (Set to non existing code to disable)
+--If you use this please set the DarkRP "GAMEMODE.Config.lockdowndelay" very low or else the lockdown wont start everytime
+LUCTUS_SCP_CODE_LOCKDOWN = "red"
+
 print("[luctus_scp_code] sh config loaded!")
