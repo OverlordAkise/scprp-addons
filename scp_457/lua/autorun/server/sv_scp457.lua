@@ -4,7 +4,7 @@
 resource.AddWorkshop("104607228") -- Extinguisher
 hook.Add( "ExtinguisherDoExtinguish", "luctus_scp457_recontainment", function(ent)
     if ent:IsPlayer() and ent:Alive() and scp457_ply and IsValid(scp457_ply) and ent == scp457_ply then
-        ent.lNoBurn = CurTime() + LUCTUS_SCP049_EXTINGUISH_DURATION
+        ent.lNoBurn = CurTime() + LUCTUS_SCP457_EXTINGUISH_DURATION
     end
     return true
 end)
@@ -32,9 +32,9 @@ function LuctusSCP457Burn()
     if not scp457_ply or not IsValid(scp457_ply) then return end
     if CurTime() < scp457_ply.lNoBurn then return end
     scp457_ply:Ignite(1,LUCTUS_SCP457_IGNITE_RADIUS)
-    for k,v in pairs(ents.FindInSphere(scp457_ply:GetPos(),LUCTUS_SCP049_IGNITE_RADIUS)) do
+    for k,v in pairs(ents.FindInSphere(scp457_ply:GetPos(),LUCTUS_SCP457_IGNITE_RADIUS)) do
         if v:IsPlayer() then
-            v:Ignite(LUCTUS_SCP049_IGNITE_DURATION,50)
+            v:Ignite(LUCTUS_SCP457_IGNITE_DURATION,50)
         end
     end
 end
