@@ -7,6 +7,18 @@
 luctus_loot_blacklist_jobs = {
     ["Citizen"] = true,
     ["Medic"] = true,
+    ["MTF X-9"] = true,
+}
+
+--Should looting only be available if there exists
+--atleast X people playing Y job
+luctus_loot_need_security = false
+--How many people you need in the jobs
+luctus_loot_need_security_amount = 1
+--What jobs count as security
+luctus_loot_need_security_jobs = {
+    ["Citizen"] = true,
+    ["Security"] = true,
 }
 
 luctus_loot_entities = {

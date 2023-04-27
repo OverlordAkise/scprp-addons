@@ -69,15 +69,33 @@ function ENT:Loot(ply)
             loot:SetPos(self:GetPos() + ( self:GetAngles():Forward() * self.lootPos.forward ) + ( self:GetAngles():Right() * self.lootPos.right ) + ( self:GetAngles():Up() * self.lootPos.up ))
             loot:SetAngles(self:GetAngles())
             loot:Spawn()
+            self:EmitSound("items/ammo_pickup.wav")
         end
     end
 
     hook.Run("luctus_lootsystem_dropped", self, ply, loot)
 end
 
+function ENT:CountSecurity()
+    local amount = 0
+    for k,v in pairs(player.GetAll()) do
+        if IsValid(v) and luctus_loot_need_security_jobs[team.GetName(v:Team())] then
+            amount = amount + 1
+        end
+    end
+    return amount
+end
+
 function ENT:Use(activator, caller, usetype)
     if not caller:IsPlayer() then return end
     if luctus_loot_blacklist_jobs[RPExtraTeams[caller:Team()].name] then return end
+    if luctus_loot_need_security then
+        local security_amount = self:CountSecurity()
+        if security_amount < luctus_loot_need_security_amount then
+            DarkRP.notify(caller,1,5,"[loot] Not enough security jobs are being played to loot!")
+            return
+        end
+    end
     if usetype == USE_ON and not self.BeingUsed and self.NextSearch < CurTime() then
         self:StartUse(caller)
     elseif usetype == USE_OFF and self.BeingUsed then
