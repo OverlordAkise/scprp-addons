@@ -44,6 +44,17 @@ net.Receive("luctus_scpnames",function()
     fname:SetSize(200,30)
     fname:SetPlaceholderText("Peter Hans Wurst")
     fname:SetDrawLanguageID(false)
+    
+    local lname = nil
+    if LUCTUS_SCPNAMES_TWOFIELDS[team.GetName(LocalPlayer():Team())] then
+        lname = vgui.Create("DTextEntry",NameFrame)
+        lname:SetPos(parent_x/2 -100, parent_y/2 +10)
+        fname:SetPos(parent_x/2 -100, parent_y/2 -20)
+        lname:SetSize(200,30)
+        fname:SetPlaceholderText("Peter")
+        lname:SetPlaceholderText("Wurst")
+        lname:SetDrawLanguageID(false)
+    end
   
     local BuyButton = vgui.Create("DButton", NameFrame)
     BuyButton:SetText("")
@@ -51,7 +62,11 @@ net.Receive("luctus_scpnames",function()
     BuyButton:SetSize(85,25)
     BuyButton.DoClick = function() 
         net.Start("luctus_scpnames")
-        net.WriteString(fname:GetValue())
+            if lname and IsValid(lname) then
+                net.WriteString(fname:GetValue().." "..lname:GetValue())
+            else
+                net.WriteString(fname:GetValue())
+            end
         net.SendToServer()
         --NameFrame:Close()
     end

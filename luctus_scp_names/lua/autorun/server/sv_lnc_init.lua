@@ -67,7 +67,11 @@ net.Receive("luctus_scpnames", function(len,ply)
 end)
 
 function CheckRPName(name)
-    if LUCTUS_SCPNAMES_NOTALLOWED[string.lower(name)] then return false, DarkRP.getPhrase("forbidden_name") end
+    for k,badname in ipairs(LUCTUS_SCPNAMES_NOTALLOWED) do
+        print("Checking",string.lower(name),"against",string.lower(badname))
+        print("Check:",string.find(string.lower(badname),string.lower(name)))
+        if string.find(string.lower(name),string.lower(badname)) then return false, DarkRP.getPhrase("forbidden_name") end
+    end
     if not string.match(name, "^[a-zA-ZЀ-џ0-9öäüÖÄÜß\"-_ ]+$") then return false, DarkRP.getPhrase("illegal_characters") end
 
     local len = string.len(name)
