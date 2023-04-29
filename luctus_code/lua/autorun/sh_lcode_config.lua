@@ -19,6 +19,14 @@ LUCTUS_SCP_CODES = {
     },
 }
 
+--You can define a button to be pressed/used if a new code is set
+--Key = codename
+--Value = MapCreationID or entity name
+LUCTUS_SCP_CODE_USES = {
+    ["red"] = {1371},
+    ["green"] = {1371},
+}
+
 --Printname of allowed jobs to change the code
 LUCTUS_SCP_CODE_ALLOWEDJOBS = {
     ["Ziffer Agent"] = true,

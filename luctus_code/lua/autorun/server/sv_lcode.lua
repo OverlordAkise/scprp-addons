@@ -33,21 +33,26 @@ hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team)
         if code == LUCTUS_SCP_CODE_LOCKDOWN then
             DarkRP.lockdown(Entity(0))
         end
+        if LUCTUS_SCP_CODE_USES[code] then
+            LuctusCodePressThings(LUCTUS_SCP_CODE_USES[code])
+        end
         return ""
     end
-    --[[
-    --This was code for a map to activate lockdown
-    if (code == "lockdown") then
-      if(ents.FindByName("lockdown_lever_roomccont")[1]:GetSaveTable(true)["m_toggle_state"] == 1) then
-        ents.FindByName("lockdown_lever_roomccont")[1]:Use(ply)
-      end
-    else
-      if(ents.FindByName("lockdown_lever_roomccont")[1]:GetSaveTable(true)["m_toggle_state"] == 0) then
-        ents.FindByName("lockdown_lever_roomccont")[1]:Use(ply)
-      end
-    end
-    --]]
 end)
+
+function LuctusCodePressThings(list)
+    for k,v in pairs(list) do
+        if type(v) == "string" then
+            if ents.FindByName(v)[1] and IsValid(ents.FindByName(v)[1]) then
+                ents.FindByName(v)[1]:Use(Entity(0)) --entity0=worldspawn
+            end
+        else
+            if IsValid(ents.GetMapCreatedEntity(v)) then
+                ents.GetMapCreatedEntity(v):Use(Entity(0))
+            end
+        end
+    end
+end
 
 net.Receive("luctus_scp_code", function(len,ply)
     net.Start("luctus_scp_code")
