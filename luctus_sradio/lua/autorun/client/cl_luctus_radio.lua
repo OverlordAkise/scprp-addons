@@ -6,7 +6,7 @@ luctusradiomenu = nil
 function LuctusRadioOpenMenu()
     if luctusradiomenu and IsValid(luctusradiomenu) then return end
     luctusradiomenu = vgui.Create("DFrame")
-    luctusradiomenu:SetTitle("Luctus' Code")
+    luctusradiomenu:SetTitle("Luctus Radio | Channel Select")
     luctusradiomenu:SetSize( 300, 300 )
     luctusradiomenu:SetPos(ScrW()/2-150, ScrH()/2-250)
     luctusradiomenu:MakePopup()
@@ -57,7 +57,5 @@ function LuctusRadioOpenMenu()
         end
     end
 end
-
-
 
 print("[luctus_sradio] cl loaded!")
