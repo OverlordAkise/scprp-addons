@@ -1,15 +1,6 @@
 --Luctus SCP HUD
 --Made by OverlordAkise
 
---CONFIG START
-
---Which jobs should not have a hunger bar in their HUD
-LUCTUS_SHUD_HUNGERFREE = {
-    ["Citizen"] = true,
-}
-
---CONFIG END
-
 surface.CreateFont( "LucidHUDFont", { font = "Consolas", size = 18, weight = 0 } )
 surface.CreateFont( "LucidAmmoFont", { font = "Consolas", size = 48, weight = 0 } )
 
@@ -82,7 +73,7 @@ local healthCol = Color(255, 0, 0)
 local hungerCol = Color(215,155,0)
 
 local blur = Material( "pp/blurscreen" )
-local function drawBlur( x, y, w, h, layers, density, alpha )
+function LuctusDrawBlur( x, y, w, h, layers, density, alpha )
     surface.SetDrawColor( 255, 255, 255, alpha )
     surface.SetMaterial( blur )
     for i = 1, layers do
@@ -100,7 +91,7 @@ function LuctusDrawEdgeBox(x, y, w, h, s, b)
     if not b then b = 2 end
     surface.SetDrawColor(backgroundColLight)
     surface.DrawRect(x,y,w,h)
-    drawBlur(x,y,w,h,10,5,255)
+    LuctusDrawBlur(x,y,w,h,10,5,255)
 	surface.SetDrawColor(color_white)
 	surface.DrawRect(x,y,s,b)
 	surface.DrawRect(x,y+b,b,s-b)
@@ -185,4 +176,4 @@ hook.Add( "HUDPaint", "luctus_hud", function()
     end
 end)
 
-print("[luctus_shud] cl loaded!")
+print("[luctus_hud] hud loaded!")
