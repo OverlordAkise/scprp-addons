@@ -81,21 +81,10 @@ function LuctusMGMTEmergency(shouldStart,ply)
     end
 end
 
-hook.Add("PostGamemodeLoaded","luctus_scp_mgmt_job_restrict",function()
-    for k,v in pairs(RPExtraTeams) do
-        if LUCTUS_SCP_MGMT_EMERGENCY_JOBS[v.name] then
-            if v.customCheck then
-                local oldFunc = v.customCheck
-                v.customCheck = function(ply)
-                    if not GetGlobal2Bool("mgmt_emergency_jobs",false) then return false end
-                    oldFunc(ply)
-                end
-            else
-                v.customCheck = function(ply)
-                    return GetGlobal2Bool("mgmt_emergency_jobs",false)
-                end
-            end
-        end
+hook.Add("playerCanChangeTeam","luctus_scp_mgmt_job_restrict",function(ply,newTeam,force)
+    if force then return true, "Job change was forced!" end
+    if LUCTUS_SCP_MGMT_EMERGENCY_JOBS[team.GetName(newTeam)] then
+        if not GetGlobal2Bool("mgmt_emergency_jobs",false) then return false, LUCTUS_SCP_MGMT_JOBERROR end
     end
 end)
 

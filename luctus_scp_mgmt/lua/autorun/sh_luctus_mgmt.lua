@@ -14,6 +14,8 @@ LUCTUS_SCP_MGMT_DEMOTE_JOB = "Gun Dealer"
 LUCTUS_SCP_MGMT_EMERGENCY_JOBS = {
     ["Medic"] = true,
 }
+--What error message should a player get if they try to join these jobs
+LUCTUS_SCP_MGMT_JOBERROR = "This job is only available in an emergency!"
 
 --Which jobs are allowed to use the MGMT menu
 LUCTUS_SCP_MGMT_ALLOWED_JOBS = {
