@@ -9,10 +9,12 @@ net.Receive("luctus_scp_mgmt",function()
 end)
 
 luctus_scpmgmt_buttons = {
-    ["Call Emergency"] = function() net.Start("luctus_scp_mgmt") net.WriteString("emergencyon") net.SendToServer() end,
-    ["Stop Emergency"] = function() net.Start("luctus_scp_mgmt") net.WriteString("emergencyoff") net.SendToServer() end,
+    ["Emergency Start"] = function() net.Start("luctus_scp_mgmt") net.WriteString("emergencyon") net.SendToServer() end,
+    ["Emergency Stop"] = function() net.Start("luctus_scp_mgmt") net.WriteString("emergencyoff") net.SendToServer() end,
     ["Change Code"] = function() LuctusOpenSCPMGMTCode() end,
     ["HR Management"] = function() LuctusOpenSCPMGMTDegrade() end,
+    ["Razzia Start"] = function() RunConsoleCommand("say","!razziastart") end,
+    ["Razzia End"] = function() RunConsoleCommand("say","!razziaend") end,
 }
 
 local function AskPlayerInput(text,func)
