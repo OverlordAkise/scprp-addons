@@ -47,12 +47,19 @@ hook.Add("PlayerInitialSpawn","luctus_intro",function(ply)
 end)
 
 net.Receive("luctus_intro_start",function(len,ply)
-    ply:StripWeapons()
-    ply:Spectate(OBS_MODE_IN_EYE)
-    ply:SpectateEntity(luctusIntroEnt)
-    net.Start("luctus_intro_start")
-        net.WriteEntity(luctusIntroEnt)
-    net.Send(ply)
+    if not ply.intro then
+        ply.intro = true
+        ply:StripWeapons()
+        ply:Spectate(OBS_MODE_IN_EYE)
+        ply:SpectateEntity(luctusIntroEnt)
+        net.Start("luctus_intro_start")
+            net.WriteEntity(luctusIntroEnt)
+        net.Send(ply)
+    elseif ply.intro == true then
+        ply.intro = "done"
+        ply:UnSpectate()
+        ply:Spawn()
+    end
 end)
 
 function luctusCreateIntroEnt()
