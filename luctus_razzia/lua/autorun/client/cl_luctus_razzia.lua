@@ -36,24 +36,6 @@ function LuctusRazziaPlaySounds(sounds)
     end
 end
 
-function LuctusRazziaCreateBox()
-    if IsValid(razziaPanel) then razziaPanel:Remove() end
-    razziaPanel = vgui.Create("DPanel")
-    razziaPanel:ParentToHUD()
-    razziaPanel:SetText("")
-    razziaPanel:SetPos(ScrW()/2-100,ScrH()/7)
-    razziaPanel:SetSize(1,50)
-    razziaPanel:SizeTo(200,50,1,0)
-    function razziaPanel:Paint(w,h)
-        if self.Blink then return end
-        LuctusDrawEdgeBox(0,0,w,h)
-        draw.SimpleText("RAZZIA", "Trebuchet24", 100, 25, darkRed, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-    end
-    timer.Create("razzia_blink_panel",0.05,8,function()
-        razziaPanel.Blink = not razziaPanel.Blink
-    end)
-end
-
 --Blur doesnt work inside panels docked to HUD?
 local function LuctusDrawEdgeBox(x, y, w, h, s, b)
     if not s then s = 10 end
@@ -71,6 +53,24 @@ local function LuctusDrawEdgeBox(x, y, w, h, s, b)
 	surface.DrawRect(xr-b,yb-s,b,s-b)
 	surface.DrawRect(x,yb-b,s,b)
 	surface.DrawRect(x,yb-s,b,s-b)
+end
+
+function LuctusRazziaCreateBox()
+    if IsValid(razziaPanel) then razziaPanel:Remove() end
+    razziaPanel = vgui.Create("DPanel")
+    razziaPanel:ParentToHUD()
+    razziaPanel:SetText("")
+    razziaPanel:SetPos(ScrW()/2-100,ScrH()/7)
+    razziaPanel:SetSize(1,50)
+    razziaPanel:SizeTo(200,50,1,0)
+    function razziaPanel:Paint(w,h)
+        if self.Blink then return end
+        lLuctusDrawEdgeBox(0,0,w,h)
+        draw.SimpleText("RAZZIA", "Trebuchet24", 100, 25, darkRed, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    end
+    timer.Create("razzia_blink_panel",0.05,8,function()
+        razziaPanel.Blink = not razziaPanel.Blink
+    end)
 end
 
 print("[luctus_razzia] cl loaded!")
