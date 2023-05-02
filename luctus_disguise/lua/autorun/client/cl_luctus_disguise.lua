@@ -1,4 +1,4 @@
---Luctus Weaponcabinet
+--Luctus Disguise
 --Made by OverlordAkise
 
 local accent_col = Color(0, 195, 165)
