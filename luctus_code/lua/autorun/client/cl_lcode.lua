@@ -5,19 +5,19 @@ LUCTUS_CODE_CURRENT_COLOR = Color(0,255,0)
 LUCTUS_CODE_CURRENT = "green"
 
 surface.CreateFont("luctus_scp_code_hud_font",{
-    font = "Arial",
+    font = "Verdana",
     extended = false,
     size = 30,
     weight = 500,
     blursize = 0,
     scanlines = 0,
-    antialias = false,
+    antialias = true,
     underline = false,
     italic = false,
     strikeout = false,
     symbol = false,
     rotary = false,
-    shadow = true,
+    shadow = false,
     additive = false,
     outline = false,
 })
@@ -55,9 +55,10 @@ end
 
 hook.Add("HUDPaint","luctus_scp_code",function()
     surface.SetFont("luctus_scp_code_hud_font")
-    local wx, wy = surface.GetTextSize("Code: "..LUCTUS_CODE_CURRENT)
+    --local wx, wy = surface.GetTextSize("Code: "..LUCTUS_CODE_CURRENT)
+    local wx = 160 --box size, now fixed size because of requests
     DrawBox(ScrW()-wx-20, 125, wx+20, 40)
-    draw.DrawText("Code: "..LUCTUS_CODE_CURRENT, font, ScrW() - 10, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_RIGHT)
+    draw.DrawText("Code: "..LUCTUS_CODE_CURRENT, font, ScrW()-wx-20+(wx/2)+10, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_CENTER)
 end)
 
 hook.Add("InitPostEntity", "luctus_scp_code", function()
@@ -76,3 +77,5 @@ net.Receive("luctus_scp_code", function()
         surface.PlaySound(LUCTUS_SCP_CODES[curcode][3])
     end
 end)
+
+print("[luctus_code] cl loaded")

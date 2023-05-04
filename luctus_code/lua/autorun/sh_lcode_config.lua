@@ -51,4 +51,4 @@ LUCTUS_SCP_CODE_DEFAULT = "green"
 --If you use this please set the DarkRP "GAMEMODE.Config.lockdowndelay" very low or else the lockdown wont start everytime
 LUCTUS_SCP_CODE_LOCKDOWN = "red"
 
-print("[luctus_scp_code] sh config loaded!")
+print("[luctus_code] config loaded!")

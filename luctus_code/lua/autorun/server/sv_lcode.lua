@@ -59,3 +59,5 @@ net.Receive("luctus_scp_code", function(len,ply)
         net.WriteString(LUCTUS_SCP_CODE_CURRENT)
     net.Send(ply)
 end)
+
+print("[luctus_code] sv loaded")
