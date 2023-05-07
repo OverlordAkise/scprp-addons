@@ -14,7 +14,17 @@ hook.Add("PlayerSay", "luctus_razzia", function(ply,text)
                 net.WriteBool(toSend)
             net.Send(v)
         end
+        LuctusRazziaActivitySupport(toSend)
     end
 end)
+
+function LuctusRazziaActivitySupport(isStarting)
+    if isStarting then
+        LuctusActivityPause("RAZZIA")
+    end
+    if isStarting == false then
+        LuctusActivityResume()
+    end
+end
 
 print("[luctus_razzia] sv loaded!")
