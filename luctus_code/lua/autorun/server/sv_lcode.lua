@@ -36,6 +36,7 @@ hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team)
         if LUCTUS_SCP_CODE_USES[code] then
             LuctusCodePressThings(LUCTUS_SCP_CODE_USES[code])
         end
+        LuctusCodeActivitySupport(code,oldCode)
         return ""
     end
 end)
@@ -51,6 +52,16 @@ function LuctusCodePressThings(list)
                 ents.GetMapCreatedEntity(v):Use(Entity(0))
             end
         end
+    end
+end
+
+function LuctusCodeActivitySupport(code,oldCode)
+    if not LUCTUS_ACTIVITY_ACTIVITIES or not istable(LUCTUS_ACTIVITY_ACTIVITIES) then return end
+    if code == LUCTUS_SCP_CODE_ACTIVITYSTOP then
+        LuctusActivityPause("CODE "..string.upper(code))
+    end
+    if oldCode == LUCTUS_SCP_CODE_ACTIVITYSTOP then
+        LuctusActivityResume()
     end
 end
 
