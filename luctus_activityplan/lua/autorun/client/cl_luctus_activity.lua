@@ -1,15 +1,18 @@
 --Luctus Activityplan
 --Made by OverlordAkise
 
+local tag = "[ACTIVITYPLAN]"
+local actText = "The activity changed to"
+local color_white = Color(255,255,255)
+local color_tag = Color(255,100,50)
+
 luctusCurrentActivity = "UNKNOWN"
-
-
 net.Receive("luctus_activity_sync",function()
     luctusCurrentActivity = net.ReadString()
     local timerTime = net.ReadInt(16)
     timer.Create("luctus_activity_timer",timerTime,1,function()end)
     if not LUCTUS_ACTIVITY_SHOW_JOB[team.GetName(LocalPlayer():Team())] then return end
-    chat.AddText(textColor, "The activity changed to "..luctusCurrentActivity.."!")
+    chat.AddText(color_tag,tag," ",color_white,actText," '"..luctusCurrentActivity.."'!")
     surface.PlaySound("HL1/fvox/bell.wav")
 end)
 
