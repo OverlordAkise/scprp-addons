@@ -43,6 +43,22 @@ function luctusActivityStartNext()
     net.Broadcast()
 end
 
+hook.Add("lockdownStarted","luctus_activity",function()
+    timer.Pause("luctus_activity_timer")
+    net.Start("luctus_activity_sync")
+        net.WriteString("LOCKDOWN")
+        net.WriteInt(0,16)
+    net.Broadcast()
+end)
+
+hook.Add("lockdownEnded","luctus_activity",function()
+    timer.UnPause("luctus_activity_timer")
+    net.Start("luctus_activity_sync")
+        net.WriteString(LUCTUS_ACTIVITY_ACTIVITIES[luctusCurrentActivityID][1])
+        net.WriteInt(luctusActivityTimeLeft(),16)
+    net.Broadcast()
+end)
+
 hook.Add("PlayerSay","luctus_activity_resync",function(ply,text,team)
     if text == "!activity_resync" then
         net.Start("luctus_activity_sync")
