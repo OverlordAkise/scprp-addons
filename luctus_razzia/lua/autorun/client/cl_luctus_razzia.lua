@@ -37,7 +37,7 @@ function LuctusRazziaPlaySounds(sounds)
 end
 
 --Blur doesnt work inside panels docked to HUD?
-local function LuctusDrawEdgeBox(x, y, w, h, s, b)
+local function lLuctusDrawEdgeBox(x, y, w, h, s, b)
     if not s then s = 10 end
     if not b then b = 2 end
     surface.SetDrawColor(backgroundColLight)
