@@ -1,16 +1,16 @@
---Luctus Amnestika
+--Luctus Amnestics
 --Made by OverlordAkise
 
 AddCSLuaFile()
 
-SWEP.myclass = "weapon_amnestika"
+SWEP.myclass = "weapon_amnestic"
 SWEP.mytype = "A"
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = false
 SWEP.ViewModelFOV = 60
 SWEP.UseHands = true
 
-SWEP.PrintName = "Amnestika A"
+SWEP.PrintName = "Amnestic A"
 SWEP.Slot = 5
 SWEP.SlotPos = 2
 
@@ -20,7 +20,7 @@ SWEP.BounceWeaponIcon = false
 
 SWEP.Spawnable = false
 SWEP.AdminSpawnable = false
-SWEP.Category = "Amnestika"
+SWEP.Category = "Amnestics"
 
 SWEP.ViewModel = "models/weapons/darky_m/c_syringe_v2.mdl"
 SWEP.WorldModel = "models/weapons/darky_m/w_syringe_v2.mdl"

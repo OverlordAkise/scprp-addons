@@ -1,10 +1,10 @@
---Luctus Amnestika
+--Luctus Amnestics
 --Made by OverlordAkise
 
 local color_white = Color(255,255,255,255)
 local color_black = Color(0,0,0,255)
 
-LUCTUS_AMNESTIKA_FUNCS = {
+LUCTUS_AMNESTICS_FUNCS = {
     ["A"] = function()
         DrawMotionBlur( 0.05, 0.95, 0.01 )
     end,
@@ -55,4 +55,4 @@ end)
 hook.Remove("RenderScreenspaceEffects", "luctus_amnestika_blur")
 --]]
 
-print("amnestika loaded!")
+print("[luctus_amnestics] cl loaded!")
