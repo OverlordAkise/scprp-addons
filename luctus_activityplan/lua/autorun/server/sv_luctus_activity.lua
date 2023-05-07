@@ -26,14 +26,6 @@ function luctusActivityTimeLeft()
     return timer.TimeLeft("luctus_activity_timer")
 end
 
-function luctusActivityNotifyPly(ply,name,timeLeft)
-    ply:PrintMessage(HUD_PRINTCENTER,"Activity changed!")
-    net.Start("luctus_activity_sync")
-        net.WriteString(name)
-        net.WriteInt(timeLeft,16)
-    net.Send(ply)
-end
-
 function luctusActivityStartNext()
     if timer.Exists("luctus_activity_timer") then
         timer.Remove("luctus_activity_timer")
@@ -45,11 +37,10 @@ function luctusActivityStartNext()
     
     local timeLeft = luctusActivityTimeLeft()
     local name = LUCTUS_ACTIVITY_ACTIVITIES[luctusCurrentActivityID][1]
-    for k,v in pairs(player.GetAll()) do
-        if LUCTUS_ACTIVITY_SHOW_JOB[team.GetName(v:Team())] then
-            luctusActivityNotifyPly(v, name, timeLeft)
-        end
-    end
+    net.Start("luctus_activity_sync")
+        net.WriteString(name)
+        net.WriteInt(timeLeft,16)
+    net.Broadcast()
 end
 
 hook.Add("PlayerSay","luctus_activity_resync",function(ply,text,team)

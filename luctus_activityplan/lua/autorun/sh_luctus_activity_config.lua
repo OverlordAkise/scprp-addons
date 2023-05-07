@@ -5,7 +5,7 @@
 LUCTUS_ACTIVITY_SHOW_JOB = {
     ["D-Klasse"] = true,
     ["Security"] = true,
-    ["Citizen"] = true,
+    ["Hobo"] = true,
 }
 
 --Activityname, time in seconds for activity

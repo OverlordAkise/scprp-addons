@@ -8,6 +8,7 @@ net.Receive("luctus_activity_sync",function()
     luctusCurrentActivity = net.ReadString()
     local timerTime = net.ReadInt(16)
     timer.Create("luctus_activity_timer",timerTime,1,function()end)
+    if not LUCTUS_ACTIVITY_SHOW_JOB[team.GetName(LocalPlayer():Team())] then return end
     chat.AddText(textColor, "The activity changed to "..luctusCurrentActivity.."!")
     surface.PlaySound("HL1/fvox/bell.wav")
 end)
@@ -43,8 +44,9 @@ end
 
 
 hook.Add("HUDPaint","luctus_activity_display",function()
+    if not LUCTUS_ACTIVITY_SHOW_JOB[team.GetName(LocalPlayer():Team())] then return end
     local timeLeft = timer.TimeLeft("luctus_activity_timer")
-    if not timeLeft then return end
+    if not timeLeft then timeLeft = 0 end
     local minutes = math.floor(timeLeft/60)
     if string.len(minutes) < 2 then minutes = "0"..minutes end
     local seconds = (math.Round(timeLeft)%60)
