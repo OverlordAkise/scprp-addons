@@ -51,3 +51,5 @@ net.Receive("luctus_funk_opendec", function()
         DecodedText:SetValue(net.ReadString())
     end)
 end)
+
+print("[luctus_funkcmd] cl loaded")

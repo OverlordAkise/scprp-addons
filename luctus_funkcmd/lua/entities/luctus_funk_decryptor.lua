@@ -25,9 +25,9 @@ function ENT:Initialize()
 end
 
 function ENT:Use(Activator, Caller, UseType, Integer)
-	net.Start("luctus_funk_opendec")
-    net.WriteEntity(self)
-	net.Send(Activator)
+    net.Start("luctus_funk_opendec")
+        net.WriteEntity(self)
+    net.Send(Activator)
 end
 
 if SERVER then return end

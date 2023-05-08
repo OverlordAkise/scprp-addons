@@ -53,3 +53,5 @@ if LUCTUS_FUNK_RANDOM_ENCRYPTION then
         alpha = string.gsub(alpha,randomChar,"")
     end
 end
+
+print("[luctus_funkcmd] config loaded")
