@@ -19,6 +19,7 @@ hook.Add("PlayerSay", "luctus_razzia", function(ply,text)
 end)
 
 function LuctusRazziaActivitySupport(isStarting)
+    if not LUCTUS_ACTIVITY_ACTIVITIES or not istable(LUCTUS_ACTIVITY_ACTIVITIES) then return end
     if isStarting then
         LuctusActivityPause("RAZZIA")
     end
