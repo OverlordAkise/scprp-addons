@@ -65,7 +65,7 @@ function LuctusRazziaCreateBox()
     razziaPanel:SizeTo(200,50,1,0)
     function razziaPanel:Paint(w,h)
         if self.Blink then return end
-        lLuctusDrawEdgeBox(0,0,w,h)
+        LuctusDrawEdgeBox(0,0,w,h)
         draw.SimpleText("RAZZIA", "Trebuchet24", 100, 25, darkRed, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
     timer.Create("razzia_blink_panel",0.05,8,function()
