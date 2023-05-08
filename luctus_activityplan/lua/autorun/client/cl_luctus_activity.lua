@@ -11,7 +11,7 @@ net.Receive("luctus_activity_sync",function()
     luctusCurrentActivity = net.ReadString()
     local timerTime = net.ReadInt(16)
     timer.Create("luctus_activity_timer",timerTime,1,function()end)
-    if not LUCTUS_ACTIVITY_SHOW_JOB[team.GetName(LocalPlayer():Team())] then return end
+    if not IsValid(LocalPlayer()) or not LUCTUS_ACTIVITY_SHOW_JOB[team.GetName(LocalPlayer():Team())] then return end
     chat.AddText(color_tag,tag," ",color_white,actText," '"..luctusCurrentActivity.."'!")
     surface.PlaySound("HL1/fvox/bell.wav")
 end)
