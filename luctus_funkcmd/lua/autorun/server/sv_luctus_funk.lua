@@ -46,13 +46,34 @@ local function GetPlayer(name)
     return ret
 end
 
+local funkCommands = {
+    [LUCTUS_FUNK_COMMAND] = true,
+    [LUCTUS_FUNK_COMMAND_ANON] = true,
+    [LUCTUS_FUNK_COMMAND_ENCRYPTED] = true,
+}
+
 hook.Add("PlayerSay", "luctus_funk_commands", function(ply, text)
+    
     local sText = string.Explode(" ", text)
-    local cmd = sText[1]
+    local cmd = string.sub(sText[1],2)
     local rPlyName = sText[2]
     local rPly = (rPlyName and rPlyName ~= "") and GetPlayer(rPlyName) or nil
     
     if not rPlyName or rPlyName == "" then return end
+    if not funkCommands[cmd] then return end
+    
+    if LUCTUS_FUNK_WEAPONRESTRICT then
+        local wep = IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() or false
+        if not wep or wep != LUCTUS_FUNK_WEAPON_CLASS then
+            DarkRP.notify(ply,1,5,"FUNK ERROR: You have no radio!")
+            return
+        end
+    end
+    if LUCTUS_FUNK_JOB_WHITELIST_ENABLED and not LUCTUS_FUNK_JOB_WHITELIST[team.GetName(ply:Team())] then
+        DarkRP.notify(ply,1,5,"FUNK ERROR: wrong job!")
+        return
+    end
+    
     if cmd == LUCTUS_FUNK_COMMAND then
         local msgcontent = string.sub(text, #sText[1] + #sText[2] + 2, nil)
         net.Start("luctus_funk_broadcast")

@@ -1,12 +1,26 @@
 --Luctus Funk
 --Made by OverlordAkise
 
-LUCTUS_FUNK_COMMAND = "!funk"
-LUCTUS_FUNK_COMMAND_ANON = "!funka"
-LUCTUS_FUNK_COMMAND_ENCRYPTED = "!funke"
+--Every chat command words with ! and /
+LUCTUS_FUNK_COMMAND = "funk"
+LUCTUS_FUNK_COMMAND_ANON = "funka"
+LUCTUS_FUNK_COMMAND_ENCRYPTED = "funke"
 LUCTUS_FUNK_PREFIX = "[FUNK BROADCAST]"
 LUCTUS_FUNKA_PREFIX = "[FUNK ANON]"
 LUCTUS_FUNKE_PREFIX = "[FUNK ENCRYPTED]"
+
+--Restrict access to funk chat commands
+--Only if you have the weapon you can use them
+LUCTUS_FUNK_WEAPONRESTRICT = true
+LUCTUS_FUNK_WEAPON_CLASS = "luctus_radio"
+
+--Restrict access to funk chat commands
+--Only if your job is in the whitelist you can use them
+LUCTUS_FUNK_JOB_WHITELIST_ENABLED = false
+LUCTUS_FUNK_JOB_WHITELIST = {
+    ["Medic"] = true,
+    ["MTF"] = true,
+}
 
 --Users could decrypt messages automatically
 --if you don't change the encryption table often
