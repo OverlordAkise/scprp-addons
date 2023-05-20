@@ -25,7 +25,7 @@ if SERVER then
             net.Send(recvs)
             return ""
         end
-    end)
+    end,-1)
 
 else
 
