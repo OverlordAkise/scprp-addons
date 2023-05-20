@@ -39,6 +39,7 @@ function LuctusSCP008StopContainment()
 end
 
 function LuctusSCP008StartInfection(ply,val)
+    if LUCTUS_SCP008_IMMUNEMODELS[ply:GetModel()] then return end
     if LUCTUS_SCP008_DEBUG then
         PrintMessage(HUD_PRINTTALK,"Infecting player:"..ply:Nick()..math.random())
     end

@@ -5,6 +5,10 @@
 --to make the SCP008 entities invisible
 LUCTUS_SCP008_DEBUG = false
 
+--Which playermodels should be immune to SCP008 infection
+LUCTUS_SCP008_IMMUNEMODELS = {
+    ["models/player/group01/female_01.mdl"] = true,
+}
 
 --Infection stuff
 --Your infection level raises from 0 to 100
