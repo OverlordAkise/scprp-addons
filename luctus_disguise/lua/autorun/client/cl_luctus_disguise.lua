@@ -32,15 +32,6 @@ local function lLuctusDrawEdgeBox(x, y, w, h, s, b)
     surface.DrawRect(x,yb-s,b,s-b)
 end
 
-local ncd = 0
-local function NotifyIfNoCooldown()
-    if ncd > CurTime() then return end
-    ncd = CurTime() + 5
-    notification.AddLegacy("You are not allowed to pickup a weapon!", 1, 5)
-    surface.PlaySound("buttons/button15.wav")
-end
-
-
 local function LuctusPrettifyScrollbar(el)
   function el:Paint() return end
 	function el.btnGrip:Paint(w, h)
@@ -127,6 +118,10 @@ net.Receive("luctus_disguise",function()
     function submitButton:DoClick()
         if not curJob or not curModel then
             notification.AddLegacy("You need to select a job and model!",1,3)
+            return
+        end
+        if LUCTUS_DISGUISE_JOB_BLACKLIST[curJob] then
+            notification.AddLegacy("You cant disguise to this job!",1,3)
             return
         end
         net.Start("luctus_disguise")

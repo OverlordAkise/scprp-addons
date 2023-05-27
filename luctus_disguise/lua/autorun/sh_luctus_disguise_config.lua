@@ -7,6 +7,17 @@ LUCTUS_DISGUISE_ALLOWED_JOBS = {
     ["Citizen"] = true,
 }
 
+--Which jobs can not be disguised as
+LUCTUS_DISGUISE_JOB_BLACKLIST = {
+    ["SCP 096"] = true,
+    ["SCP 966"] = true,
+    ["SCP 173"] = true,
+    ["SCP 131"] = true,
+    ["SCP 049"] = true,
+    ["SCP 457"] = true,
+    ["Medic"] = true,
+}
+
 --CONFIG END
 
 --Fix for tbfy

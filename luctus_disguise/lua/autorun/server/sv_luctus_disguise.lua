@@ -8,6 +8,7 @@ LuctusLog = LuctusLog or function()end
 net.Receive("luctus_disguise",function(len,ply)
     if not LUCTUS_DISGUISE_ALLOWED_JOBS[team.GetName(ply:Team())] then return end
     local jobname = net.ReadString()
+    if LUCTUS_DISGUISE_JOB_BLACKLIST[jobname] then return end
     local model = net.ReadString()
     LuctusLog("Disguise",ply:Nick().."("..ply:SteamID()..") disguised to job "..jobname.." ("..model..")")
     local _rankid = net.ReadString()
@@ -58,6 +59,8 @@ hook.Add("PlayerSpawn","luctus_disguise_reset",function(ply)
             LuctusJobranksLoadPlayer(ply,ply.oldJob)
         elseif JobRanksConfig then
             LuctusJobranksTBFYRestore(ply,ply.oldJob)
+        else
+            ply:setDarkRPVar("job", ply.oldJobName)
         end
         ply.oldJob = nil
         ply.oldJobName = nil
