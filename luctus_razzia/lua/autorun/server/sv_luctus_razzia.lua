@@ -1,6 +1,20 @@
 --Luctus Razzia
 --Made by OverlordAkise
 
+LUCTUS_RAZZIA_ISLIVE = false
+
+function LuctusRazziaUpdate(state)
+    for k,v in pairs(player.GetAll()) do
+        if not LUCTUS_RAZZIA_JOBS_RECV[team.GetName(v:Team())] then continue end
+        net.Start("luctus_razzia")
+            net.WriteBool(state)
+        net.Send(v)
+    end
+    LUCTUS_RAZZIA_ISLIVE = state
+    --Luctus Activity Support
+    LuctusRazziaActivitySupport(state)
+end
+
 util.AddNetworkString("luctus_razzia")
 hook.Add("PlayerSay", "luctus_razzia", function(ply,text)
     if LUCTUS_RAZZIA_JOBS_SEND[team.GetName(ply:Team())] then
@@ -8,13 +22,15 @@ hook.Add("PlayerSay", "luctus_razzia", function(ply,text)
         if text == LUCTUS_RAZZIA_STARTCMD then toSend = true end
         if text == LUCTUS_RAZZIA_ENDCMD then toSend = false end
         if toSend == nil then return end
-        for k,v in pairs(player.GetAll()) do
-            if not LUCTUS_RAZZIA_JOBS_RECV[team.GetName(v:Team())] then continue end
-            net.Start("luctus_razzia")
-                net.WriteBool(toSend)
-            net.Send(v)
+        LuctusRazziaUpdate(toSend)
+        --AutoStop
+        if toSend then
+            timer.Create("luctus_razzia_autostop",LUCTUS_RAZZIA_MAX_TIME,1,function()
+                LuctusRazziaUpdate(false)
+            end)
+        else
+            timer.Remove("luctus_razzia_autostop")
         end
-        LuctusRazziaActivitySupport(toSend)
     end
 end)
 

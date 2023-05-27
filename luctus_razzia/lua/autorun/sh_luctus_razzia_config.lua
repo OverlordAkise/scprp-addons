@@ -14,6 +14,9 @@ LUCTUS_RAZZIA_JOBS_RECV = {
     ["D-Klasse"] = true,
 }
 
+--Max time a razzia can take before it auto stops, in seconds
+LUCTUS_RAZZIA_MAX_TIME = 300
+
 LUCTUS_RAZZIA_STARTCMD = "!razziastart"
 LUCTUS_RAZZIA_STARTTEXT = "A razzia is about to begin, please step up to the line"
 
