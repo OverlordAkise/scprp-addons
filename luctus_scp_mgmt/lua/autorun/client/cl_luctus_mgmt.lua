@@ -9,13 +9,31 @@ net.Receive("luctus_scp_mgmt",function()
 end)
 
 luctus_scpmgmt_buttons = {
-    ["Emergency Start"] = function() net.Start("luctus_scp_mgmt") net.WriteString("emergencyon") net.SendToServer() end,
-    ["Emergency Stop"] = function() net.Start("luctus_scp_mgmt") net.WriteString("emergencyoff") net.SendToServer() end,
-    ["Change Code"] = function() LuctusOpenSCPMGMTCode() end,
-    ["HR Management"] = function() LuctusOpenSCPMGMTDegrade() end,
-    ["Razzia Start"] = function() RunConsoleCommand("say","!razziastart") end,
-    ["Razzia End"] = function() RunConsoleCommand("say","!razziaend") end,
+    {"HR Management",function() LuctusOpenSCPMGMTDegrade() end},
 }
+
+--Create Emergency Buttons
+hook.Add("InitPostEntity","luctus_scp_mgmt_load",function()
+    if LUCTUS_SCP_CODES then
+        table.insert(luctus_scpmgmt_buttons,{"Change Code",function() LuctusOpenSCPMGMTCode() end})
+    end
+    if LUCTUS_RAZZIA_JOBS_SEND then
+        table.insert(luctus_scpmgmt_buttons,{"Razzia Start",function() RunConsoleCommand("say","!razziastart") end})
+        table.insert(luctus_scpmgmt_buttons,{"Razzia End",function() RunConsoleCommand("say","!razziaend") end})
+    end
+    for cat,jobs in pairs(LUCTUS_SCP_MGMT_EMERGENCY_JOBS) do
+        table.insert(luctus_scpmgmt_buttons,{"Start "..cat.."-Emergency",function()
+            net.Start("luctus_scp_mgmt")
+                net.WriteString("emergencyon "..cat)
+            net.SendToServer()
+        end})
+        table.insert(luctus_scpmgmt_buttons,{"Stop "..cat.."-Emergency",function()
+            net.Start("luctus_scp_mgmt")
+                net.WriteString("emergencyoff "..cat)
+            net.SendToServer()
+        end})
+    end
+end)
 
 local function AskPlayerInput(text,func)
     local window = vgui.Create("DFrame")
@@ -214,7 +232,10 @@ function LuctusOpenSCPMGMT()
     if IsValid(luctus_scpmgmt_frame) then return end
     luctus_scpmgmt_frame = vgui.Create("DFrame")
     luctus_scpmgmt_frame:SetTitle("Luctus' SCP Management")
-    luctus_scpmgmt_frame:SetSize( 500, 300 )
+    luctus_scpmgmt_frame:SetSize(340, 300)
+    if #luctus_scpmgmt_buttons > 8 then
+        luctus_scpmgmt_frame:SetSize(360, 300)
+    end
     luctus_scpmgmt_frame:Center()
     luctus_scpmgmt_frame:SetX(ScrW()+300)
     luctus_scpmgmt_frame:MakePopup()
@@ -225,7 +246,9 @@ function LuctusOpenSCPMGMT()
         draw.RoundedBox(0, 1, 1, w - 2, h - 2, Color(54, 57, 62))
     end
     createCloseButton(luctus_scpmgmt_frame)
-    local plist = vgui.Create("DIconLayout", luctus_scpmgmt_frame)
+    local Scroll = vgui.Create("DScrollPanel", luctus_scpmgmt_frame)
+    Scroll:Dock(FILL)
+    local plist = vgui.Create("DIconLayout", Scroll)
     plist:Dock(FILL)
     plist:SetSpaceY(10)
     plist:SetSpaceX(10)
@@ -233,8 +256,8 @@ function LuctusOpenSCPMGMT()
     for k,v in pairs(luctus_scpmgmt_buttons) do
         local item = plist:Add("DButton")
         item:SetSize(150,50)
-        item:SetText(k)
-        item.v = v
+        item:SetText(v[1])
+        item.v = v[2]
         function item:DoClick()
             self.v()
         end
@@ -247,4 +270,3 @@ hook.Add("LuctusLogAddCategory","luctus_scpmgmt",function()
 end)
 
 print("[SCPMGMT] CL loaded!")
-

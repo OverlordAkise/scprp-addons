@@ -18,10 +18,10 @@ end
 net.Receive("luctus_scp_mgmt",function(len,ply)
     if not LuctusMGMTAllowed(ply) then return end
     local cmd = net.ReadString()
-    if cmd == "emergencyon" then
-        LuctusMGMTEmergency(true,ply)
-    elseif cmd == "emergencyoff" then
-        LuctusMGMTEmergency(false,ply)
+    if string.StartsWith(cmd,"emergencyon ") then
+        LuctusMGMTEmergency(true,ply,string.Split(cmd," ")[2])
+    elseif string.StartsWith(cmd,"emergencyoff ") then
+        LuctusMGMTEmergency(false,ply,string.Split(cmd," ")[2])
     elseif cmd == "demote" then
         local targetID = net.ReadString()
         local reason = net.ReadString()
@@ -50,41 +50,55 @@ local function LuctusNotify(ply,text,typ,duration)
     DarkRP.notify(ply,typ,duration,text)
 end
 
-function LuctusMGMTEmergency(shouldStart,ply)   
+function LuctusMGMTIsEmergencyJob(name)
+    for catname,jobs in pairs(LUCTUS_SCP_MGMT_EMERGENCY_JOBS) do
+        for jobname,v in pairs(jobs) do
+            if jobname == name then return catname end
+        end
+    end
+    return false
+end
+
+function LuctusMGMTIsEmergencyLive(name)
+    print("[DEBUG][mgmt]","IsLive:",name,timer.Exists("mgmt_emergency_"..name),GetGlobal2Bool("mgmt_emergency_"..name))
+    if timer.Exists("mgmt_emergency_"..name) or GetGlobal2Bool("mgmt_emergency_"..name) then return true end
+    return false
+end
+
+function LuctusMGMTEmergency(shouldStart,ply,groupName)
+    print("[DEBUG][mgmt]",shouldStart,ply,groupName)
+    if not groupName or groupName == "" then return end
     if shouldStart then
-        if GetGlobal2Bool("mgmt_emergency",false) then return end
-        SetGlobal2Bool("mgmt_emergency",shouldStart)
-        PrintMessage(HUD_PRINTTALK, "[MGMT] The Foundation has called for an Emergency!")
+        if LuctusMGMTIsEmergencyLive(groupName) then return end
+        PrintMessage(HUD_PRINTTALK, "[MGMT] The Foundation has called for an "..groupName.."-Emergency!")
         PrintMessage(HUD_PRINTTALK, "[MGMT] Emergency Jobs will be available in "..LUCTUS_SCP_MGMT_EMERGENCY_JOB_DELAY.." seconds!")
-        timer.Remove("mgmt_emergency_stop")
-        timer.Create("mgmt_emergency_start",LUCTUS_SCP_MGMT_EMERGENCY_JOB_DELAY,1,function()
-            SetGlobal2Bool("mgmt_emergency_jobs",true)
-            PrintMessage(HUD_PRINTTALK, "[MGMT] Emergency Jobs are now available!")
+        timer.Create("mgmt_emergency_"..groupName,LUCTUS_SCP_MGMT_EMERGENCY_JOB_DELAY,1,function()
+            SetGlobal2Bool("mgmt_emergency_"..groupName,true)
+            PrintMessage(HUD_PRINTTALK, "[MGMT] "..groupName.."-Emergency Jobs are now available!")
         end)
-        LuctusLog("SCPMGMT",ply:Nick().."("..ply:SteamID()..") called for an Emergency.")
+        LuctusLog("SCPMGMT",ply:Nick().."("..ply:SteamID()..") called for an "..groupName.."-Emergency.")
     else
-        if not GetGlobal2Bool("mgmt_emergency",false) then return end
-        SetGlobal2Bool("mgmt_emergency",shouldStart)
-        PrintMessage(HUD_PRINTTALK, "[MGMT] The Foundation has stopped the Emergency!")
+        if not LuctusMGMTIsEmergencyLive(groupName) then return end
+        PrintMessage(HUD_PRINTTALK, "[MGMT] The Foundation has stopped the "..groupName.."-Emergency!")
         PrintMessage(HUD_PRINTTALK, "[MGMT] Emergency Jobs are closed and will be changed back in "..LUCTUS_SCP_MGMT_EMERGENCY_JOB_DELAY.." seconds!")
         
-        SetGlobal2Bool("mgmt_emergency_jobs",false)
-        timer.Remove("mgmt_emergency_start")
-        timer.Create("mgmt_emergency_stop",LUCTUS_SCP_MGMT_EMERGENCY_JOB_DELAY,1,function()
+        SetGlobal2Bool("mgmt_emergency_"..groupName,false)
+        timer.Create("mgmt_emergency_"..groupName,LUCTUS_SCP_MGMT_EMERGENCY_JOB_DELAY,1,function()
             for k,v in pairs(player.GetAll()) do
-                if LUCTUS_SCP_MGMT_EMERGENCY_JOBS[team.GetName(v:Team())] then
+                if LuctusMGMTIsEmergencyJob(team.GetName(v:Team())) then
                     v:changeTeam(GAMEMODE.DefaultTeam, true)
                 end
             end
         end)
-        LuctusLog("SCPMGMT",ply:Nick().."("..ply:SteamID()..") stopped an Emergency.")
+        LuctusLog("SCPMGMT",ply:Nick().."("..ply:SteamID()..") stopped an "..groupName.."-Emergency.")
     end
 end
 
 hook.Add("playerCanChangeTeam","luctus_scp_mgmt_job_restrict",function(ply,newTeam,force)
     if force then return true, "Job change was forced!" end
-    if LUCTUS_SCP_MGMT_EMERGENCY_JOBS[team.GetName(newTeam)] then
-        if not GetGlobal2Bool("mgmt_emergency_jobs",false) then return false, LUCTUS_SCP_MGMT_JOBERROR end
+    local jobCategory = LuctusMGMTIsEmergencyJob(team.GetName(newTeam))
+    if jobCategory then
+        if not GetGlobal2Bool("mgmt_emergency_"..jobCategory) then return false, LUCTUS_SCP_MGMT_JOBERROR end
     end
 end)
 
@@ -130,4 +144,3 @@ hook.Add("PlayerSay","luctus_scp_mgmt",function(ply,text,team)
 end)
 
 print("[SCPMGMT] SV loaded!")
-
