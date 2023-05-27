@@ -1,6 +1,9 @@
 --Luctus Disguise
 --Made by OverlordAkise
 
+--Should the WeaponChecker remove disguise of players?
+LUCTUS_DISGUISE_WEAPONCHECKER_UNDISGUISE = true
+
 --The jobs who can disguise themselves
 LUCTUS_DISGUISE_ALLOWED_JOBS = {
     ["O5 Rat"] = true,

@@ -35,6 +35,7 @@ net.Receive("luctus_disguise",function(len,ply)
         local rankid = tonumber(_rankid)
         LuctusDisguiseSetJobRank(ply,jobname,jobID,rankid)
     end
+    DarkRP.notify(ply,0,5,"You disguised as "..jobname.."!")
 end)
 
 function LuctusDisguiseSetJobRank(ply,jobname,jobid,rankid)
@@ -107,5 +108,12 @@ function LuctusJobranksTBFYRestore(Player,NewTeam)
 		net.Send(Player)
 	end
 end
+
+hook.Add("playerWeaponsChecked","luctus_disguise_forceoff",function(checker,ply,weapons)
+    if LUCTUS_DISGUISE_WEAPONCHECKER_UNDISGUISE then
+        LuctusDisguiseUndisguise(ply)
+        DarkRP.notify(ply,1,5,"Your disguise was removed!")
+    end
+end)
 
 print("[luctus_disguise] sv loaded")
