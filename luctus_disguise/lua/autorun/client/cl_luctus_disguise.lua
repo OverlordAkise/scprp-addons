@@ -83,6 +83,19 @@ net.Receive("luctus_disguise",function()
         end
     end
     
+    local unSubmitButton = vgui.Create("DButton", wcFrame)
+    unSubmitButton:Dock(BOTTOM)
+    unSubmitButton:SetText("")
+    unSubmitButton.Paint = function(self,w,h)
+        if self.Hovered then
+            lLuctusDrawEdgeBox(0, 0, w, h, 15, 3)
+        else
+            lLuctusDrawEdgeBox(0, 0, w, h, 7, 1)
+        end
+        draw.DrawText("UnDisguise!", "Trebuchet18", 10, 2, Color(255,255,255))
+    end
+    unSubmitButton:DockMargin(0,0,0,20)
+    
     local submitButton = vgui.Create("DButton", wcFrame)
     submitButton:Dock(BOTTOM)
     submitButton:SetText("")
@@ -94,7 +107,7 @@ net.Receive("luctus_disguise",function()
         end
         draw.DrawText("Disguise!", "Trebuchet18", 10, 2, Color(255,255,255))
     end
-    submitButton:DockMargin(0,0,0,20)
+    submitButton:DockMargin(0,0,0,5)
     
     local jobList = vgui.Create("DScrollPanel", wcFrame)
     jobList:Dock(LEFT)
@@ -114,6 +127,11 @@ net.Receive("luctus_disguise",function()
     rankList:DockMargin(0,0,0,20)
     LuctusPrettifyScrollbar(rankList:GetVBar())
     
+    function unSubmitButton:DoClick()
+        net.Start("luctus_disguise_off")
+        net.SendToServer()
+        wcFrame:Close()
+    end
     
     function submitButton:DoClick()
         if not curJob or not curModel then
@@ -131,6 +149,7 @@ net.Receive("luctus_disguise",function()
         net.SendToServer()
         wcFrame:Close()
     end
+    
     for k,curTeam in pairs(RPExtraTeams) do
         local catBut = vgui.Create("DButton",jobList)
         catBut.jobname = curTeam.name

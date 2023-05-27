@@ -2,6 +2,7 @@
 --Made by OverlordAkise
 
 util.AddNetworkString("luctus_disguise")
+util.AddNetworkString("luctus_disguise_off")
 
 LuctusLog = LuctusLog or function()end
 
@@ -53,7 +54,7 @@ function LuctusDisguiseSetJobRank(ply,jobname,jobid,rankid)
     end
 end
 
-hook.Add("PlayerSpawn","luctus_disguise_reset",function(ply)
+function LuctusDisguiseUndisguise(ply)
     if ply:GetNWInt("disguiseTeam",-1) != -1 then
         if luctus_jobranks and luctus_jobranks[ply.oldJobName] then
             LuctusJobranksLoadPlayer(ply,ply.oldJob)
@@ -66,6 +67,14 @@ hook.Add("PlayerSpawn","luctus_disguise_reset",function(ply)
         ply.oldJobName = nil
     end
     ply:SetNWInt("disguiseTeam",-1)
+end
+
+hook.Add("PlayerSpawn","luctus_disguise_reset",function(ply)
+    LuctusDisguiseUndisguise(ply)
+end)
+
+net.Receive("luctus_disguise_off",function(len,ply)
+    LuctusDisguiseUndisguise(ply)
 end)
 
 function LuctusJobranksTBFYRestore(Player,NewTeam)
