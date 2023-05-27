@@ -73,4 +73,9 @@ function LuctusRazziaCreateBox()
     end)
 end
 
+hook.Add("InitPostEntity","luctus_razzia_load",function()
+    net.Start("luctus_razzia")
+    net.SendToServer()
+end)
+
 print("[luctus_razzia] cl loaded!")

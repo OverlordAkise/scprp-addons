@@ -44,4 +44,12 @@ function LuctusRazziaActivitySupport(isStarting)
     end
 end
 
+net.Receive("luctus_razzia",function(len,ply)
+    if LUCTUS_RAZZIA_ISLIVE then
+        net.Start("luctus_razzia")
+            net.WriteBool(true)
+        net.Send(ply)
+    end
+end)
+
 print("[luctus_razzia] sv loaded!")
