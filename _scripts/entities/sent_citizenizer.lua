@@ -22,6 +22,7 @@ if SERVER then
     hook.Add("PostPlayerDeath","luctus_citizenizer",function(ply)
         if ply.citizenized then
             ply.citizenized = false
+            if ply:Team() != TEAM_CITIZEN then return end
             DarkRP.notify(ply,1,5,"You died and got removed from your job!")
             ply:changeTeam(GAMEMODE.DefaultTeam,true)
         end
