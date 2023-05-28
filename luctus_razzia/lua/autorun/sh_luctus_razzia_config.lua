@@ -18,7 +18,7 @@ LUCTUS_RAZZIA_JOBS_RECV = {
 LUCTUS_RAZZIA_MAX_TIME = 300
 
 LUCTUS_RAZZIA_STARTCMD = "!razziastart"
-LUCTUS_RAZZIA_STARTTEXT = "A razzia is about to begin, please step up to the line"
+LUCTUS_RAZZIA_STARTTEXT = "A razzia has begun, please step up to the line"
 
 LUCTUS_RAZZIA_STARTSOUND = {
     "npc/overwatch/radiovoice/attention.wav",

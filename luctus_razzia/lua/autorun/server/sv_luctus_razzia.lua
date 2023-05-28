@@ -3,19 +3,51 @@
 
 LUCTUS_RAZZIA_ISLIVE = false
 
+util.AddNetworkString("luctus_razzia")
+
 function LuctusRazziaUpdate(state)
     for k,v in pairs(player.GetAll()) do
         if not LUCTUS_RAZZIA_JOBS_RECV[team.GetName(v:Team())] then continue end
         net.Start("luctus_razzia")
             net.WriteBool(state)
+            net.WriteBool(true)
         net.Send(v)
     end
     LUCTUS_RAZZIA_ISLIVE = state
     --Luctus Activity Support
     LuctusRazziaActivitySupport(state)
+    --AutoStop
+    if state then
+        timer.Create("luctus_razzia_autostop",LUCTUS_RAZZIA_MAX_TIME,1,function()
+            LuctusRazziaUpdate(false)
+        end)
+    else
+        timer.Remove("luctus_razzia_autostop")
+    end
 end
 
-util.AddNetworkString("luctus_razzia")
+hook.Add("OnPlayerChangedTeam","luctus_razzia",function(ply,before,after)
+    if LUCTUS_RAZZIA_ISLIVE then
+        local wasInRazziaJob = LUCTUS_RAZZIA_JOBS_RECV[team.GetName(before)]
+        local willBeInRazziaJob = LUCTUS_RAZZIA_JOBS_RECV[team.GetName(after)]
+        
+        if wasInRazziaJob and willBeInRazziaJob then return end
+        
+        if wasInRazziaJob and not willBeInRazziaJob then
+            net.Start("luctus_razzia")
+                net.WriteBool(false)
+                net.WriteBool(false)
+            net.Send(ply)
+        end
+        if not wasInRazziaJob and willBeInRazziaJob then
+            net.Start("luctus_razzia")
+                net.WriteBool(true)
+                net.WriteBool(true)
+            net.Send(ply)
+        end
+    end
+end)
+
 hook.Add("PlayerSay", "luctus_razzia", function(ply,text)
     if LUCTUS_RAZZIA_JOBS_SEND[team.GetName(ply:Team())] then
         local toSend = nil
@@ -23,14 +55,6 @@ hook.Add("PlayerSay", "luctus_razzia", function(ply,text)
         if text == LUCTUS_RAZZIA_ENDCMD then toSend = false end
         if toSend == nil then return end
         LuctusRazziaUpdate(toSend)
-        --AutoStop
-        if toSend then
-            timer.Create("luctus_razzia_autostop",LUCTUS_RAZZIA_MAX_TIME,1,function()
-                LuctusRazziaUpdate(false)
-            end)
-        else
-            timer.Remove("luctus_razzia_autostop")
-        end
     end
 end)
 
@@ -48,6 +72,7 @@ net.Receive("luctus_razzia",function(len,ply)
     if LUCTUS_RAZZIA_ISLIVE then
         net.Start("luctus_razzia")
             net.WriteBool(true)
+            net.WriteBool(false)
         net.Send(ply)
     end
 end)

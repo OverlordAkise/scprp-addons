@@ -9,12 +9,13 @@ razziaPanel = nil
 
 net.Receive("luctus_razzia",function()
     local isStarting = net.ReadBool()
+    local shouldPlaySound = net.ReadBool()
     chat.AddText(accent,"[razzia] ",color_white,isStarting and LUCTUS_RAZZIA_STARTTEXT or LUCTUS_RAZZIA_ENDTEXT)
     if isStarting then
         LuctusRazziaCreateBox()
+        if not shouldPlaySound then return end
         LuctusRazziaPlaySounds(LUCTUS_RAZZIA_STARTSOUND)
     else
-        LuctusRazziaPlaySounds(LUCTUS_RAZZIA_ENDSOUND)
         if not IsValid(razziaPanel) then return end
         timer.Create("razzia_blink_panel",0,8,function()
             razziaPanel.Blink = not razziaPanel.Blink
@@ -23,6 +24,8 @@ net.Receive("luctus_razzia",function()
         timer.Simple(1,function()
             if razziaPanel then razziaPanel:Remove() end
         end)
+        if not shouldPlaySound then return end
+        LuctusRazziaPlaySounds(LUCTUS_RAZZIA_ENDSOUND)
     end
 end)
 
