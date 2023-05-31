@@ -1,21 +1,5 @@
---Luctus Jobnames
+--Luctus Jobnumbers
 --Made by OverlordAkise
-
-luctus_jobnumbers = {}
-
---CONFIG START
-
---Can users change their own ID?
-luctus_jobnumbers_USERS_CAN_CHANGE = true
-
---[JobName] = {Prefix,MinValue,MaxValue}
---%d gets replaced by the number
-luctus_jobnumbers["D-Klasse"] = {"[D-%d]",1000,9999}
-luctus_jobnumbers["O5"] = {"[O5-%d]",1,15}
-luctus_jobnumbers["Citizen"] = {"[C-%d]",100,999}
-luctus_jobnumbers["Hobo"] = {"[USELESS]",100,999}
-
---CONFIG END
 
 local function dbsetup()
     sql.Query("CREATE TABLE IF NOT EXISTS luctus_jobnumbers( steamid TEXT, jobname TEXT, jobnumber INT )")
@@ -65,30 +49,32 @@ hook.Add("PlayerSay", "luctus_jobnumber_set", function(ply,text,plyteam)
 end)
 
 
-
 hook.Add("OnPlayerChangedTeam", "luctus_numtags", function(ply, beforeNum, afterNum)
     if luctus_jobnumbers[team.GetName(beforeNum)] then
         ply:SetNWString("l_numtag","")
     end
 
-    if luctus_jobnumbers[team.GetName(afterNum)] then
-        local jobname = team.GetName(afterNum)
-        local jconf = luctus_jobnumbers[jobname]
-        local randomNumber = math.random(jconf[2],jconf[3])
-        ply:SetNWString("l_numtag",string.format(jconf[1],randomNumber))
-        local res = sql.Query("SELECT * FROM luctus_jobnumbers WHERE steamid = "..sql.SQLStr(ply:SteamID()).." AND jobname = "..sql.SQLStr(jobname))
+    LuctusJobnumbersLoadPlayer(ply,team.GetName(afterNum))
+end)
+
+
+function LuctusJobnumbersLoadPlayer(ply,jobname)
+    if not luctus_jobnumbers[jobname] then return end
+    local jconf = luctus_jobnumbers[jobname]
+    local randomNumber = math.random(jconf[2],jconf[3])
+    ply:SetNWString("l_numtag",string.format(jconf[1],randomNumber))
+    local res = sql.Query("SELECT * FROM luctus_jobnumbers WHERE steamid = "..sql.SQLStr(ply:SteamID()).." AND jobname = "..sql.SQLStr(jobname))
+    if res == false then
+        error(sql.LastError())
+    end
+    if res and res[1] then
+        ply:SetNWString("l_numtag",string.format(jconf[1],res[1].jobnumber))
+    else
+        res = sql.Query("INSERT INTO luctus_jobnumbers(steamid,jobname,jobnumber) VALUES("..sql.SQLStr(ply:SteamID())..","..sql.SQLStr(jobname)..","..randomNumber..")")
         if res == false then
             error(sql.LastError())
         end
-        if res and res[1] then
-            ply:SetNWString("l_numtag",string.format(jconf[1],res[1].jobnumber))
-        else
-            res = sql.Query("INSERT INTO luctus_jobnumbers(steamid,jobname,jobnumber) VALUES("..sql.SQLStr(ply:SteamID())..","..sql.SQLStr(jobname)..","..randomNumber..")")
-            if res == false then
-                error(sql.LastError())
-            end
-        end
     end
-end)
+end
 
 print("[luctus_jobnumbers] sv loaded!")
