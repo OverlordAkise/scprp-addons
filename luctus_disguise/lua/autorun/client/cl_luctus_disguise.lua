@@ -47,6 +47,7 @@ end
 
 net.Receive("luctus_disguise",function()
     if IsValid(wcFrame) then return end
+    local cabEnt = net.ReadEntity()
     if not LUCTUS_DISGUISE_ALLOWED_JOBS[team.GetName(LocalPlayer():Team())] then
         notification.AddLegacy("You can't use this!",1,3)
         return
@@ -143,6 +144,7 @@ net.Receive("luctus_disguise",function()
             return
         end
         net.Start("luctus_disguise")
+            net.WriteEntity(cabEnt)
             net.WriteString(curJob)
             net.WriteString(curModel)
             net.WriteString(curRank and tostring(curRank) or "")

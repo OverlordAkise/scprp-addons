@@ -7,6 +7,9 @@ util.AddNetworkString("luctus_disguise_off")
 LuctusLog = LuctusLog or function()end
 
 net.Receive("luctus_disguise",function(len,ply)
+    local cabEnt = net.ReadEntity()
+    if cabEnt:GetClass() ~= "luctus_disguisecabinet" then return end
+    if cabEnt:GetPos():Distance(ply:GetPos()) > 512 then return end
     if not LUCTUS_DISGUISE_ALLOWED_JOBS[team.GetName(ply:Team())] then return end
     local jobname = net.ReadString()
     if LUCTUS_DISGUISE_JOB_BLACKLIST[jobname] then return end
@@ -18,6 +21,14 @@ net.Receive("luctus_disguise",function(len,ply)
     for k,v in pairs(RPExtraTeams) do
         if v.name and v.name == jobname then
             jobID = k
+            if isstring(v.model) and v.model != model then
+                LuctusLog("Disguise",ply:Nick().."("..ply:SteamID()..") tried to disguise with wrong model: "..model)
+                model = v.model
+            end
+            if istable(v.model) and not table.HasValue(v.model,model) then
+                LuctusLog("Disguise",ply:Nick().."("..ply:SteamID()..") tried to disguise with wrong model: "..model)
+                model = v.model[1]
+            end
             break
         end
     end
@@ -26,6 +37,7 @@ net.Receive("luctus_disguise",function(len,ply)
     if ply:GetNWInt("disguiseTeam",-1) == -1 then
         ply.oldJob = ply:Team()
         ply.oldJobName = team.GetName(ply:Team())
+        ply.oldModel = ply:GetModel()
     end
     ply:SetNWInt("disguiseTeam",jobID)
     ply:SetNWInt("jobrank", 0)
@@ -35,6 +47,10 @@ net.Receive("luctus_disguise",function(len,ply)
         local rankid = tonumber(_rankid)
         LuctusDisguiseSetJobRank(ply,jobname,jobID,rankid)
     end
+    if luctus_jobnumbers and luctus_jobnumbers[jobname] then
+        LuctusJobnumbersLoadPlayer(ply,jobname)
+    end
+    
     DarkRP.notify(ply,0,5,"You disguised as "..jobname.."!")
 end)
 
@@ -57,15 +73,20 @@ end
 
 function LuctusDisguiseUndisguise(ply)
     if ply:GetNWInt("disguiseTeam",-1) != -1 then
+        local jobname = team.GetName(ply:Team())
+        ply:setDarkRPVar("job", ply.oldJobName)
+        ply:SetModel(ply.oldModel)
+        if luctus_jobnumbers and luctus_jobnumbers[jobname] then
+            LuctusJobnumbersLoadPlayer(ply,jobname)
+        end
         if luctus_jobranks and luctus_jobranks[ply.oldJobName] then
             LuctusJobranksLoadPlayer(ply,ply.oldJob)
         elseif JobRanksConfig then
-            LuctusJobranksTBFYRestore(ply,ply.oldJob)
-        else
-            ply:setDarkRPVar("job", ply.oldJobName)
+            LuctusJobranksTBFYRestore(ply,ply.oldJob)   
         end
         ply.oldJob = nil
         ply.oldJobName = nil
+        ply.oldModel = nil
     end
     ply:SetNWInt("disguiseTeam",-1)
 end
