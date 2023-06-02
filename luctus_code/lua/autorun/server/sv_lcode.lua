@@ -7,6 +7,32 @@ LUCTUS_SCP_CODE_CURRENT = LUCTUS_SCP_CODE_DEFAULT
 
 LuctusLog = LuctusLog or function()end
 
+function LuctusCodeChange(code,ply)
+    local oldCode = LUCTUS_SCP_CODE_CURRENT
+    LUCTUS_SCP_CODE_CURRENT = code
+    
+    local plyname = IsValid(ply) and ply:Nick() or "N/A"
+    local plyid = IsValid(ply) and ply:SteamID() or "N/A"
+    LuctusLog("CodeSystem",plyname.."("..plyid..") changed the code to "..code..".")
+    
+    net.Start("luctus_scp_code")
+        net.WriteString(code)
+    net.Broadcast()
+    PrintMessage(HUD_PRINTCENTER, "Code "..code)
+    DarkRP.notify(player.GetAll(),1,5,"Code "..code.." wurde ausgerufen!")
+    
+    if oldCode == LUCTUS_SCP_CODE_LOCKDOWN then
+        DarkRP.unLockdown(Entity(0))
+    end
+    if code == LUCTUS_SCP_CODE_LOCKDOWN then
+        DarkRP.lockdown(Entity(0))
+    end
+    if LUCTUS_SCP_CODE_USES[code] then
+        LuctusCodePressThings(LUCTUS_SCP_CODE_USES[code])
+    end
+    LuctusCodeActivitySupport(code,oldCode)
+end
+
 hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team) 
     if string.Split(text," ")[1] == "!code" then
         if not LUCTUS_SCP_CODE_ALLOWEDJOBS[ply:getJobTable().name] 
@@ -19,24 +45,9 @@ hook.Add("PlayerSay", "luctus_scp_code", function(ply,text,team)
             DarkRP.notify(ply,1,5,"Dieser Code existiert nicht!")
             return
         end
-        local oldCode = LUCTUS_SCP_CODE_CURRENT
-        LUCTUS_SCP_CODE_CURRENT = code
-        net.Start("luctus_scp_code")
-            net.WriteString(code)
-        net.Broadcast()
-        PrintMessage(HUD_PRINTCENTER, "Code "..code)
-        DarkRP.notify(player.GetAll(),1,5,"Code "..code.." wurde ausgerufen!")
-        LuctusLog("CodeSystem",ply:Nick().."("..ply:SteamID()..") changed the code to "..LUCTUS_SCP_CODE_CURRENT..".")
-        if oldCode == LUCTUS_SCP_CODE_LOCKDOWN then
-            DarkRP.unLockdown(Entity(0))
-        end
-        if code == LUCTUS_SCP_CODE_LOCKDOWN then
-            DarkRP.lockdown(Entity(0))
-        end
-        if LUCTUS_SCP_CODE_USES[code] then
-            LuctusCodePressThings(LUCTUS_SCP_CODE_USES[code])
-        end
-        LuctusCodeActivitySupport(code,oldCode)
+        
+        LuctusCodeChange(code,ply)
+        
         return ""
     end
 end)
