@@ -86,5 +86,20 @@ function luctus_createBlinkTimer(ply)
         end)
     end)
 end
- 
+
+hook.Add("OnHandcuffed","luctus_scp173_handcuffon", function(attacker,victim,cuff)
+    if attacker:GetActiveWeapon():GetClass() == "weapon_scp173_cuff" and victim:GetActiveWeapon():GetClass() == "weapon_handcuffed" then
+        victim:SetNW2Bool("scp173cell",true)
+        --victim:StripWeapon("weapon_handcuffed")
+    end
+end)
+
+hook.Add("OnHandcuffBreak","luctus_scp173_handcuffbreak", function(scpPly, handcuff, maybeFriend)
+    scpPly:SetNW2Bool("scp173cell",false)
+end)
+
+hook.Add("PlayerSpawn","luctus_scp173_handcuffreset", function(ply)
+    ply:SetNW2Bool("scp173cell",false)
+end)
+
 print("[SCP173] SV Loaded!")

@@ -20,7 +20,7 @@ hook.Add("PostDrawHUD", "luctus_scp173", function()
     end
 end)
 
-hook.Add("InitPostEntity","lucid_scp173_createmove",function()
+hook.Add("InitPostEntity","luctus_scp173_createmove",function()
     timer.Simple(5,function()
         hook.Add("CreateMove", "luctus_scp173_disablemovement", function(cmd)
             if LocalPlayer():getJobTable().name == "SCP 173" then
