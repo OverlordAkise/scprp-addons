@@ -84,6 +84,10 @@ function luctusMixTable()
     print("[SCP049] End of mixtable")
 end
 
+hook.Add("InitPostEntity","luctus_scp049_mix_init",function()
+    luctusMixTable()
+end)
+
 hook.Add("OnPlayerChangedTeam", "luctus_scp049_mix_new", function(ply, beforeNum, afterNum)
     if string.EndsWith(RPExtraTeams[afterNum].name,"049") then
         luctusMixTable()
