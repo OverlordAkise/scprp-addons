@@ -1,0 +1,12 @@
+I did not create all of this addon by myself!
+
+Main credits belong to:
+  - https://www.gmodstore.com/market/view/ultimate-gmedic
+  - "Unnamed team cec05afc0db4"
+  - Genzo
+
+This whole addon is based upon the gDeathsystem / Ultimate gMedic addon from the gmodstore.  
+I programmed all serverside and clientside logic myself but the bandages weapon base and the defib weapon base is from the original gDeathsystem.  
+Ofcourse the models and sounds are also from the original creator, but they are used from the workshop.  
+
+If the original creator wants this addon to be gone then please message me! I will remove it ASAP.
