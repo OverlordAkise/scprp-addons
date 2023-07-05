@@ -95,7 +95,6 @@ hook.Add("PlayerSay", "BreachCommand", function(ply, text)
     end
     if LUCTUS_BREACH_APPROVER[ply:GetUserGroup()] and string.StartWith(text,"!approve") then
         local name = string.Split(text,"!approve ")
-        PrintTable(name)
         if not name[2] then return end
         for k,v in pairs(player.GetAll()) do
             if v.breachid and v.breachid == name[2] then
