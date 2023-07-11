@@ -202,6 +202,7 @@ end
 timer.Create("luctus_smedic_bleeding",1,0,function()
     if not LUCTUS_MEDIC_BLEEDING_ENABLED then return end
     for k,ply in pairs(player.GetAll()) do
+        if LUCTUS_MEDIC_IMMUNE_TEAMS[team.GetName(ply:Team())] then continue end
         if not ply:IsBleeding() then continue end
         if math.random(1,100) > ply:GetBleeding() then continue end
         ply:TakeDamage(LUCTUS_MEDIC_BLEED_DAMAGE, ply.BleedingAttacker, ply.BleedingAttacker)
