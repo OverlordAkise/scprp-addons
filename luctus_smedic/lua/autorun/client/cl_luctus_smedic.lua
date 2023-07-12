@@ -90,7 +90,7 @@ net.Receive("luctus_medic_deathscreen",function()
         end
         return
     end
-
+    if IsValid(lDeathscreen) then lDeathscreen:Close() end
     lDeathscreen = vgui.Create("DFrame")
     lDeathscreen:SetDraggable(false)
     lDeathscreen:ShowCloseButton(false)
