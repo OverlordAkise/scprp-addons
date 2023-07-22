@@ -2,17 +2,17 @@
 --Made by OverlordAkise
 
 --What chat command should open the menu
-lucidResearchChatCommand = "!research"
+LUCTUS_RESEARCH_CHAT_COMMAND = "!research"
 --Button to open the menu
-lucidResearchOpenBind = KEY_F7
+LUCTUS_RESEARCH_OPEN_BIND = KEY_F7
 --Which jobs are allowed to create research papers
-lucidResearchAllowedJobs = {
+LUCTUS_RESEARCH_ALLOWED_JOBS = {
     ["Citizen"] = true,
     ["Researcher"] = true,
     ["Wissenschaftler"] = true,
 }
 --Which jobs or usergroups are allowed to delete/edit papers
-lucidResearchAdmins = {
+LUCTUS_RESEARCH_ADMINS = {
     ["superadmin"] = true,
     ["admin"] = true,
     ["O5"] = true,

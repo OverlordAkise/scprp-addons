@@ -51,7 +51,7 @@ function luctusOpenMainResearchWindow()
         lresearch_searchtext = ""
     end
     function lresearch:OnKeyCodePressed(button) 
-        if not self.closing and button == lucidResearchOpenBind then
+        if not self.closing and button == LUCTUS_RESEARCH_OPEN_BIND then
             self.closing = true
                 timer.Simple(0.05,function() lresearch:Close() end)
         end
@@ -336,8 +336,8 @@ end
 
 hook.Add("PlayerButtonDown","luctus_research_open",function(ply,button)
     if ply != LocalPlayer() then return end
-    if button == lucidResearchOpenBind then
-        RunConsoleCommand("say",lucidResearchChatCommand)
+    if button == LUCTUS_RESEARCH_OPEN_BIND then
+        RunConsoleCommand("say",LUCTUS_RESEARCH_CHAT_COMMAND)
     end
 end)
 

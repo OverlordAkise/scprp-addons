@@ -78,7 +78,7 @@ local function luctusEditPaper(_rowid,researcher,summary,fulltext)
 end
 
 hook.Add("PlayerSay","luctus_research",function(ply,text,team)
-    if text == lucidResearchChatCommand and lucidResearchAllowedJobs[ply:getJobTable().name] then
+    if text == LUCTUS_RESEARCH_CHAT_COMMAND and LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then
         net.Start("luctus_research_getall")
         local t = util.TableToJSON(luctusGetPapers(0))
         local a = util.Compress(t)
@@ -95,7 +95,7 @@ local categories = {
 }
 
 net.Receive("luctus_research_getall",function(len,ply)
-    if not lucidResearchAllowedJobs[ply:getJobTable().name] then return end
+    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
     local page = net.ReadInt(32)
     local category = net.ReadInt(4)
     local filter = net.ReadString()
@@ -110,7 +110,7 @@ net.Receive("luctus_research_getall",function(len,ply)
 end)
 
 net.Receive("luctus_research_getid",function(len,ply)
-    if not lucidResearchAllowedJobs[ply:getJobTable().name] then return end
+    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
     local rid = net.ReadInt(32)
     local edit = net.ReadBool()
     local paper = luctusGetPaper(rid)
@@ -125,7 +125,7 @@ net.Receive("luctus_research_getid",function(len,ply)
 end)
 
 net.Receive("luctus_research_save",function(len,ply)
-    if not lucidResearchAllowedJobs[ply:getJobTable().name] then return end
+    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
     local summary = net.ReadString()
     local researcher = net.ReadString()
     local lenge = net.ReadInt(17)
@@ -137,13 +137,13 @@ net.Receive("luctus_research_save",function(len,ply)
 end)
 
 local function isAdmin(ply)
-    if lucidResearchAdmins[ply:getJobTable().name] then return true end
-    if lucidResearchAdmins[ply:GetUserGroup()] then return true end
+    if LUCTUS_RESEARCH_ADMINS[ply:getJobTable().name] then return true end
+    if LUCTUS_RESEARCH_ADMINS[ply:GetUserGroup()] then return true end
     return false
 end
 
 net.Receive("luctus_research_editid",function(len,ply)
-    if not lucidResearchAllowedJobs[ply:getJobTable().name] then return end
+    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
     if not isAdmin(ply) then return end
     local rowid = net.ReadInt(32)
     local summary = net.ReadString()
@@ -157,7 +157,7 @@ net.Receive("luctus_research_editid",function(len,ply)
 end)
 
 net.Receive("luctus_research_deleteid",function(len,ply)
-    if not lucidResearchAllowedJobs[ply:getJobTable().name] then return end
+    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
     if not isAdmin(ply) then return end
     local _rowid = net.ReadInt(32)
     if not tonumber(_rowid) then return end
