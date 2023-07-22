@@ -1,18 +1,6 @@
 --Luctus Research
 --Made by OverlordAkise
 
---Current limits:
---  Only Admins can edit and delete papers
-
---CONFIG START
-lucidResearchChatCommand = "!research"
-lucidResearchAllowedJobs = {
-    ["Citizen"] = true,
-    ["Researcher"] = true,
-    ["Wissenschaftler"] = true,
-}
---CONFIG END
-
 util.AddNetworkString("luctus_research_getall")
 util.AddNetworkString("luctus_research_getid")
 util.AddNetworkString("luctus_research_save")
@@ -97,6 +85,7 @@ hook.Add("PlayerSay","luctus_research",function(ply,text,team)
         net.WriteInt(#a,17)
         net.WriteData(a,#a)
         net.Send(ply)
+        return ""
     end
 end)
 
@@ -147,9 +136,15 @@ net.Receive("luctus_research_save",function(len,ply)
     LuctusLog("Research",ply:Nick().."("..ply:SteamID()..") created new paper")
 end)
 
+local function isAdmin(ply)
+    if lucidResearchAdmins[ply:getJobTable().name] then return true end
+    if lucidResearchAdmins[ply:GetUserGroup()] then return true end
+    return false
+end
+
 net.Receive("luctus_research_editid",function(len,ply)
     if not lucidResearchAllowedJobs[ply:getJobTable().name] then return end
-    if not ply:IsAdmin() then return end
+    if not isAdmin(ply) then return end
     local rowid = net.ReadInt(32)
     local summary = net.ReadString()
     local researcher = net.ReadString()
@@ -163,7 +158,7 @@ end)
 
 net.Receive("luctus_research_deleteid",function(len,ply)
     if not lucidResearchAllowedJobs[ply:getJobTable().name] then return end
-    if not ply:IsAdmin() then return end
+    if not isAdmin(ply) then return end
     local _rowid = net.ReadInt(32)
     if not tonumber(_rowid) then return end
     local rowid = tonumber(_rowid)

@@ -1,8 +1,6 @@
 --Luctus Research
 --Made by OverlordAkise
 
---Config is in the sv_ file
-
 lresearch = nil
 lresearch_list = nil
 lresearch_page = 0
@@ -42,7 +40,7 @@ end)
 function luctusOpenMainResearchWindow()
     --if lresearch then return end
     lresearch = vgui.Create("DFrame")
-    lresearch:SetTitle("Research DB | v1.0 | Made by Luctus")
+    lresearch:SetTitle("Research DB | v1.1 | Made by Luctus")
     lresearch:SetSize(800,600)
     lresearch:Center()
     lresearch:MakePopup()
@@ -52,6 +50,12 @@ function luctusOpenMainResearchWindow()
         lresearch_searchid = 0
         lresearch_searchtext = ""
     end
+    function lresearch:OnKeyCodePressed(button) 
+        if not self.closing and button == lucidResearchOpenBind then
+            self.closing = true
+                timer.Simple(0.05,function() lresearch:Close() end)
+        end
+	end
 
     local MenuBar = vgui.Create( "DMenuBar", lresearch )
     MenuBar:DockMargin( 0, 0, 0, 0 )
@@ -328,7 +332,13 @@ The tester, Peter Peterovsky, was released and is save again.
 
 -Hustensaft
   ]])
-  
 end
+
+hook.Add("PlayerButtonDown","luctus_research_open",function(ply,button)
+    if ply != LocalPlayer() then return end
+    if button == lucidResearchOpenBind then
+        RunConsoleCommand("say",lucidResearchChatCommand)
+    end
+end)
 
 print("[luctus_research] loaded cl")
