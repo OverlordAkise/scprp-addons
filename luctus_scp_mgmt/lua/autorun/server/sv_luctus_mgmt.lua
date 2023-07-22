@@ -140,7 +140,8 @@ hook.Add("PlayerSay","luctus_scp_mgmt",function(ply,text,team)
         if not LuctusMGMTAllowed(ply) then return end
         net.Start("luctus_scp_mgmt")
         net.Send(ply)
+        return ""
     end
 end)
 
-print("[SCPMGMT] SV loaded!")
+print("[SCPMGMT] loaded sv")

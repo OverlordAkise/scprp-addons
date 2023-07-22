@@ -98,6 +98,16 @@ local function AskPlayerInput(text,func)
     end
 end
 
+local function closeFrame(el)
+    gui.EnableScreenClicker( false )
+    el:SetMouseInputEnabled( false )
+    el:SetKeyboardInputEnabled( false )
+    el:MoveTo(-1*ScrW(), el:GetY(),0.5,0)
+    timer.Simple(0.5,function()
+        el:Close()
+    end)
+end
+
 local function createCloseButton(el)
     local CloseButton = vgui.Create("DButton", el)
     CloseButton:SetText("X")
@@ -105,13 +115,7 @@ local function createCloseButton(el)
     CloseButton:SetSize(20,20)
     CloseButton:SetTextColor(Color(0,195,165))
     CloseButton.DoClick = function()
-        gui.EnableScreenClicker( false )
-        el:SetMouseInputEnabled( false )
-        el:SetKeyboardInputEnabled( false )
-        el:MoveTo(-1*ScrW(), el:GetY(),0.5,0)
-        timer.Simple(0.5,function()
-            el:Close()
-        end)
+        closeFrame(el)
     end
     CloseButton.Paint = function(self,w,h)
         draw.RoundedBox(0, 0, 0, w, h, Color(47, 49, 54))
@@ -245,6 +249,12 @@ function LuctusOpenSCPMGMT()
         draw.RoundedBox(0, 0, 0, w, h, Color(0,195,165))--32,34,37
         draw.RoundedBox(0, 1, 1, w - 2, h - 2, Color(54, 57, 62))
     end
+    function luctus_scpmgmt_frame:OnKeyCodePressed(button) 
+        if not self.closing and button == LUCTUS_SCP_MGMT_BINDKEY then
+            self.closing = true
+            closeFrame(self)
+        end
+	end
     createCloseButton(luctus_scpmgmt_frame)
     local Scroll = vgui.Create("DScrollPanel", luctus_scpmgmt_frame)
     Scroll:Dock(FILL)
@@ -269,4 +279,12 @@ hook.Add("LuctusLogAddCategory","luctus_scpmgmt",function()
     table.insert(lucid_log_quickfilters,"SCPMGMT")
 end)
 
-print("[SCPMGMT] CL loaded!")
+hook.Add("PlayerButtonDown","luctus_scp_mgmt_open",function(ply,button)
+    if ply != LocalPlayer() then return end
+    if not LUCTUS_SCP_MGMT_ALLOWED_JOBS[team.GetName(LocalPlayer():Team())] then return end
+    if button == LUCTUS_SCP_MGMT_BINDKEY then
+        RunConsoleCommand("say",LUCTUS_SCP_MGMT_COMMAND)
+    end
+end)
+
+print("[SCPMGMT] loaded cl")
