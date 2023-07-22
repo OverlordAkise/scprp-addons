@@ -336,6 +336,7 @@ end
 
 hook.Add("PlayerButtonDown","luctus_research_open",function(ply,button)
     if ply != LocalPlayer() then return end
+    if not LUCTUS_RESEARCH_ALLOWED_JOBS[team.GetName(LocalPlayer():Team())] then return end
     if button == LUCTUS_RESEARCH_OPEN_BIND then
         RunConsoleCommand("say",LUCTUS_RESEARCH_CHAT_COMMAND)
     end
