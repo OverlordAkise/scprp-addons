@@ -224,4 +224,13 @@ local meta = FindMetaTable("Player")
 --self:IsKnocked()
 function meta:TurnIntoRagdoll()end
 
+--Fix jobchange deathscreen
+hook.Add("InitPostEntity","luctus_smedic_check",function()
+    if not GAMEMODE then return end
+    if GAMEMODE.Config.norespawn == false and GAMEMODE.Config.instantjob == false then
+        print("[luctus_smedic] WARNING: setting GM.Config.instantjob to true for better compatibility")
+        GAMEMODE.Config.instantjob = true
+    end
+end)
+
 print("[luctus_smedic] sv loaded")
