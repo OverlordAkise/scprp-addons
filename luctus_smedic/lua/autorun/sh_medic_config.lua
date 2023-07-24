@@ -18,8 +18,12 @@ LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS = 30
 LUCTUS_MEDIC_BANDAGE_HEAL_BLEED = 30
 --How much health a bandage heals
 LUCTUS_MEDIC_BANDAGE_HEAL_HP = 30
---These teams can neither bleed nor be revived
+--These jobs can neither bleed, receive limb damage nor be revived
 LUCTUS_MEDIC_IMMUNE_TEAMS = {
+    ["Hobo"] = true,
+}
+--These jobs can, if they are immune, still be revived
+LUCTUS_MEDIC_IMMUNE_BUT_REVIVEABLE = {
     ["Hobo"] = true,
 }
 

@@ -84,18 +84,20 @@ end)
 hook.Add("PostPlayerDeath","luctus_smedic_deathscreen",function(ply)
 
     net.Start("luctus_medic_deathscreen")
-    --BleedingOut
-    if not LUCTUS_MEDIC_IMMUNE_TEAMS[team.GetName(ply:Team())] then
-        ply.respawnTime = CurTime()+LUCTUS_MEDIC_BLEEDOUT_TIME
-        net.WriteInt(LUCTUS_MEDIC_BLEEDOUT_TIME,15)
-        net.WriteBool(false)
-    else--Instantly Dead
+
+    local plyTeam = team.GetName(ply:Team())
+    if LUCTUS_MEDIC_IMMUNE_TEAMS[plyTeam] and not LUCTUS_MEDIC_IMMUNE_BUT_REVIVEABLE[plyTeam] then
+        --Instantly Dead
         ply.respawnTime = CurTime()+LUCTUS_MEDIC_RESPAWN_TIME
         net.WriteInt(LUCTUS_MEDIC_RESPAWN_TIME,15)
         net.WriteBool(true)
+    else
+        --Bleeding out, = reviveable
+        ply.respawnTime = CurTime()+LUCTUS_MEDIC_BLEEDOUT_TIME
+        net.WriteInt(LUCTUS_MEDIC_BLEEDOUT_TIME,15)
+        net.WriteBool(false)
     end  
     net.Send(ply)
-    
     
     ply:AddBleeding(-100)
     ply.isDead = true

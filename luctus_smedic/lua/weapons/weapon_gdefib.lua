@@ -50,7 +50,7 @@ function SWEP:PrimaryAttack()
             DarkRP.notify(owner,1,5,"This player is already dead!")
             return
         end
-        if LUCTUS_MEDIC_IMMUNE_TEAMS[team.GetName(trace.Entity.deathOwner:Team())] then return end
+        if LUCTUS_MEDIC_IMMUNE_TEAMS[team.GetName(trace.Entity.deathOwner:Team())] and not LUCTUS_MEDIC_IMMUNE_BUT_REVIVEABLE[team.GetName(trace.Entity.deathOwner:Team())] then return end
         self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
         timer.Simple(0.3, function()
             self:SetCharge(0)
