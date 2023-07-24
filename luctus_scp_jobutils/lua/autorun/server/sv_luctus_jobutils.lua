@@ -3,6 +3,31 @@
 
 --CONFIG START
 
+--[[
+    The main config is to be set in the jobs.lua
+    Available jobs configs:
+    
+    noUse = false,
+    noJump = false,
+    noDuck = false,
+    noVoice = false,
+    noSit = false,
+    noFlashlight = false,
+    noUse = false,
+    noFootsteps = false,
+    noWeaponPickup = false,
+    customFootsteps = "fart.mp3",
+    health = 100,
+    armor = 0,
+    walkspeed = 100,
+    slowwalkspeed = 50,
+    runspeed = 150,
+    jumppower = 80,
+    
+--]]
+
+--This is the "eye height" of the job
+--If you are playing e.g. SCP999 then your viewpoint should be lower than a human
 LuctusSCPUtilsJobOffsets = {
     ["SCP 999"] = 40,
     ["SCP 066"] = 30,
@@ -14,6 +39,10 @@ LuctusSCPUtilsJobOffsets = {
     ["Hobo"] = 20,
 }
 
+--These are the hitboxes of jobs
+--You only have to change the 3rd number of max
+--This is the height of the player
+--On e.g. SCP999 the "hitbox" should be lower than a human
 LuctusSCPJobHulls = {
     ["SCP 682"] = {
         min = Vector(-16,-16,0),
