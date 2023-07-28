@@ -26,20 +26,20 @@ hook.Add("PlayerSay", "luctus_jobnumber_set", function(ply,text,plyteam)
         local t = string.Split(text," ")
         if not t[2] or not t[3] then return end
         if not tonumber(t[3]) then return end
-        if not luctus_jobnumbers[team.GetName(ply:Team())] then return end
-        if not luctus_jobnumbers_USERS_CAN_CHANGE and not ply:IsAdmin() then return end
+        if not LUCTUS_JOBNUMBERS[team.GetName(ply:Team())] then return end
+        if not LUCTUS_JOBNUMBERS_USERS_CAN_CHANGE and not ply:IsAdmin() then return end
         local newId = tonumber(t[3])
         local jobname = team.GetName(ply:Team())
-        if newId < luctus_jobnumbers[jobname][2] or newId > luctus_jobnumbers[jobname][3] then return end
+        if newId < LUCTUS_JOBNUMBERS[jobname][2] or newId > LUCTUS_JOBNUMBERS[jobname][3] then return end
         
         local tPly = luctusGetPlayer(t[2])
         if not tPly then
             ply:PrintMessage(HUD_PRINTTALK, "ERROR: Too many players found!")
             return
         end
-        if luctus_jobnumbers_USERS_CAN_CHANGE and not ply:IsAdmin() and not ply != tPly then return end
+        if LUCTUS_JOBNUMBERS_USERS_CAN_CHANGE and not ply:IsAdmin() and not ply != tPly then return end
         
-        ply:SetNWString("l_numtag",string.format(luctus_jobnumbers[jobname][1],newId))
+        ply:SetNWString("l_numtag",string.format(LUCTUS_JOBNUMBERS[jobname][1],newId))
         local res = sql.Query("UPDATE luctus_jobnumbers SET jobnumber="..newId.." WHERE steamid="..sql.SQLStr(ply:SteamID()).." AND jobname="..sql.SQLStr(jobname))
         if res == false then
             error(sql.LastError())
@@ -50,7 +50,7 @@ end)
 
 
 hook.Add("OnPlayerChangedTeam", "luctus_numtags", function(ply, beforeNum, afterNum)
-    if luctus_jobnumbers[team.GetName(beforeNum)] then
+    if LUCTUS_JOBNUMBERS[team.GetName(beforeNum)] then
         ply:SetNWString("l_numtag","")
     end
 
@@ -59,16 +59,16 @@ end)
 
 
 function LuctusJobnumbersLoadPlayer(ply,jobname)
-    if not luctus_jobnumbers[jobname] then return end
-    local jconf = luctus_jobnumbers[jobname]
+    if not LUCTUS_JOBNUMBERS[jobname] then return end
+    local jconf = LUCTUS_JOBNUMBERS[jobname]
     local randomNumber = math.random(jconf[2],jconf[3])
     ply:SetNWString("l_numtag",string.format(jconf[1],randomNumber))
-    local res = sql.Query("SELECT * FROM luctus_jobnumbers WHERE steamid = "..sql.SQLStr(ply:SteamID()).." AND jobname = "..sql.SQLStr(jobname))
+    local res = sql.QueryValue("SELECT jobnumber FROM luctus_jobnumbers WHERE steamid = "..sql.SQLStr(ply:SteamID()).." AND jobname = "..sql.SQLStr(jobname))
     if res == false then
         error(sql.LastError())
     end
-    if res and res[1] then
-        ply:SetNWString("l_numtag",string.format(jconf[1],res[1].jobnumber))
+    if res then
+        ply:SetNWString("l_numtag",string.format(jconf[1],res))
     else
         res = sql.Query("INSERT INTO luctus_jobnumbers(steamid,jobname,jobnumber) VALUES("..sql.SQLStr(ply:SteamID())..","..sql.SQLStr(jobname)..","..randomNumber..")")
         if res == false then
