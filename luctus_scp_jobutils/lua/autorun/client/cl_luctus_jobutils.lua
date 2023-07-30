@@ -50,6 +50,24 @@ net.Receive("luctus_jobutils_hull",function()
     --ply:SetHullDuck(vecMin,vecMax)
 end)
 
+net.Receive("luctus_jobutil_joinsound",function()
+    local soundString = net.ReadString()
+    if string.StartsWith(soundString,"http") then
+        sound.PlayURL(soundString,"",function(s,errorid,errorname)
+            if IsValid(s) then
+                s:Play()
+            else
+                print("ERROR PLAYING JOINSOUND")
+                print(soundString)
+                print(errorid)
+                print(errorname)
+            end
+        end)
+    else
+        surface.PlaySound(soundString)
+    end
+end)
+
 hook.Add("PlayerFootstep","luctus_scp_jobutils",function(ply)
     if ply:getJobTable().noFootsteps or ply:getJobTable().customFootsteps then return true end
 end)

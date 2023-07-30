@@ -70,6 +70,7 @@ LuctusSCPJobHulls = {
 --CONFIG END
 
 util.AddNetworkString("luctus_jobutils_hull")
+util.AddNetworkString("luctus_jobutil_joinsound")
 
 function LuctusSCPResetJobUtils(ply)
     ply.noVoice = false
@@ -106,6 +107,11 @@ hook.Add("OnPlayerChangedTeam", "luctus_scp_jobutils", function(ply, beforeNum, 
     end
     if tab.customFootsteps then
         ply.customFootsteps = tab.customFootsteps
+    end
+    if tab.customJoinSound then
+        net.Start("luctus_jobutil_joinsound")
+            net.WriteString(tab.customJoinSound)
+        net.Broadcast()
     end
 end)
 
