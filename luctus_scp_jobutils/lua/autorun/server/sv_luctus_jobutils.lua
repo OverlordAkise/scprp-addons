@@ -23,6 +23,7 @@
     slowwalkspeed = 50,
     runspeed = 150,
     jumppower = 80,
+    customJoinSound = "https://example.com/test.mp3",
     
 --]]
 
