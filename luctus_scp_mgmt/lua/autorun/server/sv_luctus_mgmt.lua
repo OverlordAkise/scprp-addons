@@ -3,8 +3,6 @@
 
 util.AddNetworkString("luctus_scp_mgmt")
 
-LuctusLog = LuctusLog or function()end
-
 function LuctusMGMTAllowed(ply)
     if not IsValid(ply) then return end
     local pteam = team.GetName(ply:Team())
@@ -60,13 +58,13 @@ function LuctusMGMTIsEmergencyJob(name)
 end
 
 function LuctusMGMTIsEmergencyLive(name)
-    print("[DEBUG][mgmt]","IsLive:",name,timer.Exists("mgmt_emergency_"..name),GetGlobal2Bool("mgmt_emergency_"..name))
+    --print("[DEBUG][mgmt]","IsLive:",name,timer.Exists("mgmt_emergency_"..name),GetGlobal2Bool("mgmt_emergency_"..name))
     if timer.Exists("mgmt_emergency_"..name) or GetGlobal2Bool("mgmt_emergency_"..name) then return true end
     return false
 end
 
 function LuctusMGMTEmergency(shouldStart,ply,groupName)
-    print("[DEBUG][mgmt]",shouldStart,ply,groupName)
+    --print("[DEBUG][mgmt]",shouldStart,ply,groupName)
     if not groupName or groupName == "" then return end
     if shouldStart then
         if LuctusMGMTIsEmergencyLive(groupName) then return end
@@ -76,7 +74,7 @@ function LuctusMGMTEmergency(shouldStart,ply,groupName)
             SetGlobal2Bool("mgmt_emergency_"..groupName,true)
             PrintMessage(HUD_PRINTTALK, "[MGMT] "..groupName.."-Emergency Jobs are now available!")
         end)
-        LuctusLog("SCPMGMT",ply:Nick().."("..ply:SteamID()..") called for an "..groupName.."-Emergency.")
+        hook.Run("LuctusSGPMGMTEmergencyCall",ply,groupName)
     else
         if not LuctusMGMTIsEmergencyLive(groupName) then return end
         PrintMessage(HUD_PRINTTALK, "[MGMT] The Foundation has stopped the "..groupName.."-Emergency!")
@@ -90,7 +88,7 @@ function LuctusMGMTEmergency(shouldStart,ply,groupName)
                 end
             end
         end)
-        LuctusLog("SCPMGMT",ply:Nick().."("..ply:SteamID()..") stopped an "..groupName.."-Emergency.")
+        hook.Run("LuctusSGPMGMTEmergencyStop",ply,groupName)
     end
 end
 
@@ -124,7 +122,7 @@ function LuctusMGMTDegradePlayer(target,text,source)
         target:changeTeam(found and newTeam or GAMEMODE.DefaultTeam, true)
         
     end)
-    LuctusLog("SCPMGMT",target:Nick().."("..target:SteamID()..") demoted "..source:Nick().."("..source:SteamID()..") via MGMT.")
+    hook.Run("LuctusSGPMGMTDemoteStart",source,target)
 end
 
 function LuctusMGMTStopDegradePlayer(target,source)
@@ -132,7 +130,7 @@ function LuctusMGMTStopDegradePlayer(target,source)
     local reason = "[MGMT] Your demote process was stopped."
     LuctusNotify(target,reason,1,15)
     timer.Remove(target:SteamID().."_demote")
-    LuctusLog("SCPMGMT",target:Nick().."("..target:SteamID()..") stopped the MGMT demote of "..source:Nick().."("..source:SteamID()..")")
+    hook.Run("LuctusSGPMGMTDemoteStop",source,target)
 end
 
 hook.Add("PlayerSay","luctus_scp_mgmt",function(ply,text,team)

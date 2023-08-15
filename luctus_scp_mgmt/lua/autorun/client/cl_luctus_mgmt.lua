@@ -275,10 +275,6 @@ function LuctusOpenSCPMGMT()
     end
 end
 
-hook.Add("LuctusLogAddCategory","luctus_scpmgmt",function()
-    table.insert(lucid_log_quickfilters,"SCPMGMT")
-end)
-
 hook.Add("PlayerButtonDown","luctus_scp_mgmt_open",function(ply,button)
     if ply != LocalPlayer() then return end
     if not LUCTUS_SCP_MGMT_ALLOWED_JOBS[team.GetName(LocalPlayer():Team())] then return end
