@@ -4,8 +4,6 @@
 util.AddNetworkString("luctus_disguise")
 util.AddNetworkString("luctus_disguise_off")
 
-LuctusLog = LuctusLog or function()end
-
 net.Receive("luctus_disguise",function(len,ply)
     local cabEnt = net.ReadEntity()
     if cabEnt:GetClass() ~= "luctus_disguisecabinet" then return end
@@ -14,7 +12,7 @@ net.Receive("luctus_disguise",function(len,ply)
     local jobname = net.ReadString()
     if LUCTUS_DISGUISE_JOB_BLACKLIST[jobname] then return end
     local model = net.ReadString()
-    LuctusLog("Disguise",ply:Nick().."("..ply:SteamID()..") disguised to job "..jobname.." ("..model..")")
+    hook.Run("LuctusDisguiseDisguised",ply,jobname,model)
     local _rankid = net.ReadString()
     if _rankid != "" and not tonumber(_rankid) then return end
     local jobID = -1
@@ -22,11 +20,11 @@ net.Receive("luctus_disguise",function(len,ply)
         if v.name and v.name == jobname then
             jobID = k
             if isstring(v.model) and v.model != model then
-                LuctusLog("Disguise",ply:Nick().."("..ply:SteamID()..") tried to disguise with wrong model: "..model)
+                print("[luctus_disguise] WARNING", pply:Nick().."("..ply:SteamID()..") tried to disguise with wrong model: "..model)
                 model = v.model
             end
             if istable(v.model) and not table.HasValue(v.model,model) then
-                LuctusLog("Disguise",ply:Nick().."("..ply:SteamID()..") tried to disguise with wrong model: "..model)
+                print("[luctus_disguise] WARNING", ply:Nick().."("..ply:SteamID()..") tried to disguise with wrong model: "..model)
                 model = v.model[1]
             end
             break

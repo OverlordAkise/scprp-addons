@@ -270,8 +270,4 @@ function LuctusAddToModelList(curTeam,modelList)
     end
 end
 
-hook.Add("LuctusLogAddCategory","luctus_disguise",function()
-    table.insert(lucid_log_quickfilters,"Disguise")
-end)
-
 print("[luctus_disguise] cl loaded")
