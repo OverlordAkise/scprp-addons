@@ -11,9 +11,7 @@ function LuctusCodeChange(code,ply)
     local oldCode = LUCTUS_SCP_CODE_CURRENT
     LUCTUS_SCP_CODE_CURRENT = code
     
-    local plyname = IsValid(ply) and ply:Nick() or "N/A"
-    local plyid = IsValid(ply) and ply:SteamID() or "N/A"
-    LuctusLog("CodeSystem",plyname.."("..plyid..") changed the code to "..code..".")
+    hook.Run("LuctusCodeChanged",ply,code)
     
     net.Start("luctus_scp_code")
         net.WriteString(code)

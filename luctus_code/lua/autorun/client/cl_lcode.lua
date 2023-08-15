@@ -22,13 +22,6 @@ surface.CreateFont("luctus_scp_code_hud_font",{
     outline = false,
 })
 
-hook.Add("LuctusLogAddCategory","luctus_scpcodesys",function()
-    table.insert(lucid_log_quickfilters,"CodeSystem")
-end)
-
-
-
-
 local font = "luctus_scp_code_hud_font"
 local borderCol = Color(0, 195, 165)
 local frameCol = Color(26,26,26)
