@@ -42,9 +42,6 @@ SWEP.channel = "<none>"
 SWEP.isOn = false
 
 if CLIENT then
-    hook.Add("LuctusLogAddCategory","luctus_radio_2",function()
-        table.insert(lucid_log_quickfilters,"Radio")
-    end)
     function SWEP:Initialize()
         deviceScreen = vgui.Create("DFrame")
         deviceScreen:SetSize(157, 60)

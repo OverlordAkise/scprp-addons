@@ -6,8 +6,6 @@ resource.AddWorkshop("635535045")
 
 luctus_radio_teams = {}
 
-LuctusLog = LuctusLog or function()end
-
 lradioHear = {}
 
 for _, ply in pairs(player.GetAll()) do
@@ -72,7 +70,6 @@ net.Receive("luctus_radio", function(len,ply)
     
     ply.lradioChannel = channel
     DarkRP.notify(ply,0,5,"Channel switched to "..channel)
-    LuctusLog("Radio",ply:Nick().."("..ply:SteamID()..") his channel to "..ply.lradioChannel)
 end)
 
 print("[luctus_sradio] sv loaded!")
