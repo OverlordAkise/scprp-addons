@@ -200,8 +200,4 @@ function LuctusWCAddWeaponIcons(iconList, weplist, catName, cabinEnt)
     end
 end
 
-hook.Add("LuctusLogAddCategory","luctus_weaponcabinet",function()
-    table.insert(lucid_log_quickfilters,"Weaponcabin")
-end)
-
 print("[luctus_weaponcabinet] cl loaded")

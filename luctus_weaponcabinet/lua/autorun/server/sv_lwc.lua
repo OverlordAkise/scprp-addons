@@ -40,7 +40,7 @@ net.Receive("luctus_weaponcabinet",function(len,ply)
     if not LUCTUS_WEAPONCABINET_S[cat]["weps"][wep] then return end
     ply:Give(wep)
     ply.luctus_wc_weps[wep] = true
-    LuctusLog("Weaponcabin",ply:Nick().."("..ply:SteamID()..") used weaponcabinet to get a "..wep)
+    hook.Run("LuctusWeaponCabinetGet",ply,wep)
 end)
 
 net.Receive("luctus_weaponcabinet_r",function(len,ply)
@@ -53,7 +53,7 @@ net.Receive("luctus_weaponcabinet_r",function(len,ply)
         if ply.luctus_wc_weps[wep] then
             ply.luctus_wc_weps[wep] = nil
         end
-        LuctusLog("Weaponcabin",ply:Nick().."("..ply:SteamID()..") used weaponcabinet to return a "..wep)
+        hook.Run("LuctusWeaponCabinetReturn",ply,wep)
     end
 end)
 
