@@ -16,11 +16,10 @@ hook.Add("PlayerSpawn","luctus_snlr",function(ply)
         LuctusNLRStop(ply)
         return
     end
-    LuctusNLRStart(ply)
+    LuctusNLRStart(ply,LUCTUS_NLR_TIME)
 end)
 
-function LuctusNLRStart(ply)
-    local ntime = LUCTUS_NLR_TIME
+function LuctusNLRStart(ply,ntime)
     local etime = CurTime()+ntime
     ply.NLREndTime = etime
     timer.Create(ply:SteamID().."_nlr",ntime,1,function()
