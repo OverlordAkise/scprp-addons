@@ -10,6 +10,12 @@ LUCTUS_NLR_TIME = 30
 util.AddNetworkString("luctus_snlr")
 
 hook.Add("PlayerSpawn","luctus_snlr",function(ply)
+    --if job switching: do not create nlr, delete old one
+    if ply.nlrLastJob ~= ply:Team() then
+        ply.nlrLastJob = ply:Team()
+        LuctusNLRStop(ply)
+        return
+    end
     LuctusNLRStart(ply)
 end)
 
@@ -30,12 +36,12 @@ end
 function LuctusNLRStop(ply)
     if timer.Exists(ply:SteamID().."_nlr") then
         timer.Remove(ply:SteamID().."_nlr")
+        net.Start("luctus_snlr")
+            net.WriteUInt(0,13)
+        net.Send(ply)
+        hook.Run("LuctusNLREnd",ply)
     end
     ply.NLREndTime = 0
-    net.Start("luctus_snlr")
-        net.WriteUInt(0,13)
-    net.Send(ply)
-    hook.Run("LuctusNLREnd",ply)
 end
 
 function LuctusNLRIsActive(ply)
