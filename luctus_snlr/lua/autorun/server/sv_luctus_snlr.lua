@@ -2,7 +2,7 @@
 --Made by OverlordAkise
 
 --How many seconds NLR lasts for
-LUCTUS_NLR_TIME = 30
+LUCTUS_NLR_TIME = 300
 
 
 --CONFIG END
@@ -21,7 +21,7 @@ end)
 
 function LuctusNLRStart(ply,ntime)
     local etime = CurTime()+ntime
-    ply.NLREndTime = etime
+    --ply.NLREndTime = etime
     timer.Create(ply:SteamID().."_nlr",ntime,1,function()
         if not IsValid(ply) then return end
         LuctusNLRStop(ply)
@@ -40,11 +40,13 @@ function LuctusNLRStop(ply)
         net.Send(ply)
         hook.Run("LuctusNLREnd",ply)
     end
-    ply.NLREndTime = 0
+    --ply.NLREndTime = 0
 end
 
 function LuctusNLRIsActive(ply)
-    if timer.Exists(ply:SteamID().."_nlr") or (ply.NLREndTime and ply.NLREndTime > CurTime()) then return true end
+    if timer.Exists(ply:SteamID().."_nlr") then
+        return timer.TimeLeft(ply:SteamID().."_nlr")
+    end
     return false
 end
 
