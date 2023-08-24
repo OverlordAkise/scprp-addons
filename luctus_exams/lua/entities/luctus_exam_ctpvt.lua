@@ -15,8 +15,12 @@ ENT.Category = "Exam NPCs"
 
 ENT.PrintName = "Example Exam NPC"
 ENT.Model = "models/odessa.mdl"
+--Allowed mistakes to make (<= this means you pass)
 ENT.AllowedMistakes = 1
+--Delay between exams in seconds
+ENT.TimeBetweenExams = 60
 
+--Function run after passing this exam
 function ENT:SuccessFunction(ply)
     if not ply or not IsValid(ply) then return end
     --GAS.JobWhitelist:AddToWhitelist( 2, GAS.JobWhitelist.LIST_TYPE_STEAMID, ply:AccountID())

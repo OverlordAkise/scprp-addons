@@ -17,6 +17,7 @@ ENT.AdminSpawnable = false
 ENT.Category = "Exam NPCs"
 ENT.Model = "models/odessa.mdl"
 ENT.AllowedMistakes = 1
+ENT.TimeBetweenExams = 60
 
 function ENT:SuccessFunction(ply)
     error("exam base was called, No SuccessFunction defined!")
@@ -29,6 +30,10 @@ ENT.Questions = {
 
 if SERVER then
     function ENT:Use(ply)
+        if ply[self:GetClass()] and ply[self:GetClass()] > CurTime() then
+            DarkRP.notify(ply,0,5,"You have to wait "..string.NiceTime(ply[self:GetClass()]-CurTime()).." before taking the exam again!")
+            return
+        end
         net.Start("luctus_exam")
             net.WriteEntity(self)
             net.WriteTable(self.Questions)

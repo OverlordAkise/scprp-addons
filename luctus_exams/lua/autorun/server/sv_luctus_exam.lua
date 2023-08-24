@@ -7,6 +7,13 @@ net.Receive("luctus_exam", function(len, ply)
     local testEnt = net.ReadEntity()
     if not testEnt or not IsValid(testEnt) or not string.StartsWith(testEnt:GetClass(),"luctus_exam_") then return end
     if testEnt:GetPos():Distance(ply:GetPos()) > 256 then return end
+    local entClass = testEnt:GetClass()
+    
+    --Cooldown / Delay
+    if ply[entClass] and ply[entClass] > CurTime() then
+        return
+    end
+    ply[entClass] = CurTime()+testEnt.TimeBetweenExams
     
     local wrongAnswers = net.ReadUInt(8)
     local success = wrongAnswers <= testEnt.AllowedMistakes
