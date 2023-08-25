@@ -87,7 +87,7 @@ end
 *******************************************************--]]
 
 function SWEP:Initialize()
-
+    self:SetHoldType(self.HoldType)
 	-- other initialize code goes here
 
 	if CLIENT then
@@ -142,11 +142,14 @@ end
 if CLIENT then
 
 	SWEP.vRenderOrder = nil
-	function SWEP:ViewModelDrawn()
+    function SWEP:PostDrawViewModel(vm)
+        vm:SetMaterial("")
+    end
+	function SWEP:PreDrawViewModel()
 		
 		local vm = self.Owner:GetViewModel()
 		if !IsValid(vm) then return end
-		
+		vm:SetMaterial("Models/effects/vol_light001")
 		if (!self.VElements) then return end
 		
 		self:UpdateBonePositions(vm)
@@ -363,7 +366,7 @@ if CLIENT then
 			end
 			
 		end
-		-- TODO
+
 	end
 
 	function SWEP:GetBoneOrientation( basetab, tab, ent, bone_override )
