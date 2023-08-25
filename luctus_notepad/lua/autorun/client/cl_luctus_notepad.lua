@@ -16,16 +16,17 @@ hook.Add("PostDrawTranslucentRenderables","luctus_notepad_text",function()
     local lplypos = LocalPlayer():GetPos()
     for k,ply in pairs(player.GetAll()) do
         local wep = ply:GetActiveWeapon()
-        if not IsValid(wep) or wep:GetClass() ~= "weapon_luctus_np" or not wep:GetIsShowing() or lplypos:Distance(ply:GetPos()) > 500 then return end
-        local rHand = ply:LookupBone("ValveBiped.Bip01_R_Hand")
-        if not rHand then return end
-        local handPos, handAng = ply:GetBonePosition(rHand)
-        handAng:RotateAroundAxis(handAng:Up(), -90)
-        handAng:RotateAroundAxis(handAng:Forward(),270)
-        handPos = handPos + (handAng:Up()*10) + handAng:Right()*-5
-        cam.Start3D2D(handPos, handAng, 0.1)
-            draw.DrawText(ply:GetNW2String("luctus_notepad",""), "luctus_np", 0, 0, color_white,TEXT_ALIGN_CENTER)
-        cam.End3D2D()
+        if IsValid(wep) and wep:GetClass() == "weapon_luctus_np" and wep:GetIsShowing() and lplypos:Distance(ply:GetPos()) < 500 then
+            local rHand = ply:LookupBone("ValveBiped.Bip01_R_Hand")
+            if not rHand then return end
+            local handPos, handAng = ply:GetBonePosition(rHand)
+            handAng:RotateAroundAxis(handAng:Up(), -90)
+            handAng:RotateAroundAxis(handAng:Forward(),270)
+            handPos = handPos + (handAng:Up()*10) + handAng:Right()*-5
+            cam.Start3D2D(handPos, handAng, 0.1)
+                draw.DrawText(ply:GetNW2String("luctus_notepad",""), "luctus_np", 0, 0, color_white,TEXT_ALIGN_CENTER)
+            cam.End3D2D()
+        end
     end
 end)
 
