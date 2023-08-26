@@ -56,7 +56,7 @@ hook.Add("CreateEntityRagdoll","luctus_smedic_ragowner",function(ply,rag)
     
     rag:SetOwner(ply)
     rag.deathRagdollHP = LUCTUS_MEDIC_RAGDOLL_HEALTH
-    rag:SetNWInt("state","bleeding out")
+    rag:SetNW2Int("state","bleeding out")
     rag.isStabilized = false
     rag.isDeathRagdoll = true
     rag.isBleedingOut = true
@@ -64,7 +64,7 @@ hook.Add("CreateEntityRagdoll","luctus_smedic_ragowner",function(ply,rag)
     if LUCTUS_MEDIC_IMMUNE_TEAMS[team.GetName(ply:Team())] then
         rag.isFullyDead = true
         rag.isBleedingOut = false
-        rag:SetNWInt("state","deceased")
+        rag:SetNW2Int("state","deceased")
     end
 end)
 
@@ -83,6 +83,7 @@ end)
 
 hook.Add("PostPlayerDeath","luctus_smedic_deathscreen",function(ply)
 
+    if ply:getDarkRPVar("AFK") then return end
     net.Start("luctus_medic_deathscreen")
 
     local plyTeam = team.GetName(ply:Team())
@@ -105,7 +106,7 @@ hook.Add("PostPlayerDeath","luctus_smedic_deathscreen",function(ply)
         if IsValid(ply.deathRagdoll) then
             ply:Spectate(OBS_MODE_CHASE)
             ply:SpectateEntity(ply.deathRagdoll)
-            ply.deathRagdoll:SetNWInt("respawnTime",ply.respawnTime)
+            ply.deathRagdoll:SetNW2Int("respawnTime",ply.respawnTime)
         end
     end)
     LuctusMedicPlayScream(ply)
@@ -124,13 +125,13 @@ hook.Add("KeyPress","luctus_smedic_respawn",function(ply,key)
 end)
 
 hook.Add("PlayerUse","luctus_smedic_stabilize",function(ply,ent)
-    if not IsValid(ent) or not ent.isDeathRagdoll or ent.isStabilized or not ent.isBleedingOut then return end
+    if not IsValid(ent) or not ent.isDeathRagdoll or ent.isStabilized or not ent.isBleedingOut or ent.isFullyDead then return end
     ent.isStabilized = true
     local owner = ent.deathOwner
     if not IsValid(owner) then return end
     owner.respawnTime = owner.respawnTime + LUCTUS_MEDIC_STABILIZE_TIME_ADDED
-    ent:SetNWInt("respawnTime",owner.respawnTime)
-    ent:SetNWString("state","bleeding out (stabilized)")
+    ent:SetNW2Int("respawnTime",owner.respawnTime)
+    ent:SetNW2String("state","bleeding out (stabilized)")
     DarkRP.notify(ply,0,5,"You stabilized your target!")
 end)
 
@@ -151,8 +152,8 @@ hook.Add("EntityTakeDamage", "luctus_smedic_bleed", function(ent, dmginfo)
             local ply = ent.deathOwner
             if not IsValid(ply) then return end
             ply.respawnTime = CurTime()+LUCTUS_MEDIC_RESPAWN_TIME
-            ent:SetNWInt("respawnTime",ply.respawnTime)
-            ent:SetNWInt("state","deceased")
+            ent:SetNW2Int("respawnTime",ply.respawnTime)
+            ent:SetNW2Int("state","deceased")
             LuctusMedicPlayScream(ent)
             net.Start("luctus_medic_deathscreen")
                 net.WriteInt(LUCTUS_MEDIC_RESPAWN_TIME,15)
@@ -166,8 +167,8 @@ hook.Add("EntityTakeDamage", "luctus_smedic_bleed", function(ent, dmginfo)
     if LUCTUS_MEDIC_IMMUNE_TEAMS[team.GetName(ent:Team())] then return end
     if ent:HasGodMode() then dmginfo:SetDamage(0) return true end
 
-    if ent:GetNWInt("chest",100) < 100 then
-        local percent = 1 - (ent:GetNWInt("chest",100) / 100)
+    if ent:GetNW2Int("chest",100) < 100 then
+        local percent = 1 - (ent:GetNW2Int("chest",100) / 100)
         dmginfo:ScaleDamage(1 + percent * LUCTUS_MEDIC_DAMAGE_CHEST)
     end
 
@@ -183,7 +184,7 @@ hook.Add("EntityTakeDamage", "luctus_smedic_bleed", function(ent, dmginfo)
         local hitgroup = ent:LastHitGroup()
         local groupVar = LUCTUS_MEDIC_HITGROUPS[hitgroup]
         if groupVar then
-            ent:SetNWInt(groupVar,math.max(ent:GetNWInt(groupVar,100)-dmginfo:GetDamage(),0))
+            ent:SetNW2Int(groupVar,math.max(ent:GetNW2Int(groupVar,100)-dmginfo:GetDamage(),0))
         end
     end
 

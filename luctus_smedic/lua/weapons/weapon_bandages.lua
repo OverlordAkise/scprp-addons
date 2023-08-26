@@ -41,10 +41,10 @@ game.AddAmmoType({
 })
 
 function SWEP:CanHeal(owner)
-    if (owner:GetNWInt("head",100) == 100
-    and owner:GetNWInt("chest",100) == 100
-    and owner:GetNWInt("arms",100) == 100
-    and owner:GetNWInt("legs",100) == 100
+    if (owner:GetNW2Int("head",100) == 100
+    and owner:GetNW2Int("chest",100) == 100
+    and owner:GetNW2Int("arms",100) == 100
+    and owner:GetNW2Int("legs",100) == 100
     and owner:Health() >= owner:GetMaxHealth()
     and owner:GetBleeding() == 0) then return false end
     return true
@@ -52,10 +52,10 @@ end
 
 function SWEP:Heal(ply)
     ply:SetHealth(math.min(ply:Health() + LUCTUS_MEDIC_BANDAGE_HEAL_HP, ply:GetMaxHealth()))
-    ply:SetNWInt("head",math.min(ply:GetNWInt("head",100) + (LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS), 100))
-    ply:SetNWInt("chest",math.min(ply:GetNWInt("chest",100) + (LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS), 100))
-    ply:SetNWInt("arms",math.min(ply:GetNWInt("arms",100) + (LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS), 100))
-    ply:SetNWInt("legs",math.min(ply:GetNWInt("legs",100) + (LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS), 100))
+    ply:SetNW2Int("head",math.min(ply:GetNW2Int("head",100) + (LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS), 100))
+    ply:SetNW2Int("chest",math.min(ply:GetNW2Int("chest",100) + (LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS), 100))
+    ply:SetNW2Int("arms",math.min(ply:GetNW2Int("arms",100) + (LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS), 100))
+    ply:SetNW2Int("legs",math.min(ply:GetNW2Int("legs",100) + (LUCTUS_MEDIC_BANDAGE_HEAL_LIMBS), 100))
     ply:AddBleeding(-LUCTUS_MEDIC_BANDAGE_HEAL_BLEED)
 end
 
@@ -162,7 +162,7 @@ function SWEP:DrawHUD()
         for k,name in pairs(grp) do
             draw.SimpleText(name, "Trebuchet18", x, y - 20 + (k - 1) * 36, color_white)
             draw.RoundedBox(0,x, y + (k - 1) * 36, w - 14, 12,color_white)
-            draw.RoundedBox(0, x + 2, y + (k - 1) * 36 + 2, (w - 18) * (target:GetNWInt(name,100) / 100), 8, color_green)
+            draw.RoundedBox(0, x + 2, y + (k - 1) * 36 + 2, (w - 18) * (target:GetNW2Int(name,100) / 100), 8, color_green)
         end
     end
 end

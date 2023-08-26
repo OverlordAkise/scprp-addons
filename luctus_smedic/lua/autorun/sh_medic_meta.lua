@@ -26,17 +26,17 @@ function PLAYER:AddBleeding(f)
 end
 
 function PLAYER:ResetMedicState()
-    self:SetNWInt("head",100)
-    self:SetNWInt("arms",100)
-    self:SetNWInt("chest",100)
-    self:SetNWInt("legs",100)
+    self:SetNW2Int("head",100)
+    self:SetNW2Int("arms",100)
+    self:SetNW2Int("chest",100)
+    self:SetNW2Int("legs",100)
 end
 
 hook.Add("EntityFireBullets","luctus_smedic_hurt_hands",function(ent, data)
     if not ent:IsPlayer() then return end
     if not LUCTUS_MEDIC_DAMAGE_ENABLED then return end
     if not IsFirstTimePredicted() then return end
-    local power = 1 - (ent:GetNWInt("arms",100) / 100)
+    local power = 1 - (ent:GetNW2Int("arms",100) / 100)
     local randomSeedX = util.SharedRandom( "BulletRandomX", power, power, CurTime() ) * LUCTUS_MEDIC_DAMAGE_ARMS
     local randomSeedY = util.SharedRandom( "BulletRandomY", power, power, CurTime() ) * LUCTUS_MEDIC_DAMAGE_ARMS
     data.Spread = Vector(randomSeedX, randomSeedY, 0) / 4
@@ -45,8 +45,8 @@ end)
 
 hook.Add("Move","luctus_smedic_hurt_legs",function(ply, mv)
     if not LUCTUS_MEDIC_DAMAGE_ENABLED then return end
-    if ply:GetNWInt("legs",100) < 100 and !ply:InVehicle() and ply:IsOnGround() then
-        local percent = (1 - LUCTUS_MEDIC_DAMAGE_LEGS) + (ply:GetNWInt("legs",100) / 100) * LUCTUS_MEDIC_DAMAGE_LEGS
+    if ply:GetNW2Int("legs",100) < 100 and !ply:InVehicle() and ply:IsOnGround() then
+        local percent = (1 - LUCTUS_MEDIC_DAMAGE_LEGS) + (ply:GetNW2Int("legs",100) / 100) * LUCTUS_MEDIC_DAMAGE_LEGS
         mv:SetMaxSpeed(mv:GetMaxSpeed() * math.max(0.2, percent))
         mv:SetMaxClientSpeed(mv:GetMaxSpeed() * math.max(0.2, percent))
     end

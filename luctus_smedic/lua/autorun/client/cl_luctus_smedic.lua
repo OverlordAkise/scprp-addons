@@ -27,7 +27,7 @@ hook.Add("HUDPaint","luctus_smedic",function()
     for k,name in pairs(grp) do
         draw.SimpleText(name, "Trebuchet18", x, height(), color_white)
         draw.RoundedBox(0,x, height(), w, 20,Color(255,255,255))
-        draw.RoundedBox(0,x, height(1), ((LocalPlayer():GetNWInt(name,100)/100)*w), 20,Color(105,250,100))
+        draw.RoundedBox(0,x, height(1), ((LocalPlayer():GetNW2Int(name,100)/100)*w), 20,Color(105,250,100))
     end
 end)
 
@@ -69,8 +69,8 @@ hook.Add("HUDPaint","luctus_smedic_corpses",function()
     for k,ent in pairs(NearbyCorpses) do
         if not IsValid(ent) then continue end
         local pos = ent:GetPos():ToScreen()
-        draw.SimpleTextOutlined(ent:GetNWString("state"), "Trebuchet18", pos.x, pos.y-20, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, color_black)
-        local respawnTime = ent:GetNWString("respawnTime","")
+        draw.SimpleTextOutlined(ent:GetNW2String("state"), "Trebuchet18", pos.x, pos.y-20, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, color_black)
+        local respawnTime = ent:GetNW2String("respawnTime","")
         if not respawnTime or respawnTime == "" then continue end
         draw.SimpleTextOutlined(math.max(0,math.Round(respawnTime-CurTime())), "Trebuchet18", pos.x, pos.y, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, color_black)
     end
@@ -154,7 +154,7 @@ end)
 hook.Add("GetMotionBlurValues", "luctus_smedic_hurt_head", function(h,v,f,r)
     if not LUCTUS_MEDIC_DAMAGE_ENABLED then return end
     local p = LocalPlayer()
-    local head = p:GetNWInt("head",100)
+    local head = p:GetNW2Int("head",100)
     if (head < 70) then
         local per = ((70-head) / 100) * LUCTUS_MEDIC_DAMAGE_HEAD
 
