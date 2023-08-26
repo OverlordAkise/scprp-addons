@@ -5,16 +5,11 @@ luctusCurrentActivityID = 0
 
 util.AddNetworkString("luctus_activity_sync")
 
-hook.Add("PlayerInitialSpawn", "luctus_activity_initply", function(ply)
-    hook.Add("SetupMove", ply:SteamID().."_lact", function(self, ply, _, cmd)
-        if self == ply and not cmd:IsForced() then
-            net.Start("luctus_activity_sync")
-                net.WriteString(LUCTUS_ACTIVITY_ACTIVITIES[luctusCurrentActivityID][1])
-                net.WriteInt(luctusActivityTimeLeft(),16)
-            net.Send(ply)
-            hook.Remove("SetupMove", self)
-        end
-    end)
+net.Receive("luctus_activity_sync",function(len,ply)
+    net.Start("luctus_activity_sync")
+        net.WriteString(LUCTUS_ACTIVITY_ACTIVITIES[luctusCurrentActivityID][1])
+        net.WriteInt(luctusActivityTimeLeft(),16)
+    net.Send(ply)
 end)
 
 hook.Add("PlayerInitialSpawn", "luctus_activity_start", function(ply)

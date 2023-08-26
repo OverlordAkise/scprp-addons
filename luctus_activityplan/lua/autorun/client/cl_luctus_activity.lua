@@ -10,6 +10,11 @@ local color_grey = Color(32, 34, 37)
 local accentColor = Color(0, 195, 165)
 local font = "DermaDefault"
 
+hook.Add("InitPostEntity","luctus_activity_init",function()
+    net.Start("luctus_activity_sync")
+    net.SendToServer()
+end)
+
 luctusCurrentActivity = luctusCurrentActivity or "UNKNOWN"
 LUCTUS_ACTIVITY_ENDTIME = LUCTUS_ACTIVITY_ENDTIME or 0
 net.Receive("luctus_activity_sync",function()
