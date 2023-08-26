@@ -9,6 +9,12 @@ LUCTUS_NLR_TIME = 300
 
 util.AddNetworkString("luctus_snlr")
 
+hook.Add("playerSetAFK","luctus_snlr",function(ply, newState)
+    if newState == false then
+        LuctusNLRStop(ply)
+    end
+end)
+
 hook.Add("PlayerSpawn","luctus_snlr",function(ply)
     --if job switching: do not create nlr, delete old one
     if ply.nlrLastJob ~= ply:Team() then
