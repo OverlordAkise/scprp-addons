@@ -1,43 +1,37 @@
 --Luctus Intercom
 --Made by OverlordAkise
 
-intercomplayer = {}
+LUCTUS_INTERCOM_LISTENERS = {}
 
 util.AddNetworkString("luctus_intercom_sync")
 
-timer.Create("intercom_use", 3, 0, function()
-    old_players = intercomplayer or {}
-    intercomplayer = {}
-    local iEnts = ents.FindByClass("luctus_intercom")
-    if table.Count(iEnts) <= 0 then
+function LuctusIntercomAdd(ply,ent)
+    if not LUCTUS_INTERCOM_LISTENERS[ply] then
+        ent.Speakers[ply] = true
+        LUCTUS_INTERCOM_LISTENERS[ply] = true
+        net.Start("luctus_intercom_sync")
+            net.WriteBool(true)
+        net.Send(ply)
+    end
+end
+
+function LuctusIntercomRemoveCheck(ply,ent,forceDelete)
+    if not IsValid(ply) then
+        ent.Speakers[ply] = nil
+        LUCTUS_INTERCOM_LISTENERS[ply] = nil
         return
     end
-    local iEnt = iEnts[1]
-    if not IsValid(iEnt) then return end
-    local entPlayers = ents.FindInSphere(iEnt:GetPos(),256)
-    for k,v in pairs(entPlayers) do
-        if v:IsPlayer() and v:Alive() then
-            intercomplayer[v] = true
-            if not old_players[v] then
-                DarkRP.notify(v,2,3,"[intercom] You are now live!")
-                net.Start("luctus_intercom_sync")
-                    net.WriteBool(true)
-                net.Send(v)
-            end
-        end
+    if ply:GetPos():Distance(ent:GetPos()) > 256 or forceDelete then
+        ent.Speakers[ply] = nil
+        LUCTUS_INTERCOM_LISTENERS[ply] = nil
+        net.Start("luctus_intercom_sync")
+            net.WriteBool(false)
+        net.Send(ply)
     end
-    for k,v in pairs(old_players) do
-        if not intercomplayer[k] then
-            DarkRP.notify(k,2,3,"[intercom] Others can't hear you anymore!")
-            net.Start("luctus_intercom_sync")
-                net.WriteBool(false)
-            net.Send(k)
-        end
-    end
-end)
+end
 
 hook.Add("PlayerCanHearPlayersVoice","luctus_intercom_global_talk",function(listener, talker)
-    if intercomplayer[talker] then
+    if LUCTUS_INTERCOM_LISTENERS[ply] then
         return true, false
     end
 end)
