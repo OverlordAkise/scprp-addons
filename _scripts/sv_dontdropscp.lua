@@ -6,7 +6,7 @@
 
 hook.Add("DarkRPFinishedLoading", "luctus_adminonlyprops", function()
     hook.Add("canDropWeapon", "luctus_disallow_scpswepdrops",function(ply, weapon)
-        if weapon and weapon.GetClass and string.find(weapon:GetClass(),"scp") then
+        if weapon and IsValid(weapon) and weapon.GetClass and string.find(weapon:GetClass(),"scp") then
             return false
         end
     end)
