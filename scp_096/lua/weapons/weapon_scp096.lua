@@ -234,7 +234,7 @@ end
 
 function SWEP:Think()
   if CLIENT then return end
-  if self.Owner:GetNWBool("scp096_bag",false) then return end
+  if self.Owner:GetNW2Bool("scp096_bag",false) then return end
   if self.next_think > CurTime() then return end
   self.next_think = CurTime() + 0.3
   

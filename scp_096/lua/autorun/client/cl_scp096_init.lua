@@ -26,7 +26,7 @@ end)
 local color_dark = Color(0,0,0,240)
 local color_darkred = Color(200,0,0,10)
 hook.Add("HUDPaint", "luctus_scp096_bagdarkener", function()
-    if LocalPlayer():GetNWBool("scp096_bag",false) then
+    if LocalPlayer():GetNW2Bool("scp096_bag",false) then
         draw.RoundedBox(0,0,0,ScrW(),ScrH(),color_dark)
         draw.SimpleTextOutlined("You have a bag over your head!", "DermaLarge", ScrW()*0.5, ScrH()*0.4, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 5, color_black)
     end
@@ -61,7 +61,7 @@ BAGMODEL = ClientsideModel( "models/props_junk/garbage_bag001a.mdl" )
 BAGMODEL:SetNoDraw(true)
 
 hook.Add( "PostPlayerDraw" , "luctus_scp096_bag" , function( ply )
-    if ply:GetNWBool("scp096_bag",false) and ply ~= LocalPlayer() then
+    if ply:GetNW2Bool("scp096_bag",false) and ply ~= LocalPlayer() then
         if not IsValid(ply) or not ply:Alive() then return end
 
         local attach_id = ply:LookupAttachment('mouth')

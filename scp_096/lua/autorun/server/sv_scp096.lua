@@ -47,8 +47,8 @@ function Luctus096HandlePlayerDeath(ply)
         net.Send(scp096_ply)
         LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") died as SCP096, rage ended.")
     end
-    if ply:GetNWBool("scp096_bag",false) then
-        ply:SetNWBool("scp096_bag",false)
+    if ply:GetNW2Bool("scp096_bag",false) then
+        ply:SetNW2Bool("scp096_bag",false)
     end
 end
 
@@ -102,7 +102,7 @@ end
 --Recontainment logic
 
 function LuctusRecontain096SCP(ply)
-    ply:SetNWBool("scp096_bag",true)
+    ply:SetNW2Bool("scp096_bag",true)
     --remove hunt if applicable
     if scp096_ply and scp096_ply == ply then
         scp096_ply:StopSound( "096/scream.wav" )
@@ -120,8 +120,8 @@ function LuctusRecontain096SCP(ply)
 end
 
 hook.Add("PlayerUse", "luctus_scp096_bagremover", function(ply, ent)
-    if IsValid(ent) and ent:IsPlayer() and ent:GetNWBool("scp096_bag",false) then
-        ent:SetNWBool("scp096_bag",false)
+    if IsValid(ent) and ent:IsPlayer() and ent:GetNW2Bool("scp096_bag",false) then
+        ent:SetNW2Bool("scp096_bag",false)
         ply:Give("weapon_scp096_rec")
         if scp096_ply and scp096_ply == ent then
             LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") removed the bag from SCP096.")
@@ -130,7 +130,7 @@ hook.Add("PlayerUse", "luctus_scp096_bagremover", function(ply, ent)
 end)
 
 function LuctusRecontain096Remove(ply)
-    ply:SetNWBool("scp096_bag",false)
+    ply:SetNW2Bool("scp096_bag",false)
 end
 
 hook.Add("PostPlayerDeath", "luctus_scp096_rec", LuctusRecontain096Remove)
