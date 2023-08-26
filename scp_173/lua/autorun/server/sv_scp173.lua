@@ -9,7 +9,6 @@ scp173_canmove = scp173_canmove or false
   
 hook.Add("OnPlayerChangedTeam", "luctus_get_scp173", function(ply, beforeNum, afterNum)
     --switch to scp173
-    
     if string.EndsWith(RPExtraTeams[afterNum].name,"173") then
         scp173_ply = ply
         timer.Remove(ply:SteamID().."_blink")
@@ -33,7 +32,7 @@ hook.Add("InitPostEntity", "luctus_scp173", function()
             if MedConfig then
                 alive = not v:GetNW2Bool("IsRagdoll", false)
             end
-            if v:GetPos():DistToSqr(scp173_ply:GetPos()) > SCP173_BLINK_RANGE or not alive then
+            if not v:IsLineOfSightClear(scp173_ply) or not alive then
                 v.luctus_near_scp173 = false
                 continue
             end
@@ -45,20 +44,9 @@ hook.Add("InitPostEntity", "luctus_scp173", function()
             local entVector = scp173_ply:GetPos() - v:GetShootPos() 
             local angCos = v:GetAimVector():Dot(entVector) / entVector:Length()
             if angCos >= directionAngCos then
-                local g, i = util.TraceLine{
-                    start = v:EyePos() + v:EyeAngles():Forward() * 15,
-                    endpos = scp173_ply:EyePos()
-                    }, util.TraceLine{
-                    start = v:LocalToWorld(v:OBBCenter()),
-                    endpos = scp173_ply:LocalToWorld(scp173_ply:OBBCenter()),
-                    filter = v
-                }
-
-                if g.Entity == scp173_ply or i.Entity == scp173_ply then
-                    scp173_canmove = false
-                    scp173_ply:Freeze(true)
-                    return
-                end
+                scp173_canmove = false
+                scp173_ply:Freeze(true)
+                return
             end
         end--for loop
         
@@ -82,6 +70,7 @@ function luctus_createBlinkTimer(ply)
             net.WriteFloat(SCP173_BLINK_DURATION)
         net.Send(ply)
         timer.Simple(SCP173_BLINK_DURATION, function()
+            if not IsValid(ply) then return end
             ply.luctus_blinking = false
         end)
     end)
