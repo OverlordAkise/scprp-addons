@@ -1,0 +1,11 @@
+On client there is the "LuctusCodeChangedCL" hook, with the old and new code as the only 2 parameters.
+
+Example code for changing the TV description if you are the job Hobo:
+
+hook.Add("LuctusCodeChangedCL","hobotext",function(oldCode,newCode)
+    if newCode == "red" and LocalPlayer():Team() == TEAM_HOBO then
+        LUCTUS_CODE_CURRENT_TV = "You won't survive,\nHobo"
+    end
+end)
+
+On server the hook for this is "LuctusCodeChanged", which gives you the player, oldCode and newCode variables.

@@ -1,21 +1,31 @@
 --Luctus SCP Codes
 --Made by OverlordAkise
 
+--Only the color is mandatory, the other 3 can be left out if desired
 LUCTUS_SCP_CODES = {
+  --["codename"] = {
+    --Color for TV and HUD display
+    --Text to be shown in chat
+    --Sound to be played
+    --TV Description beneath codename
+  --}
     ["green"] = {
         Color(0,255,0),
         "Es herrscht nun Code Green! Es kann ohne verschärfte Sicherheitsmassnahmen gearbeitet werden.",
         "HL1/fvox/deactivated.wav",
+        "All OK",
     },
     ["yellow"] = {
         Color(255,255,0),
         "Es herrscht nun Code Yellow! Bitte achten sie auf Auffälligkeiten und melden diese sofort!",
         "HL1/fvox/warning.wav",
+        "Please alert suspect\nactivities immediately!",
     },
     ["red"] = {
         Color(255,0,0),
         "Es herrscht nun Code Red! Bitte bleiben sie in ihren Räumen und versperren sie die Türen!",
         "HL1/fvox/evacuate_area.wav",
+        "Evacuate immediately!\nContainment Breach",
     },
 }
 

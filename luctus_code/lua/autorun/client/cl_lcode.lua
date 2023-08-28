@@ -3,23 +3,14 @@
 
 LUCTUS_CODE_CURRENT_COLOR = Color(0,255,0)
 LUCTUS_CODE_CURRENT = "green"
+LUCTUS_CODE_CURRENT_TV = ""
 
 surface.CreateFont("luctus_scp_code_hud_font",{
-    font = "Verdana",
+    font = "Arial",
     extended = false,
     size = 30,
     weight = 500,
-    blursize = 0,
-    scanlines = 0,
     antialias = true,
-    underline = false,
-    italic = false,
-    strikeout = false,
-    symbol = false,
-    rotary = false,
-    shadow = false,
-    additive = false,
-    outline = false,
 })
 
 local font = "luctus_scp_code_hud_font"
@@ -63,12 +54,20 @@ net.Receive("luctus_scp_code", function()
     local curcode = net.ReadString()
     if not LUCTUS_SCP_CODES[curcode] then return end
     LUCTUS_CODE_CURRENT_COLOR = LUCTUS_SCP_CODES[curcode][1]
+    local oldCode = LUCTUS_CODE_CURRENT
     LUCTUS_CODE_CURRENT = curcode
-    chat.AddText(LUCTUS_CODE_CURRENT_COLOR, LUCTUS_SCP_CODES[curcode][2])
+    
+    --chatmessage
+    if LUCTUS_SCP_CODES[curcode][2] then
+        chat.AddText(LUCTUS_CODE_CURRENT_COLOR, LUCTUS_SCP_CODES[curcode][2])
+    end
     --sound
     if LUCTUS_SCP_CODES[curcode][3] then
         surface.PlaySound(LUCTUS_SCP_CODES[curcode][3])
     end
+    --TV subtext
+    LUCTUS_CODE_CURRENT_TV = LUCTUS_SCP_CODES[curcode][4] or ""
+    hook.Run("LuctusCodeChangedCL",oldCode,curcode)
 end)
 
 print("[luctus_code] cl loaded")

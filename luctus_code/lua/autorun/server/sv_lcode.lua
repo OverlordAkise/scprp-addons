@@ -11,7 +11,7 @@ function LuctusCodeChange(code,ply)
     local oldCode = LUCTUS_SCP_CODE_CURRENT
     LUCTUS_SCP_CODE_CURRENT = code
     
-    hook.Run("LuctusCodeChanged",ply,code)
+    hook.Run("LuctusCodeChanged",ply,oldCode,code)
     
     net.Start("luctus_scp_code")
         net.WriteString(code)
@@ -19,7 +19,7 @@ function LuctusCodeChange(code,ply)
     PrintMessage(HUD_PRINTCENTER, "Code "..code)
     DarkRP.notify(player.GetAll(),1,5,"Code "..code.." wurde ausgerufen!")
     
-    if oldCode == LUCTUS_SCP_CODE_LOCKDOWN then
+    if oldCode == LUCTUS_SCP_CODE_LOCKDOWN and code ~= oldCode then
         DarkRP.unLockdown(Entity(0))
     end
     if code == LUCTUS_SCP_CODE_LOCKDOWN then
