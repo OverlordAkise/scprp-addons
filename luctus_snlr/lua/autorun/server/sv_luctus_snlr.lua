@@ -26,6 +26,10 @@ hook.Add("PlayerSpawn","luctus_snlr",function(ply)
 end)
 
 function LuctusNLRStart(ply,ntime)
+    local extraTime = hook.Run("LuctusNlrExtraTime")
+    if extraTime and tonumber(extraTime) then
+        ntime = ntime + tonumber(extraTime)
+    end
     local etime = CurTime()+ntime
     --ply.NLREndTime = etime
     timer.Create(ply:SteamID().."_nlr",ntime,1,function()
@@ -55,5 +59,12 @@ function LuctusNLRIsActive(ply)
     end
     return false
 end
+
+--Example for using the hook to add 30s to NLR time if code red is active:
+hook.Add("LuctusNlrExtraTime","luctus_code_example",function()
+    if LUCTUS_SCP_CODES and LUCTUS_SCP_CODE_CURRENT == "red" then
+        return 30
+    end
+end)
 
 print("[luctus_snlr] sv loaded")
