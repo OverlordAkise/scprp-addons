@@ -27,6 +27,11 @@ function ENT:SuccessFunction(ply)
     print("[luctus_exam]",ply:Nick(),ply:SteamID(),"got whitelisted for ~Nothing~")
 end
 
+--How to determine if a player can attend this Exam
+function ENT:CanTakeExam(ply)
+    return ply:Health() >= 100, "You need to be full health to do this exam!"
+end
+
 ENT.Questions = {
   --[x] = {Correct_Answer, Question, Ans#1, Ans#2, Ans#3, Image_Link},
     [0] = {1,"Answer these questions correctly to be whitelisted for\n\n~Nothing~","Start Exam","","",nil},
