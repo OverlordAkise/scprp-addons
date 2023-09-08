@@ -30,5 +30,4 @@ net.Receive("guthscp_animation",function()
     end
 end)
 
-print("[luctus_keycard_animation] CL loaded!")
-
+print("[luctus_keycard_animation] cl loaded")

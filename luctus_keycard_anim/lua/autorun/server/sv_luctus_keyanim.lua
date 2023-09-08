@@ -4,10 +4,8 @@
 util.AddNetworkString("guthscp_animation")
 
 hook.Add("PlayerUse", "luctus_guthscp_animation", function(ply, ent)
-    --Copied from GuthSCP
     if not IsValid(ent) or not IsValid(ply) then return end
-    if not GuthSCP.keycardAvailableClass[ent:GetClass()] then return end
-    --print(ply.guthscp_last_use_time,CurTime() + GuthSCP.useCooldown)
+    if not GuthSCP or not GuthSCP.keycardAvailableClass or not GuthSCP.keycardAvailableClass[ent:GetClass()] then return end
     --Own:
     if not ply:GetActiveWeapon().GuthSCPLVL then return end
     if ply.already_animating then return end
@@ -31,5 +29,4 @@ hook.Add("PlayerUse", "luctus_guthscp_animation", function(ply, ent)
     end)
 end)
 
-print("[luctus_keycard_animation] SV loaded!")
-
+print("[luctus_keycard_animation] sv loaded")
