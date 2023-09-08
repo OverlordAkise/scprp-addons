@@ -34,7 +34,7 @@ function LuctusRadioOpenMenu()
     local lliste = vgui.Create("DListLayout", luctusradiomenu)
     lliste:Dock(FILL)
     for chName,teamList in pairs(LUCTUS_RADIO_CHANNELS) do
-        if not table.HasValue(teamList,LocalPlayer():Team()) then continue end
+        if not table.HasValue(teamList,LocalPlayer():Team()) and chName ~= "Emergency" then continue end
         local item = lliste:Add("DButton")
         item:Dock(TOP)
         item:DockMargin(10,10,10,0)
@@ -58,4 +58,22 @@ function LuctusRadioOpenMenu()
     end
 end
 
-print("[luctus_sradio] cl loaded!")
+function LuctusRadioSwitchNext()
+    local channels = {}
+    local curName = LocalPlayer():GetActiveWeapon().channel
+    local curId = 1
+    for chName,teamList in pairs(LUCTUS_RADIO_CHANNELS) do
+        if not table.HasValue(teamList,LocalPlayer():Team()) and chName ~= "Emergency" then continue end
+        local id = table.insert(channels,chName)
+        if chName == curName then
+            curId = id
+        end
+    end
+    local newId = math.Clamp((curId+1)%(#channels+1),1,#channels)
+    net.Start("luctus_radio")
+        net.WriteString(channels[newId])
+    net.SendToServer()
+    LocalPlayer():GetActiveWeapon().channel = channels[newId]
+end
+
+print("[luctus_sradio] cl loaded")

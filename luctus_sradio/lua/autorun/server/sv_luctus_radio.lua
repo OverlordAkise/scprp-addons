@@ -8,7 +8,8 @@ luctus_radio_teams = {}
 
 lradioHear = {}
 
-for _, ply in pairs(player.GetAll()) do
+--Lua refresh anti error
+for _, ply in pairs(player.GetHumans()) do
     lradioHear[ply] = {}
 end
 
@@ -19,8 +20,9 @@ timer.Simple(1,function()
         for _, ply in ipairs(players) do
             lradioHear[ply] = {}
             for kk,ply2 in pairs(players) do
-                if not ply.lradioOn or not ply2.lradioOn or ply.lradioChannel != ply2.lradioChannel then continue end
-                if IsValid(ply2:GetActiveWeapon()) and ply2:GetActiveWeapon():GetClass() == "luctus_radio" then
+                if not ply.lradioOn or not ply2.lradioOn then continue end
+                if not IsValid(ply2:GetActiveWeapon()) or ply2:GetActiveWeapon():GetClass() ~= "luctus_radio" then continue end
+                if ply2.lradioChannel == "Emergency" or ply.lradioChannel == ply2.lradioChannel then
                     lradioHear[ply][ply2] = true
                 end
             end
@@ -49,7 +51,7 @@ function LuctusAddRadioReceiver(ply,bol)
     ply.lradioOn = bol
     if bol then
         DarkRP.notify(ply,0,5,"You logged into radio channel "..ply.lradioChannel.."!")
-        DarkRP.notify(ply,0,5,"People only hear you if you got the device in your hand!")
+        DarkRP.notify(ply,0,5,"People only hear you if you have the device in your hand!")
     else
         DarkRP.notify(ply,1,5,"You logged out of the radio channel!")
     end
@@ -66,10 +68,10 @@ hook.Add("PlayerSpawn","luctus_radio_reset",LuctusResetRadio)
 net.Receive("luctus_radio", function(len,ply)
     local channel = net.ReadString()
     if not LUCTUS_RADIO_CHANNELS[channel] then return end
-    if not table.HasValue(LUCTUS_RADIO_CHANNELS[channel],ply:Team()) then return end
+    if not table.HasValue(LUCTUS_RADIO_CHANNELS[channel],ply:Team()) and channel ~= "Emergency" then return end
     
     ply.lradioChannel = channel
     DarkRP.notify(ply,0,5,"Channel switched to "..channel)
 end)
 
-print("[luctus_sradio] sv loaded!")
+print("[luctus_sradio] sv loaded")

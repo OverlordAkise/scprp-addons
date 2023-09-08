@@ -72,7 +72,14 @@ end
 
 function SWEP:Reload()
     if SERVER then return end
-    LuctusRadioOpenMenu()
+    if LUCTUS_RADIO_INSTASWITCH then
+        if not self.rcd then self.rcd = 0 end
+        if self.rcd > CurTime() then return end
+        self.rcd = CurTime() + 0.2
+        LuctusRadioSwitchNext()
+    else
+        LuctusRadioOpenMenu()
+    end
 end
  
 function SWEP:Think()
