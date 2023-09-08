@@ -51,12 +51,14 @@ function SWEP:UpdateNextIdle()
     self:SetNextIdle( CurTime() + vm:SequenceDuration() / vm:GetPlaybackRate() )
 end
 
-function SWEP:PrimaryAttack( right )
+function SWEP:PrimaryAttack(right)
     --Door Logic
     local tr = self:GetOwner():GetEyeTrace()
-    if SERVER and IsValid(tr.Entity) and tr.Entity:isDoor() then
-        self:OpenDoor()
-        self:SetNextPrimaryFire(CurTime()+0.2)
+    if IsValid(tr.Entity) and tr.Entity:isDoor() then
+        if SERVER then
+            self:OpenDoor()
+        end
+        self:SetNextPrimaryFire(CurTime()+2)
         return
     end
     if #scp096_hunted_players == 0 then return end
@@ -233,34 +235,36 @@ function SWEP:Holster()
 end
 
 function SWEP:Think()
-  if CLIENT then return end
-  if self.Owner:GetNW2Bool("scp096_bag",false) then return end
-  if self.next_think > CurTime() then return end
-  self.next_think = CurTime() + 0.3
-  
-  --StartPos, Direction, Size(Range), Degrees(Angle)
-    local entities_in_view = ents.FindInCone( self.Owner:EyePos(), self.Owner:GetAimVector(), 200, math.cos( math.rad( 15 ) ) )
-
-  local players = {}
-  for k,v in pairs(entities_in_view) do
-    if not v:IsPlayer() then continue end
-    local alive = v:Alive()
-    if MedConfig then
-      alive = not v._IsDead
-    end
-    if alive then
-      --print(self.Owner:GetAngles())
-      --print(v:GetAngles())
-      local phi = math.abs(self.Owner:GetAngles()[2] - v:GetAngles()[2]) % 360;
-      local distance = phi > 180 and 360 - phi or phi;
-      --PrintMessage(3,distance)
-      --From side to side: 90 <-> 90 degrees, middle: 180degrees
-      if distance > 135 then
-        local trtab = util.TraceLine({start=v:EyePos(),endpos=self.Owner:EyePos(),filter=v})
-        if trtab.Entity == self.Owner then 
-          luctus_update_hunted(v,true)
+    if CLIENT then return end
+    local ply = self:GetOwner()
+    if ply:GetNW2Bool("scp096_bag",false) then return end
+    if self.next_think > CurTime() then return end
+    self.next_think = CurTime() + 0.3
+    
+    --StartPos, Direction, Size(Range), Degrees(Angle)
+    local plyAimVec = ply:GetAimVector()
+    plyAimVec.z = 0
+    local eyePos = ply:EyePos()
+    local entities_in_view = ents.FindInCone(eyePos-plyAimVec*50, ply:GetAimVector(), 512, math.cos(math.rad(15)))
+    
+    for k,v in ipairs(entities_in_view) do
+        if not v:IsPlayer() then continue end
+        local alive = v:Alive()
+        if MedConfig then
+            alive = not v._IsDead
         end
-      end
+        if not alive then continue end
+        --print(self.Owner:GetAngles())
+        --print(v:GetAngles())
+        local phi = math.abs(ply:GetAngles()[2] - v:GetAngles()[2]) % 360;
+        local distance = phi > 180 and 360 - phi or phi;
+        --PrintMessage(3,distance)
+        --From side to side: 90 <-> 90 degrees, middle: 180degrees
+        if distance > 135 then
+            local trtab = util.TraceLine({start=v:EyePos(),endpos=eyePos,filter=v,mask=MASK_BLOCKLOS})
+            if trtab.Entity == ply then 
+                luctus_update_hunted(v,true)
+            end
+        end
     end
-  end
 end
