@@ -12,7 +12,7 @@ hook.Add("OnPlayerChangedTeam", "BreachLogic", function(ply, beforejob, afterjob
     ply.canbreach = false
     ply.breachid = nil
     if LUCTUS_BREACH_JOBS[team.GetName(afterjob)] then
-        NotifyPlayer(ply,"[breach] You are allowed to breach in "..LUCTUS_BREACH_DELAY.." seconds!")
+        NotifyPlayer(ply,"[breach] You are allowed to breach in "..string.NiceTime(LUCTUS_BREACH_DELAY_CUSTOM[team.GetName(ply:Team())] or LUCTUS_BREACH_DELAY))
         CreateBreachTimer(ply)
     else
         timer.Remove(ply:SteamID64().."_breachtimer")
@@ -86,7 +86,7 @@ end)
 function CreateBreachTimer(ply)
     ply.canbreach = false
     ply.breachid = nil
-    timer.Create(ply:SteamID64().."_breachtimer", LUCTUS_BREACH_DELAY, 1, function()
+    timer.Create(ply:SteamID64().."_breachtimer", LUCTUS_BREACH_DELAY_CUSTOM[team.GetName(ply:Team())] or LUCTUS_BREACH_DELAY, 1, function()
         ply.canbreach = true
         NotifyPlayer(ply,"[breach] You are now allowed to breach! Type '!breach' to open your doors to freedom.")
     end)

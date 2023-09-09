@@ -4,6 +4,10 @@
 
 --In seconds, after joining job when you are allowed to breach
 LUCTUS_BREACH_DELAY = 300
+--Custom breach timers for specific jobs
+LUCTUS_BREACH_DELAY_CUSTOM = {
+    ["Gun Dealer"] = 600,
+}
 --If a teammember has to approve your breach
 LUCTUS_BREACH_NEEDS_APPROVAL = true
 --Usergroups who can approve a breach
@@ -20,6 +24,7 @@ LUCTUS_BREACH_APPROVER = {
 -- ["SCP173"] = {"button_name",4100},
 LUCTUS_BREACH_JOBS = {
     ["Hobo"] = {4100,"LCZ_door11button"},
+    ["Gun Dealer"] = {4100,"LCZ_door11button"},
 }
 
 --[[ README
@@ -33,7 +38,7 @@ You have to look at the button and use the "breach_get_button" console command i
 This should give you the name and/or the id of the button.  
 This is the number/text you have to enter above in the LUCTUS_BREACH_JOBS.  
 
-An example: You look at SCP173's "open door" button and it prints out in console: ID: 582  
+An example: You look at SCP173's "open door" button, use the "breach_get_button" console command and it prints out in console: ID: 582  
 This means you have to enter into the config above:
 
     ["SCP173"] = {582},
