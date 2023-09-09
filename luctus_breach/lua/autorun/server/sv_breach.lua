@@ -96,18 +96,18 @@ concommand.Add("breach_get_button",function(ply)
     if not IsValid(ply) then return end
     if not ply:IsAdmin() then return end
     
-    print("------------")
-    print("Button Name / ID:")
+    ply:PrintMessage(2,"Getting name and id of the entity you are looking at")
     if ply:GetEyeTrace().Entity:MapCreationID() == Entity(0):MapCreationID() then
-        print("ERROR: You are not looking at a 'button'!")
-        print("Try to look at the display of the 'button'!")
+        ply:PrintMessage(2,"ERROR: You are not looking at a 'button'!")
+        ply:PrintMessage(2,"Try to look at the display of the 'button'!")
         return
     end
-    print("Name:")
-    print(ply:GetEyeTrace().Entity:GetSaveTable(true)["m_iName"])
-    print("ID:")
-    print(ply:GetEyeTrace().Entity:MapCreationID())
-    print("---")
+    ply:PrintMessage(2,"---")
+    ply:PrintMessage(2,"Name:")
+    ply:PrintMessage(2,ply:GetEyeTrace().Entity:GetSaveTable(true)["m_iName"] or "<nothing>")
+    ply:PrintMessage(2,"ID:")
+    ply:PrintMessage(2,ply:GetEyeTrace().Entity:MapCreationID() or "<nothing>")
+    ply:PrintMessage(2,"---")
 end)
 
 print("[luctus_breach] Loaded SV!")
