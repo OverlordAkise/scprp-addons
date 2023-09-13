@@ -15,6 +15,7 @@ function LuctusCodeChange(code,ply)
     
     net.Start("luctus_scp_code")
         net.WriteString(code)
+        net.WriteString(ply:Nick())
     net.Broadcast()
     PrintMessage(HUD_PRINTCENTER, "Code "..code)
     DarkRP.notify(player.GetAll(),1,5,"Code "..code.." wurde ausgerufen!")
@@ -77,6 +78,7 @@ end
 net.Receive("luctus_scp_code", function(len,ply)
     net.Start("luctus_scp_code")
         net.WriteString(LUCTUS_SCP_CODE_CURRENT)
+        net.WriteString("")
     net.Send(ply)
 end)
 

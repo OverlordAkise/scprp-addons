@@ -64,4 +64,7 @@ LUCTUS_SCP_CODE_ACTIVITYSTOP = "red"
 --If you use this please set the DarkRP "GAMEMODE.Config.lockdowndelay" very low or else the lockdown wont start everytime
 LUCTUS_SCP_CODE_LOCKDOWN = "red"
 
+--Should the name of the ply who changed the code be shown in chat?
+LUCTUS_SCP_CODE_SHOW_PLY = true
+
 print("[luctus_code] config loaded!")

@@ -16,6 +16,7 @@ surface.CreateFont("luctus_scp_code_hud_font",{
 local font = "luctus_scp_code_hud_font"
 local borderCol = Color(0, 195, 165)
 local frameCol = Color(26,26,26)
+local color_white = Color(255,255,255,255)
 
 local function DrawBox(x, y, w, h, edgeSize)
     draw.RoundedBox(0, x, y, w, h, borderCol)
@@ -52,6 +53,7 @@ end)
 
 net.Receive("luctus_scp_code", function()
     local curcode = net.ReadString()
+    local changer = net.ReadString()
     if not LUCTUS_SCP_CODES[curcode] then return end
     LUCTUS_CODE_CURRENT_COLOR = LUCTUS_SCP_CODES[curcode][1]
     local oldCode = LUCTUS_CODE_CURRENT
@@ -59,7 +61,11 @@ net.Receive("luctus_scp_code", function()
     
     --chatmessage
     if LUCTUS_SCP_CODES[curcode][2] then
-        chat.AddText(LUCTUS_CODE_CURRENT_COLOR, LUCTUS_SCP_CODES[curcode][2])
+        if LUCTUS_SCP_CODE_SHOW_PLY and changer ~= "" then
+            chat.AddText(color_white,changer.." changed the code to: ",LUCTUS_CODE_CURRENT_COLOR,"[",LUCTUS_CODE_CURRENT,"] ",LUCTUS_SCP_CODES[curcode][2])
+        else
+            chat.AddText(LUCTUS_CODE_CURRENT_COLOR, LUCTUS_SCP_CODES[curcode][2])
+        end
     end
     --sound
     if LUCTUS_SCP_CODES[curcode][3] then
