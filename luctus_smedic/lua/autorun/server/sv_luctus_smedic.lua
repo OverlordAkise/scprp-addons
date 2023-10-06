@@ -27,7 +27,7 @@ end
 ---NEW
 
 hook.Add("PlayerDisconnected","luctus_smedic_ragcleanup",function(ply)
-    if ply.deathRagdoll then
+    if ply.deathRagdoll and IsValid(ply.deathRagdoll) then
         ply.deathRagdoll:Remove()
     end
 end)
