@@ -71,11 +71,13 @@ function SWEP:PrimaryAttack()
 
 
     timer.Simple(self:SequenceDuration() * 0.9, function()
+        if not IsValid(self) then return end
         self:Heal(owner)
         self:TakePrimaryAmmo(1)
     end)
 
     timer.Simple(self:SequenceDuration() + 0.5, function()
+        if not IsValid(self) then return end
         self.Busy = false
         if not IsValid(owner) then return end
         if owner:GetAmmoCount("ammo_bandage") <= 0 then
@@ -101,6 +103,7 @@ function SWEP:SecondaryAttack()
     
     self:EmitSound("physics/wood/wood_strain2.wav")
     timer.Simple(0.6, function()
+        if not IsValid(self) then return end
         self:EmitSound("flesh_scrapple")
         timer.Simple(0.8, function()
             self:StopSound("flesh_scrapple")
@@ -110,12 +113,14 @@ function SWEP:SecondaryAttack()
     self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 
     timer.Simple(self:SequenceDuration() * 0.9, function()
+        if not IsValid(self) then return end
         self:Heal(target)
         self:TakePrimaryAmmo(1)
     end)
 
     local owner = self:GetOwner()
     timer.Simple(self:SequenceDuration() + 0.5, function()
+        if not IsValid(self) then return end
         self.Busy = false
         if not IsValid(owner) then return end
         if owner:GetAmmoCount("ammo_bandage") <= 0 then
