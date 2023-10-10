@@ -249,6 +249,7 @@ function SWEP:Think()
     
     for k,v in ipairs(entities_in_view) do
         if not v:IsPlayer() then continue end
+        if v == ply then continue end
         local alive = v:Alive()
         if MedConfig then
             alive = not v._IsDead
@@ -261,8 +262,7 @@ function SWEP:Think()
         --PrintMessage(3,distance)
         --From side to side: 90 <-> 90 degrees, middle: 180degrees
         if distance > 135 then
-            local trtab = util.TraceLine({start=v:EyePos(),endpos=eyePos,filter=v,mask=MASK_BLOCKLOS})
-            if trtab.Entity == ply then 
+            if ply:IsLineOfSightClear(v) then 
                 luctus_update_hunted(v,true)
             end
         end
