@@ -23,6 +23,6 @@ TEAM_SCP096 = DarkRP.createJob("SCP 096", {
       ply:SetHealth(4000)
       ply:SetMaxHealth(4000)
       ply:StripWeapons()
-      ply:Give("scp096_weapon")
+      ply:Give("weapon_scp096")
     end,
 })
