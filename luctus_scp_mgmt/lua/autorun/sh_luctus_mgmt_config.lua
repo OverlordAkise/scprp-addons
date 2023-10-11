@@ -8,7 +8,7 @@ LUCTUS_SCP_MGMT_COMMAND = "!mgmt"
 LUCTUS_SCP_MGMT_BINDKEY = KEY_F6
 
 --How many seconds until you actually get demoted 
-LUCTUS_SCP_MGMT_DEMOTE_DELAY = 60
+LUCTUS_SCP_MGMT_DEMOTE_DELAY = 3
 
 --The name of the job you get demoted to via the MGMT menu
 LUCTUS_SCP_MGMT_DEMOTE_JOB = "Gun Dealer"
@@ -35,4 +35,4 @@ LUCTUS_SCP_MGMT_ALLOWED_JOBS = {
 --Also: After stopping an emergency, how many seconds until jobchange back
 LUCTUS_SCP_MGMT_EMERGENCY_JOB_DELAY = 30
 
-print("[SCPMGMT] loaded sh")
+print("[luctus_scp_mgmt] config loaded")

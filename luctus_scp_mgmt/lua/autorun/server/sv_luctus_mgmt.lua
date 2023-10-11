@@ -105,9 +105,11 @@ function LuctusMGMTDegradePlayer(target,text,source)
     local reason = "[MGMT] You got demoted for: "..text
     LuctusNotify(target,reason,1,30)
     timer.Create(target:SteamID().."_demote",LUCTUS_SCP_MGMT_DEMOTE_DELAY,1,function()
-        
-        target:teamBan()
-        
+        if LuctusJobbanBan then
+            LuctusJobbanBan(target, team.GetName(target:Team()), GAMEMODE.Config.demotetime)
+        else
+            target:teamBan()
+        end
         --get team by name
         local found = false
         local newTeam = nil
@@ -118,9 +120,7 @@ function LuctusMGMTDegradePlayer(target,text,source)
                 break
             end
         end
-        
         target:changeTeam(found and newTeam or GAMEMODE.DefaultTeam, true)
-        
     end)
     hook.Run("LuctusSGPMGMTDemoteStart",source,target)
 end
@@ -142,4 +142,4 @@ hook.Add("PlayerSay","luctus_scp_mgmt",function(ply,text,team)
     end
 end)
 
-print("[SCPMGMT] loaded sv")
+print("[luctus_scp_mgmt] sv loaded")

@@ -283,4 +283,4 @@ hook.Add("PlayerButtonDown","luctus_scp_mgmt_open",function(ply,button)
     end
 end)
 
-print("[SCPMGMT] loaded cl")
+print("[luctus_scp_mgmt] cl loaded")
