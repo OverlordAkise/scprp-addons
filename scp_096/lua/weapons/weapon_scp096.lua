@@ -255,6 +255,7 @@ function SWEP:Think()
             alive = not v._IsDead
         end
         if not alive then continue end
+        if LUCTUS_SCP096_IMMUNE_JOBS[team.GetName(v:Team())] then continue end
         --print(self.Owner:GetAngles())
         --print(v:GetAngles())
         local phi = math.abs(ply:GetAngles()[2] - v:GetAngles()[2]) % 360;
