@@ -256,13 +256,9 @@ function SWEP:Think()
         end
         if not alive then continue end
         if LUCTUS_SCP096_IMMUNE_JOBS[team.GetName(v:Team())] then continue end
-        --print(self.Owner:GetAngles())
-        --print(v:GetAngles())
-        local phi = math.abs(ply:GetAngles()[2] - v:GetAngles()[2]) % 360;
-        local distance = phi > 180 and 360 - phi or phi;
-        --PrintMessage(3,distance)
-        --From side to side: 90 <-> 90 degrees, middle: 180degrees
-        if distance > 135 then
+        local a1 = Entity(1):GetAimVector()
+        local a2 = Entity(2):GetAimVector():GetNegated()
+        if a1:Distance(a2) < 0.8 then
             if ply:IsLineOfSightClear(v) then 
                 luctus_update_hunted(v,true)
             end
