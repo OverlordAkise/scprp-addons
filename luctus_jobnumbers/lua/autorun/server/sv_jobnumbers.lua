@@ -61,15 +61,12 @@ end)
 
 
 hook.Add("OnPlayerChangedTeam", "luctus_numtags", function(ply, beforeNum, afterNum)
-    if LUCTUS_JOBNUMBERS[team.GetName(beforeNum)] then
-        ply:SetNWString("l_numtag","")
-    end
-
     LuctusJobnumbersLoadPlayer(ply,team.GetName(afterNum))
 end)
 
 
 function LuctusJobnumbersLoadPlayer(ply,jobname)
+    ply:SetNWString("l_numtag","")
     if not LUCTUS_JOBNUMBERS[jobname] then return end
     local jconf = LUCTUS_JOBNUMBERS[jobname]
     local randomNumber = math.random(jconf[2],jconf[3])
