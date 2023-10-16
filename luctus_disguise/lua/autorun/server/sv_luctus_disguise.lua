@@ -45,7 +45,7 @@ net.Receive("luctus_disguise",function(len,ply)
         local rankid = tonumber(_rankid)
         LuctusDisguiseSetJobRank(ply,jobname,jobID,rankid)
     end
-    if luctus_jobnumbers and luctus_jobnumbers[jobname] then
+    if LUCTUS_JOBNUMBERS and LUCTUS_JOBNUMBERS[jobname] then
         LuctusJobnumbersLoadPlayer(ply,jobname)
     end
     
@@ -74,7 +74,7 @@ function LuctusDisguiseUndisguise(ply)
         local jobname = team.GetName(ply:Team())
         ply:setDarkRPVar("job", ply.oldJobName)
         ply:SetModel(ply.oldModel)
-        if luctus_jobnumbers and luctus_jobnumbers[jobname] then
+        if LUCTUS_JOBNUMBERS and LUCTUS_JOBNUMBERS[jobname] then
             LuctusJobnumbersLoadPlayer(ply,jobname)
         end
         if luctus_jobranks and luctus_jobranks[ply.oldJobName] then
