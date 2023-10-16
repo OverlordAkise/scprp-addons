@@ -35,6 +35,10 @@ end
 
 function ENT:Use( activator, caller )
 	if activator:IsPlayer() then
+        if not LUCTUS_DISGUISE_ALLOWED_JOBS[team.GetName(activator:Team())] then
+            DarkRP.notify(activator,1,5,"You can't use this!")
+            return
+        end
         net.Start("luctus_disguise")
             net.WriteEntity(self)
         net.Send(activator)

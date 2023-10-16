@@ -48,11 +48,7 @@ end
 net.Receive("luctus_disguise",function()
     if IsValid(wcFrame) then return end
     local cabEnt = net.ReadEntity()
-    if not LUCTUS_DISGUISE_ALLOWED_JOBS[team.GetName(LocalPlayer():Team())] then
-        notification.AddLegacy("You can't use this!",1,3)
-        return
-    end
-    local wcEnt = net.ReadEntity()
+
     curJob = nil
     curModel = nil
     curRank = nil
@@ -267,6 +263,19 @@ function LuctusAddToModelList(curTeam,modelList)
         but.DoClick = function(self)
             curModel = self.model
         end
+    end
+end
+
+--Override ply:Team() to make the jobcolor "disguise too"
+--This is not tested properly
+if LUCTUS_DISGUISE_ENABLE_BETA_TEAM_COLORS then
+    local meta = FindMetaTable("Player")
+    local getTeam = meta.Team
+    function meta:Team()
+        if self:GetNWInt("disguiseTeam",-1) != -1 then
+            return self:GetNWInt("disguiseTeam",-1)
+        end
+        return getTeam(self)
     end
 end
 

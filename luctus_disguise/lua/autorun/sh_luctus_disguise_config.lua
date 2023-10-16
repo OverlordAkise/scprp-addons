@@ -4,6 +4,10 @@
 --Should the WeaponChecker remove disguise of players?
 LUCTUS_DISGUISE_WEAPONCHECKER_UNDISGUISE = true
 
+--Should the client try to show the correct color for the disguised job
+--Warning: This could maybe create problems
+LUCTUS_DISGUISE_ENABLE_BETA_TEAM_COLORS = false
+
 --The jobs who can disguise themselves
 LUCTUS_DISGUISE_ALLOWED_JOBS = {
     ["O5 Rat"] = true,
