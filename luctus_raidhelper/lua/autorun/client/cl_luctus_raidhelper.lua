@@ -4,7 +4,7 @@
 local raid_members = {}
 
 timer.Create("luctus_raidmembers_sync",1,0,function()
-    if not LocalPlayer() then return end
+    if not IsValid(LocalPlayer()) then return end
     raid_members = {}
     if not LUCTUS_RAIDHELPER_HUD_ENABLE then return end
     local raid = LocalPlayer():GetNW2String("IsRaiding","")
