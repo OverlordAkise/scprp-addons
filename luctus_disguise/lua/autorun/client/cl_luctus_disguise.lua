@@ -201,6 +201,7 @@ end
 --CHANGEME This function has to be customized for your jobrank system
 --key = rankid, value = rankname
 function LuctusDisguiseGetRankTable(cteam,jobname)
+    --Luctus Jobranks
     if luctus_jobranks and luctus_jobranks[jobname] then
         local list = {}
         for k,v in ipairs(luctus_jobranks[jobname]) do
@@ -219,6 +220,20 @@ function LuctusDisguiseGetRankTable(cteam,jobname)
             table.insert(list,v)
         end
         return list
+    --Military Rank System, mcranks
+    elseif MRS then
+        local ranktab = nil
+        for rname,tab in pairs(MRS.Ranks) do
+            if tab.job and tab.job[jobname] and tab.ranks then
+                ranktab = tab.ranks
+            end
+        end
+        if not ranktab then return {} end
+        local disguisetab = {}
+        for k,v in pairs(ranktab) do
+            table.insert(disguisetab,v.name)
+        end
+        return disguisetab
     end
     return {}
 end

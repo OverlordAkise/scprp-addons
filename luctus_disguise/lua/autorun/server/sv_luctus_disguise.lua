@@ -66,6 +66,33 @@ function LuctusDisguiseSetJobRank(ply,jobname,jobid,rankid)
         
         ply:setDarkRPVar("job", ply:JBR_GetJobName(jobid, subTables.NameRanks[rankid]))
         ply:SetNWInt("jobrank", rankid)
+    elseif MRS then
+        local plyGroup = MRS.GetPlayerGroup(jobid)
+        if not plyGroup then
+            MRS.SetNWdata(ply,"Rank",nil )
+            MRS.SetNWdata(ply,"Group",nil )
+            MRS.SetSelfNWdata(ply,"progress",nil )
+            return
+        end
+        local rankTab = MRS.Ranks[plyGroup]
+        if not rankTab or not rankTab.ranks[rankid] then return end
+        
+        MRS.SetNWdata(ply,"Rank",rankid)
+        MRS.SetNWdata(ply,"Group",plyGroup)
+        MRS.SetSelfNWdata(ply,"progress",nil)
+        MRS.RemoveRanksStats(ply)
+        timer.Simple(0,function ()
+            local rankTable = MRS.Ranks[plyGroup]["ranks"][rankid]
+            if not rankTable then return end
+            if DarkRP and MRS.Config.ChangeJobName then
+                local cname=MRS.Ranks[plyGroup]["show_sn"] and rankTable["srt_name"] or rankTable["name"]
+                if MRS.Config.SetAsPrefix then
+                    cname="["..cname.."] "..team.GetName(jobid)
+                end
+                ply:updateJob(cname)
+            end
+        end)
+        
     end
 end
 
@@ -81,6 +108,8 @@ function LuctusDisguiseUndisguise(ply)
             LuctusJobranksLoadPlayer(ply,ply.oldJob)
         elseif JobRanksConfig then
             LuctusJobranksTBFYRestore(ply,ply.oldJob)   
+        elseif MRS then
+            MRS.SetupRankData(ply, ply.oldJob)
         end
         ply.oldJob = nil
         ply.oldJobName = nil
