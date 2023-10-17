@@ -159,8 +159,10 @@ end
 
 hook.Add("playerWeaponsChecked","luctus_disguise_forceoff",function(checker,ply,weapons)
     if LUCTUS_DISGUISE_WEAPONCHECKER_UNDISGUISE then
+        if ply:GetNWInt("disguiseTeam",-1) != -1 then
+            DarkRP.notify(ply,1,5,"Your disguise was removed!")
+        end
         LuctusDisguiseUndisguise(ply)
-        DarkRP.notify(ply,1,5,"Your disguise was removed!")
     end
 end)
 
