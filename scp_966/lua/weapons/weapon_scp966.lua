@@ -98,7 +98,7 @@ function SWEP:SecondaryAttack()
     if ply:EyePos():Distance(trace.HitPos) > 128 then return end
     if hook.Call("canDoorRam", nil, ply, trace, ent) ~= nil then return end
     
-    if SCP966_UNBREACHABLE[ent:GetName()] or SCP966_UNBREACHABLE[ent:MapCreationID()] then
+    if LUCTUS_SCP966_UNBREACHABLE[ent:GetName()] or LUCTUS_SCP966_UNBREACHABLE[ent:MapCreationID()] then
         DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
         return false
     end
@@ -129,4 +129,3 @@ function SWEP:Think()
     end
     self:NextThink(CurTime() + 0.2)
 end
-

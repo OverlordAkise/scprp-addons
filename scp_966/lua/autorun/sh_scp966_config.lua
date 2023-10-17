@@ -14,11 +14,18 @@ LUCTUS_SCP966_HPGAINED = 100
 --This can either be
 -- The :GetName() string of the entity
 -- The :MapCreationID() number of the entity
-SCP966_UNBREACHABLE = {
+LUCTUS_SCP966_UNBREACHABLE = {
     ["blastdoor_457"] = true,
     ["blastdoor_457_1"] = true,
     ["457_door_l"] = true,
     ["457_door_r"] = true,
+}
+
+LUCTUS_SCP966_NV_JOBS = {
+    ["MTF"] = true,
+    ["Gun Dealer"] = true,
+    ["Citizen"] = true,
+    ["SCP 966"] = true,
 }
 
 print("[SCP966] config Loaded!")

@@ -12,7 +12,6 @@ hook.Add("OnPlayerChangedTeam","luctus_scp966_view", function(ply, beforeNum, af
         timer.Create("luctus_repair_movespeed",1,0,LuctusSCP966RepairMoveTimer)
         print("[scp966] Starting movement repair/impair timer")
         net.Start("luctus_scp966_nodraw")
-        net.WriteBool(true)
         net.WriteEntity(scp966_ply)
         net.Broadcast()
     end
@@ -80,4 +79,4 @@ function LuctusSCP966RepairMovement(ply)
     end
 end
 
-print("[SCP966] SV Loaded!")
+print("[SCP966] sv loaded")
