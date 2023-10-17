@@ -148,7 +148,8 @@ net.Receive("luctus_disguise",function()
         wcFrame:Close()
     end
     
-    for k,curTeam in pairs(RPExtraTeams) do
+    for k,curTeam in ipairs(RPExtraTeams) do
+        if LUCTUS_DISGUISE_JOB_BLACKLIST[curTeam.name] then continue end
         local catBut = vgui.Create("DButton",jobList)
         catBut.jobname = curTeam.name
         catBut.job = k
