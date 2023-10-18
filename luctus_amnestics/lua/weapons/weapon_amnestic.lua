@@ -64,7 +64,6 @@ function SWEP:PrimaryAttack()
         Owner:EmitSound("darky_rust.syringe-inject-friend")
         
         if CLIENT then return end
-        print("[DEBUG]","Using type:",self.mytype)
         LuctusSendAmnesticsEffect(self.Owner,Traced,self.mytype)
         
         self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
@@ -84,14 +83,11 @@ end
 function SWEP:CheckTrace()
     local Owner = self:GetOwner()
     Owner:LagCompensation(true)
-
     local Trace = util.TraceLine({
         start = Owner:GetShootPos(),
         endpos = Owner:GetShootPos() + Owner:GetAimVector() * 64,
         filter = Owner
     })
-
     Owner:LagCompensation(false)
-
     return Trace.Entity
 end
