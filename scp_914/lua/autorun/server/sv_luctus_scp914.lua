@@ -6,8 +6,7 @@
 
 
 if (game.GetMap() ~= "rp_liquidrp_ct_site99") then 
-  print("[luctus_scp914] THIS ADDON IS ONLY MADE FOR rp_liquidrp_ct_site99 ! Canceling loading!")
-  return 
+  error("[luctus_scp914] THIS ADDON IS ONLY MADE FOR rp_liquidrp_ct_site99 ! Canceling loading!")
 end
 
 util.AddNetworkString("luctus_scp914_save")
@@ -46,9 +45,9 @@ function getSCP914s(wheeltype)
     return {}
   end
   if ret and ret ~= nil then
-    print("Response!")
-    print("Sending:")
-    PrintTable(ret)
+    --print("Response!")
+    --print("Sending:")
+    --PrintTable(ret)
     return ret
   end
   return {}
