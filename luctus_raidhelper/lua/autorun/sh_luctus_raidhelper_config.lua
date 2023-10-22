@@ -5,6 +5,8 @@
 LUCTUS_RAIDHELPER_REQCMD = "!startraid"
 --Command to allow the raid
 LUCTUS_RAIDHELPER_ALLOWCMD = "!allowraid"
+--Command to deny raid request
+LUCTUS_RAIDHELPER_DENYCMD = "!denyraid"
 --Command to leave the raid as a player
 LUCTUS_RAIDHELPER_LEAVECMD = "!leaveraid"
 --Command to stop the raid as the leader

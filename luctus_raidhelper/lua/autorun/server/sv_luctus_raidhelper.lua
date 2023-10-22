@@ -19,6 +19,20 @@ hook.Add("PlayerSay","luctus_raidhelper",function(ply,text)
         LuctusRaidHelperStart(raidLeader)
         LuctusRaidHelperTellAdmins("Raid for "..raidLeader:Nick().."("..team.GetName(raidLeader:Team())..") has been accepted by "..ply:Nick())
         LUCTUS_RAIDHELPER_ALLOWIDS[acceptNum] = nil
+        hook.Run("LuctusRaidHelperApproved",ply,raidLeader)
+    end
+    if string.StartWith(text,LUCTUS_RAIDHELPER_DENYCMD) then
+        local acceptNum = string.Split(text," ")[2]
+        if not acceptNum or not tonumber(acceptNum) then return end
+        local raidLeader = LUCTUS_RAIDHELPER_ALLOWIDS[acceptNum]
+        if not raidLeader then
+            ply:PrintMessage(HUD_PRINTTALK, "[raid] No raid request with this id found")
+            return
+        end
+        LuctusRaidHelperTellAdmins("Raid for "..raidLeader:Nick().."("..team.GetName(raidLeader:Team())..") has been denied by "..ply:Nick())
+        LUCTUS_RAIDHELPER_ALLOWIDS[acceptNum] = nil
+        LuctusRaidStartCooldown(team.GetName(raidLeader:Team()))
+        hook.Run("LuctusRaidHelperDenied",ply,raidLeader)
     end
     if text == LUCTUS_RAIDHELPER_LEAVECMD then
         if ply:GetNW2String("IsRaiding","") == "" then
@@ -35,6 +49,7 @@ hook.Add("PlayerSay","luctus_raidhelper",function(ply,text)
         end
         for id,rply in pairs(LUCTUS_RAIDHELPER_ALLOWIDS) do
             if rply == ply then
+                LUCTUS_RAIDHELPER_ALLOWIDS[id] = nil
                 LuctusRaidHelperTellAdmins(ply:Nick().." ("..team.GetName(ply:Team())..") canceled his raid request.")
                 return
             end
@@ -76,7 +91,7 @@ function LuctusRaidHelperAskAdmin(ply)
     end
     local acceptNum = math.random(10000,99999)..""
     LUCTUS_RAIDHELPER_ALLOWIDS[acceptNum] = ply
-    LuctusRaidHelperTellAdmins("Raid request from "..ply:Nick().." ("..jobname.."). Type '"..LUCTUS_RAIDHELPER_ALLOWCMD.." "..acceptNum.."' to allow the raid.")
+    LuctusRaidHelperTellAdmins("Raid request from "..ply:Nick().." ("..jobname.."). Type '"..LUCTUS_RAIDHELPER_ALLOWCMD.." "..acceptNum.."' to allow the raid (or "..LUCTUS_RAIDHELPER_DENYCMD..")")
     ply:PrintMessage(HUD_PRINTTALK,"[raid] Requesting admins for permission to raid")
     hook.Run("LuctusRaidHelperAsk",ply,jobname,acceptNum)
 end
@@ -120,6 +135,10 @@ function LuctusRaidHelperStop(job,reason)
     end
     PrintMessage(HUD_PRINTTALK,"[raid] The raid of '"..job.."' ended")
     hook.Run("LuctusRaidHelperEnd",job,reason)
+    LuctusRaidStartCooldown(job)
+end
+
+function LuctusRaidStartCooldown(job)
     LUCTUS_RAIDHELPER_COOLDOWNS[job] = CurTime()+LUCTUS_RAIDHELPER_COOLDOWN
     timer.Simple(LUCTUS_RAIDHELPER_COOLDOWN,function()
         LUCTUS_RAIDHELPER_COOLDOWNS[job] = nil
@@ -143,6 +162,13 @@ end)
 hook.Add("PlayerDisconnect","luctus_raidhelper",function(ply)
     if ply:GetNW2String("IsRaiding","") ~= "" then
         LuctusRaidHelperLeave(ply,"disconnect")
+    end
+    --Cleanup
+    for id,rply in pairs(LUCTUS_RAIDHELPER_ALLOWIDS) do
+        if rply == ply then
+            LUCTUS_RAIDHELPER_ALLOWIDS[id] = nil
+            return
+        end
     end
 end)
 
