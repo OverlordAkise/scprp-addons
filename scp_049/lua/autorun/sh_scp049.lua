@@ -16,4 +16,4 @@ SCP049_UNBREACHABLE = {
     ["049_containment_door_l"] = true,
 }
 
-print("[SCP049] config Loaded!")
+print("[SCP049] config loaded")

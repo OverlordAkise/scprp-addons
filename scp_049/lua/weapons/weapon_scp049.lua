@@ -189,7 +189,7 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime()+0.2)
     local ply = self:GetOwner()
     local trace = ply:GetEyeTrace()
-    if ply:EyePos():Distance(trace.HitPos) > 128 then return end
+    if ply:EyePos():Distance(trace.HitPos) > 256 then return end
     local ent = trace.Entity
     if not IsValid(ent) then return end
     
@@ -210,16 +210,19 @@ function SWEP:PrimaryAttack()
         --if gDeathsystem:
         if MedConfig then
             local ragdoll = ent
-            for k,v in pairs(player.GetAll()) do
+            for k,v in ipairs(player.GetAll()) do
                 if v:GetNW2Entity("RagdollEntity",nil) == ragdoll then
                     deadPlayer = v
                 end
             end
         end
-        
+        --if advanced medic mod
+        if not IsValid(deadPlayer) then
+            deadPlayer = ent:GetOwner()
+        end
         local mixName = scp049_mixtable[ply.scp049_col_one][ply.scp049_col_two]
         local mixedFunc = scp049_effect_functions[mixName]
         ply:PrintMessage(HUD_PRINTTALK, "Your mixture was '"..mixName.."'")
-        LuctusSCP049SpawnZombie(mixedFunc,deadPlayer,mixName,ply)
+        LuctusSCP049SpawnZombie(mixedFunc,deadPlayer,mixName,ply,trace.HitPos)
     end
 end

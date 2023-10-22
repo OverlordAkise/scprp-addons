@@ -38,10 +38,9 @@ scp049_effect_functions = {
     end,
 }
 
-function LuctusSCP049SpawnZombie(mixedFunc,ply,funcName,scpPly)
+function LuctusSCP049SpawnZombie(mixedFunc,ply,funcName,scpPly,spawnPos)
     if not ply or not IsValid(ply) then return end
     LuctusLog("scp",scpPly:Nick().."("..scpPly:SteamID()..") SCP049-revived "..ply:Nick().."("..ply:SteamID()..")".." with mixture "..funcName)
-    local spawnPos = ply:GetPos()
     ply:Spawn()
     timer.Simple(0.1,function()--needed for spawnPos
         if not IsValid(ply) then return end
@@ -107,4 +106,4 @@ net.Receive("luctus_scp049_mixing",function(len,ply)
     ply:PrintMessage(HUD_PRINTTALK, "Your mixed ID is "..ply.scp049_col_one..ply.scp049_col_two)
 end)
 
-print("[SCP049] SV Loaded!")
+print("[SCP049] sv loaded")
