@@ -4,6 +4,10 @@
 
 --In seconds, after joining job when you are allowed to breach
 LUCTUS_BREACH_DELAY = 300
+--Allow a breach command
+LUCTUS_BREACH_ALLOWCMD = "!allowbreach"
+--Deny a breach command
+LUCTUS_BREACH_DENYCMD = "!denybreach"
 --Custom breach timers for specific jobs
 LUCTUS_BREACH_DELAY_CUSTOM = {
     ["Gun Dealer"] = 600,

@@ -42,7 +42,7 @@ function LuctusBreachSeekApproval(breacher)
     for k,v in pairs(player.GetAll()) do
         if not LUCTUS_BREACH_APPROVER[v:GetUserGroup()] then continue end
         NotifyPlayer(v,"[breach] '"..breacher:Nick().."' wants to breach!")
-        NotifyPlayer(v,"[breach] Type '!approve "..breacher.breachid.."' to approve this breach!")
+        NotifyPlayer(v,"[breach] Type '"..LUCTUS_BREACH_ALLOWCMD.." "..breacher.breachid.."' to approve this breach (or "..LUCTUS_BREACH_DENYCMD..")")
     end
 end
 
@@ -68,14 +68,28 @@ hook.Add("PlayerSay", "BreachCommand", function(ply, text)
             NotifyPlayer(ply,"[breach] Your job doesn't allow breaching!")
         end
     end
-    if LUCTUS_BREACH_APPROVER[ply:GetUserGroup()] and string.StartWith(text,"!approve") then
-        local name = string.Split(text,"!approve ")
+    if LUCTUS_BREACH_APPROVER[ply:GetUserGroup()] and string.StartWith(text,LUCTUS_BREACH_ALLOWCMD) then
+        local name = string.Split(text,LUCTUS_BREACH_ALLOWCMD.." ")
         if not name[2] then return end
         for k,v in pairs(player.GetAll()) do
             if v.breachid and v.breachid == name[2] then
                 LuctusBreachDo(v)
                 NotifyPlayer(ply,"[breach] Successfully approved!")
                 hook.Run("LuctusBreachApproved",ply,v)
+                return
+            end
+        end
+        NotifyPlayer(ply,"[breach] Error, ID not found!")
+    end
+    if LUCTUS_BREACH_APPROVER[ply:GetUserGroup()] and string.StartWith(text,LUCTUS_BREACH_DENYCMD) then
+        local name = string.Split(text,LUCTUS_BREACH_DENYCMD.." ")
+        if not name[2] then return end
+        for k,v in pairs(player.GetAll()) do
+            if v.breachid and v.breachid == name[2] then
+                CreateBreachTimer(v)
+                NotifyPlayer(v,"[breach] Your breach has been denied! Timer reset.")
+                NotifyPlayer(ply,"[breach] Successfully denied!")
+                hook.Run("LuctusBreachDenied",ply,v)
                 return
             end
         end
