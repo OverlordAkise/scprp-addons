@@ -21,7 +21,7 @@ hook.Add( "HUDPaint", "luctus_lootsystem_hud", function()
     local SW, SH = ScrW(), ScrH()
 
     if not ent:GetNWBool("isLoot") or LocalPlayer():GetPos():Distance(ent:GetPos()) > 110 then return end
-    if luctus_loot_blacklist_jobs[RPExtraTeams[LocalPlayer():Team()].name] then return end
+    if not luctus_loot_whitelist_jobs[RPExtraTeams[LocalPlayer():Team()].name] then return end
     if ent:GetNWInt("nextSearch") > CurTime() then
         draw.SimpleTextOutlined("You have to wait "..math.Round(ent:GetNWInt("nextSearch") - CurTime()).."s before you can search again!", "Trebuchet24", SW/2, SH/2+60, Color( 255, 255, 255, 255 ),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,1,Color(0,0,0,255))
         return

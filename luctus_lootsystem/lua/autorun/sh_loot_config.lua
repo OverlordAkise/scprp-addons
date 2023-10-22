@@ -4,7 +4,7 @@
 --CONFIG START
 
 --Set to true to blacklist jobs from looting
-luctus_loot_blacklist_jobs = {
+luctus_loot_whitelist_jobs = {
     ["Citizen"] = true,
     ["Medic"] = true,
     ["MTF X-9"] = true,
