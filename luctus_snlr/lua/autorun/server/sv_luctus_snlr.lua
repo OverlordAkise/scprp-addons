@@ -26,6 +26,7 @@ hook.Add("PlayerSpawn","luctus_snlr",function(ply)
 end)
 
 function LuctusNLRStart(ply,ntime)
+    if ply.Sleeping then return end
     local extraTime = hook.Run("LuctusNlrExtraTime")
     if extraTime and tonumber(extraTime) then
         ntime = ntime + tonumber(extraTime)
