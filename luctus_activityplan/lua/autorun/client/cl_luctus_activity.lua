@@ -58,4 +58,4 @@ hook.Add("HUDPaint","luctus_activity_display",function()
     draw.SimpleTextOutlined(string.ToMinutesSeconds(timeLeft), font, ScrW()-70, 235, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, color_black)
 end)
 
-print("[luctus_activity] CL loaded!")
+print("[luctus_activity] cl loaded")

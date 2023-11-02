@@ -25,7 +25,7 @@ function luctusActivityStartNext()
     if timer.Exists("luctus_activity_timer") then
         timer.Remove("luctus_activity_timer")
     end
-    luctusCurrentActivityID = (luctusCurrentActivityID % 4)+1
+    luctusCurrentActivityID = (luctusCurrentActivityID % #LUCTUS_ACTIVITY_ACTIVITIES)+1
     timer.Create("luctus_activity_timer",LUCTUS_ACTIVITY_ACTIVITIES[luctusCurrentActivityID][2], 1, function()
         luctusActivityStartNext()
     end)
@@ -75,4 +75,4 @@ hook.Add("PlayerSay","luctus_activity_resync",function(ply,text,team)
     end
 end)
 
-print("[luctus_activity] SV loaded!")
+print("[luctus_activity] sv loaded")

@@ -10,10 +10,10 @@ LUCTUS_ACTIVITY_SHOW_JOB = {
 
 --Activityname, time in seconds for activity
 LUCTUS_ACTIVITY_ACTIVITIES = {
-    {"Eating",10},
-    {"Sleep",10},
-    {"Fitness",10},
-    {"Freetime",10},
+    {"Eating",120},
+    {"Sleep",120},
+    {"Fitness",120},
+    {"Freetime",120},
 }
 
-print("[luctus_activity] SH config loaded!")
+print("[luctus_activity] config loaded")
