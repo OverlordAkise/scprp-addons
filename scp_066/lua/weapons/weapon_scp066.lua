@@ -35,6 +35,7 @@ SWEP.Spawnable = true
 SWEP.AdminSpawnable = false
 SWEP.nextThink = 0
 SWEP.nextReload = 0
+SWEP.endTime = 0
 
 function SWEP:Initialize()
     self:SetHoldType("normal")
@@ -63,11 +64,16 @@ function SWEP:SecondaryAttack()
         self.isPlaying = true
         self:EmitSound("066/beethoven.wav")
         self:SetNextSecondaryFire(CurTime()+0.1)
+        self.endTime = CurTime()+SoundDuration("066/beethoven.wav")
     else
-        self.isPlaying = false
-        self:StopSound("066/beethoven.wav")
-        self:SetNextSecondaryFire(CurTime()+0.5)
+        self:StopKillSound()
     end
+end
+
+function SWEP:StopKillSound()
+    self.isPlaying = false
+    self:StopSound("066/beethoven.wav")
+    self:SetNextSecondaryFire(CurTime()+0.5)
 end
 
 function SWEP:Reload()
@@ -78,17 +84,16 @@ function SWEP:Reload()
     end
 end
 
-if CLIENT then return end
-
 function SWEP:Think()
-    if self.isPlaying and self.nextThink < CurTime() then
-        self.nextThink = CurTime()+0.5
-        local _ents = ents.FindInSphere(self:GetOwner():GetPos(), 512)
-        local plys = {}
-        for i=1,#_ents do
-            if _ents[i]:IsPlayer() and self:GetOwner():IsLineOfSightClear(_ents[i]) and _ents[i] ~= self:GetOwner() then
-                _ents[i]:TakeDamage(5,self:GetOwner(),self)
-            end
+    if not self.isPlaying or self.nextThink > CurTime() then return end
+    self.nextThink = CurTime()+0.5
+    if CurTime() > self.endTime then self:StopKillSound() end
+    if CLIENT then return end
+    local _ents = ents.FindInSphere(self:GetOwner():GetPos(), 512)
+    local plys = {}
+    for i=1,#_ents do
+        if _ents[i]:IsPlayer() and self:GetOwner():IsLineOfSightClear(_ents[i]) and _ents[i] ~= self:GetOwner() then
+            _ents[i]:TakeDamage(5,self:GetOwner(),self)
         end
     end
 end
