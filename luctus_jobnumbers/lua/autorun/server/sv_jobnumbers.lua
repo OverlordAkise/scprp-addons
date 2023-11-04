@@ -46,19 +46,22 @@ hook.Add("PlayerSay", "luctus_jobnumber_set", function(ply,text,plyteam)
         end
         if LUCTUS_JOBNUMBERS_USERS_CAN_CHANGE and not ply:IsAdmin() and not ply != tPly then return end
         
-        ply:SetNWString("l_numtag",string.format(LUCTUS_JOBNUMBERS[jobname][1],newId))
-        local sqlJobName = jobname
-        if jobname_cache[jobname] then
-            sqlJobName = jobname_cache[jobname]
-        end
-        local res = sql.Query("UPDATE luctus_jobnumbers SET jobnumber="..newId.." WHERE steamid="..sql.SQLStr(ply:SteamID()).." AND jobname="..sql.SQLStr(sqlJobName))
-        if res == false then
-            error(sql.LastError())
-        end
+        LuctusJobnumbersSet(ply,jobname,newId)
         ply:PrintMessage(3,"[jobnumbers] Updated successfully!")
     end
 end)
 
+function LuctusJobnumbersSetInternal(ply,jobname,newId)
+    ply:SetNWString("l_numtag",string.format(LUCTUS_JOBNUMBERS[jobname][1],newId))
+    local sqlJobName = jobname
+    if jobname_cache[jobname] then
+        sqlJobName = jobname_cache[jobname]
+    end
+    local res = sql.Query("UPDATE luctus_jobnumbers SET jobnumber="..newId.." WHERE steamid="..sql.SQLStr(ply:SteamID()).." AND jobname="..sql.SQLStr(sqlJobName))
+    if res == false then
+        error(sql.LastError())
+    end
+end
 
 hook.Add("OnPlayerChangedTeam", "luctus_numtags", function(ply, beforeNum, afterNum)
     LuctusJobnumbersLoadPlayer(ply,team.GetName(afterNum))
