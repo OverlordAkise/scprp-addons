@@ -104,3 +104,14 @@ function SWEP:SecondaryAttack()
     --ply:EmitSound(self.Sound)
     ply:EmitSound("ambient/materials/metal_stress"..math.random(1,5)..".wav")
 end
+
+SWEP.lastReload = 0
+function SWEP:Reload()
+    if self.lastReload > CurTime() then return end
+    self.lastReload = CurTime()+0.5
+    if SERVER then
+        scp457_shouldburn = not scp457_shouldburn
+    else
+        surface.PlaySound("buttons/lightswitch2.wav")
+    end
+end

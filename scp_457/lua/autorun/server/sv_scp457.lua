@@ -14,6 +14,7 @@ hook.Add("PlayerShouldTakeDamage", "luctus_scp457_fireno", function(d, e)
 end)
 
 scp457_ply = nil
+scp457_shouldburn = true
 
 hook.Add("OnPlayerChangedTeam", "luctus_scp457", function(ply, beforeNum, afterNum)
     if string.EndsWith(RPExtraTeams[afterNum].name,"457") then
@@ -30,9 +31,10 @@ end)
 
 function LuctusSCP457Burn()
     if not scp457_ply or not IsValid(scp457_ply) then return end
+    if not scp457_shouldburn then return end
     if CurTime() < scp457_ply.lNoBurn then return end
     scp457_ply:Ignite(1,LUCTUS_SCP457_IGNITE_RADIUS)
-    for k,v in pairs(ents.FindInSphere(scp457_ply:GetPos(),LUCTUS_SCP457_IGNITE_RADIUS)) do
+    for k,v in ipairs(ents.FindInSphere(scp457_ply:GetPos(),LUCTUS_SCP457_IGNITE_RADIUS)) do
         if v:IsPlayer() then
             v:Ignite(LUCTUS_SCP457_IGNITE_DURATION,50)
         end
