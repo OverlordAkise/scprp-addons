@@ -64,7 +64,7 @@ function SWEP:PrimaryAttack()
     effectdata:SetNormal(tr.Normal)
     effectdata:SetRadius(30)
     util.Effect("AR2Explosion", effectdata)
-    owner:EmitSound(self.Sound)
+    owner:EmitSound(self.Sound,75,100,0.25)
     
     if CLIENT then return end
     local hitEnt = tr.Entity
