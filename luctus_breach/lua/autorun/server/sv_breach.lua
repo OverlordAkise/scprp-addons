@@ -1,8 +1,6 @@
 --Luctus Breach
 --Made by OverlordAkise
 
-LuctusLog = LuctusLog or function()end
-
 local function NotifyPlayer(ply,text)
     ply:PrintMessage(3,text)
     DarkRP.notify(ply, 1, 5, text)
@@ -24,7 +22,7 @@ function LuctusBreachDo(ply)
     hook.Run("LuctusBreachOpen",ply)
     ply.canbreach = false
     CreateBreachTimer(ply)
-    for k,v in pairs(LUCTUS_BREACH_JOBS[ply:getJobTable().name]) do
+    for k,v in ipairs(LUCTUS_BREACH_JOBS[ply:getJobTable().name]) do
         if type(v) == "string" then
             if ents.FindByName(v)[1] and IsValid(ents.FindByName(v)[1]) then
                 ents.FindByName(v)[1]:Use(Entity(0)) --entity0=worldspawn
@@ -39,7 +37,7 @@ end
 
 function LuctusBreachSeekApproval(breacher)
     hook.Run("LuctusBreachRequested",breacher)
-    for k,v in pairs(player.GetAll()) do
+    for k,v in ipairs(player.GetHumans()) do
         if not LUCTUS_BREACH_APPROVER[v:GetUserGroup()] then continue end
         NotifyPlayer(v,"[breach] '"..breacher:Nick().."' wants to breach!")
         NotifyPlayer(v,"[breach] Type '"..LUCTUS_BREACH_ALLOWCMD.." "..breacher.breachid.."' to approve this breach (or "..LUCTUS_BREACH_DENYCMD..")")
@@ -71,7 +69,7 @@ hook.Add("PlayerSay", "BreachCommand", function(ply, text)
     if LUCTUS_BREACH_APPROVER[ply:GetUserGroup()] and string.StartWith(text,LUCTUS_BREACH_ALLOWCMD) then
         local name = string.Split(text,LUCTUS_BREACH_ALLOWCMD.." ")
         if not name[2] then return end
-        for k,v in pairs(player.GetAll()) do
+        for k,v in ipairs(player.GetHumans()) do
             if v.breachid and v.breachid == name[2] then
                 LuctusBreachDo(v)
                 NotifyPlayer(ply,"[breach] Successfully approved!")
@@ -84,7 +82,7 @@ hook.Add("PlayerSay", "BreachCommand", function(ply, text)
     if LUCTUS_BREACH_APPROVER[ply:GetUserGroup()] and string.StartWith(text,LUCTUS_BREACH_DENYCMD) then
         local name = string.Split(text,LUCTUS_BREACH_DENYCMD.." ")
         if not name[2] then return end
-        for k,v in pairs(player.GetAll()) do
+        for k,v in ipairs(player.GetHumans()) do
             if v.breachid and v.breachid == name[2] then
                 CreateBreachTimer(v)
                 NotifyPlayer(v,"[breach] Your breach has been denied! Timer reset.")
@@ -124,4 +122,4 @@ concommand.Add("breach_get_button",function(ply)
     ply:PrintMessage(2,"---")
 end)
 
-print("[luctus_breach] Loaded SV!")
+print("[luctus_breach] sv loaded")
