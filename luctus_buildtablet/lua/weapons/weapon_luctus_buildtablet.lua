@@ -31,6 +31,8 @@ SWEP.Secondary.Ammo      = "none"
 
 SWEP.AutoSwitchTo      = false
 SWEP.AutoSwitchFrom      = false
+
+SWEP.useCD = 0
 SWEP.csmodel = nil
 SWEP.PropModel = nil
 SWEP.PropAngOffset = nil
@@ -73,6 +75,8 @@ end
 
 function SWEP:Holster()
     if SERVER then return true end
+    local ply = self:GetOwner()
+    if ply ~= LocalPlayer() then return true end
     hook.Remove("PostDrawOpaqueRenderables","luctus_buildtablet_preview")
     return true
 end
@@ -83,6 +87,10 @@ function SWEP:Think() end
 function SWEP:PrimaryAttack()
     if CLIENT then return end
     local ply = self:GetOwner()
+    if self.useCD > CurTime() then
+        return
+    end
+    self.useCD = CurTime()+LUCTUS_BUILDTABLET_COOLDOWN
     if not LuctusBuildtabletCanSpawn(ply) then
         if SERVER then DarkRP.notify(ply,1,5,"You reached the prop limit!") end
         return
@@ -122,11 +130,20 @@ end
 
 function SWEP:SecondaryAttack()
     if CLIENT then return end
-    local ent = self:GetOwner():GetEyeTrace().Entity
+    local ply = self:GetOwner()
+    if self.useCD > CurTime() then
+        return
+    end
+    self.useCD = CurTime()+LUCTUS_BUILDTABLET_COOLDOWN
+    local ent = ply:GetEyeTrace().Entity
     if IsValid(ent) and ent:GetClass() == "luctus_bprop" and ent.FromBuildtablet then
+        if ent.creator ~= ply then
+            DarkRP.notify(ply,1,5,"You can not remove other's buildings!")
+            return
+        end
         ent:EmitSound("physics/concrete/concrete_break3.wav")
         ent:Remove()
-        LuctusBuildtabletPropcountRecover(self:GetOwner())
+        LuctusBuildtabletPropcountRecover(ply)
     end
 end
 

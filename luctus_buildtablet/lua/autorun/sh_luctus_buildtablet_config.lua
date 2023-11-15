@@ -3,6 +3,8 @@
 
 --How many props can each player spawn?
 LUCTUS_BUILDTABLET_PLACEABLE = 5
+--Cooldown between building/destroying props, in seconds
+LUCTUS_BUILDTABLET_COOLDOWN = 0.3
 --Spawnable props
 LUCTUS_BUILDTABLET_PROPS = {
   --{"prop.mdl",Health,SpawnTime,AngleOffset,heightOffset},
