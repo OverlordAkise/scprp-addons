@@ -95,12 +95,12 @@ function SWEP:PrimaryAttack()
         if SERVER then DarkRP.notify(ply,1,5,"You reached the prop limit!") end
         return
     end
+    local pos = ply:GetEyeTrace().HitPos
+    if ply:GetPos():Distance(pos) > 256 then return end
     
     local cent = ents.Create("luctus_bprop")
     cent.Model = self.PropModel
     cent:SetModel(self.PropModel)
-    local pos = ply:GetEyeTrace().HitPos
-    if ply:GetPos():Distance(pos) > 256 then return end
     if self.PropHeightOffset then
         pos = pos + Vector(0,0,self.PropHeightOffset)
     end
