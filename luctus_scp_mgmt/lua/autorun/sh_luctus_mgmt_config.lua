@@ -35,4 +35,10 @@ LUCTUS_SCP_MGMT_ALLOWED_JOBS = {
 --Also: After stopping an emergency, how many seconds until jobchange back
 LUCTUS_SCP_MGMT_EMERGENCY_JOB_DELAY = 30
 
+--Extra buttons in the management menu (clientside only!)
+LUCTUS_SCP_MGMT_EXTRABUTTONS = {
+    --Example: Open an interner website ingame in a stylised window
+    --["website example"] = function() LuctusOpenSCPMGMTWebsite("https://example.com") end,
+}
+
 print("[luctus_scp_mgmt] config loaded")

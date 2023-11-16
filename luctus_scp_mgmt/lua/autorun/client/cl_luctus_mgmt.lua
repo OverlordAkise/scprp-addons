@@ -33,6 +33,9 @@ hook.Add("InitPostEntity","luctus_scp_mgmt_load",function()
             net.SendToServer()
         end})
     end
+    for name,func in pairs(LUCTUS_SCP_MGMT_EXTRABUTTONS) do
+        table.insert(luctus_scpmgmt_buttons,{name,func})
+    end
 end)
 
 local function AskPlayerInput(text,func)
@@ -273,6 +276,23 @@ function LuctusOpenSCPMGMT()
         end
         beautifyButton(item)
     end
+end
+
+function LuctusOpenSCPMGMTWebsite(url)
+    local frame = vgui.Create("DFrame")
+    frame:SetTitle("Site ## | Intranet")
+    frame:SetSize( 700, 500 )
+    frame:SetPos(ScrW()/2-150, ScrH()/2-250)
+    frame:MakePopup()
+    frame:ShowCloseButton(false)
+    function frame:Paint(w,h)
+        draw.RoundedBox(0, 0, 0, w, h, Color(0,195,165))--32,34,37
+        draw.RoundedBox(0, 1, 1, w - 2, h - 2, Color(54, 57, 62))
+    end
+    createCloseButton(frame)
+    local MainPanel = vgui.Create("DHTML",frame)
+    MainPanel:Dock(FILL)
+    MainPanel:OpenURL(url)
 end
 
 hook.Add("PlayerButtonDown","luctus_scp_mgmt_open",function(ply,button)
