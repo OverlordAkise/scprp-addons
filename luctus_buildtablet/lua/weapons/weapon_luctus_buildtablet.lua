@@ -48,8 +48,9 @@ end
 
 function SWEP:Deploy()
     if SERVER then return true end
-    if not self.csmodel then
-        self.csmodel = ClientsideModel("models/dav0r/camera.mdl")
+    if not self.csmodel then 
+        local k,v = next(LUCTUS_BUILDTABLET_PROPS)
+        self.csmodel = ClientsideModel(v[1])
         self.csmodel:SetMaterial("models/wireframe")
         self.csmodel:SetNoDraw(true)
     end
@@ -75,8 +76,7 @@ end
 
 function SWEP:Holster()
     if SERVER then return true end
-    local ply = self:GetOwner()
-    if ply ~= LocalPlayer() then return true end
+    if self:GetOwner() ~= LocalPlayer() then return true end
     hook.Remove("PostDrawOpaqueRenderables","luctus_buildtablet_preview")
     return true
 end
@@ -151,7 +151,7 @@ function SWEP:FireAnimationEvent() return true end
 function SWEP:ShouldDrawViewModel() return false end
 
 
-SWEP.cur = 0
+SWEP.cur = 1
 local last = 0
 function SWEP:Reload()
     if last > CurTime() then return end
