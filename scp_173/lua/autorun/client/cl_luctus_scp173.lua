@@ -34,4 +34,4 @@ hook.Add("InitPostEntity","luctus_scp173_createmove",function()
     end)
 end)
 
-print("[SCP173] CL Loaded!")
+print("[scp173] cl loaded")

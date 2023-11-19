@@ -13,7 +13,9 @@ TEAM_SCP173 = DarkRP.createJob("SCP 173", {
     color = Color(255, 20, 20, 255),
     model = "models/breach173.mdl",
     description = [[Euclid
-    173 ist eine Statue aus Beton und Bewehrungsstäben, mit Sprühfarben bemalt. Wenn er nicht angeschaut wird kann er sich mit extem hoher Geschwindigkeit bewegen und bricht Menschen die ihn gerade nicht sehen odee blinzeln das Genick. Er kann von mind. 2 Leuten (oder 131 wenn drin) angeschaut werden, dadurch wird er bewegungsunfähig. ]],
+    173 is a statue that only moves if nobody is looking at it.
+    Left-Mouse: Snap people's neck or open doors
+    Right-Mouse: Force everyone near you to blink]],
     weapons = {"weapon_scp173"},
     command = "scp173",
     max = 1,

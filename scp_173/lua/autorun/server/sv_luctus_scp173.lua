@@ -19,7 +19,7 @@ hook.Add("OnPlayerChangedTeam", "luctus_get_scp173", function(ply, beforeNum, af
     if string.EndsWith(RPExtraTeams[beforeNum].name,"173") then
         scp173_ply = false
         ply:Freeze(false)
-        luctus_createBlinkTimer(ply)
+        LuctusSCP173CreateBlinkTimer(ply)
     end
 end)
 
@@ -58,21 +58,27 @@ end)
 hook.Add("PlayerInitialSpawn", "luctus_scp173", function(ply)
     ply.luctus_near_scp173 = false
     ply.luctus_blinking = false
-    luctus_createBlinkTimer(ply)
+    LuctusSCP173CreateBlinkTimer(ply)
 end)
 
-function luctus_createBlinkTimer(ply)
+function LuctusSCP173CreateBlinkTimer(ply)
     timer.Create(ply:SteamID().."_blink", SCP173_BLINK_INTERVAL, 0, function()
         if not scp173_ply or not IsValid(scp173_ply) then return end
         if not ply.luctus_near_scp173 then return end
-        ply.luctus_blinking = true
-        net.Start("luctus_scp173_blink")
-            net.WriteFloat(SCP173_BLINK_DURATION)
-        net.Send(ply)
-        timer.Simple(SCP173_BLINK_DURATION, function()
-            if not IsValid(ply) then return end
-            ply.luctus_blinking = false
-        end)
+        LuctusSCP173Blink(ply)
+    end)
+end
+
+function LuctusSCP173Blink(ply,duration)
+    if not IsValid(ply) then return end
+    if not duration then duration = SCP173_BLINK_DURATION end
+    ply.luctus_blinking = true
+    net.Start("luctus_scp173_blink")
+        net.WriteFloat(duration)
+    net.Send(ply)
+    timer.Simple(duration, function()
+        if not IsValid(ply) then return end
+        ply.luctus_blinking = false
     end)
 end
 
@@ -91,4 +97,14 @@ hook.Add("PlayerSpawn","luctus_scp173_handcuffreset", function(ply)
     ply:SetNW2Bool("scp173cell",false)
 end)
 
-print("[SCP173] SV Loaded!")
+--If you are frozen then SWEP:SecondaryFire wont be called, so we do it here manually
+--Right mouse button is bound to force-blink here
+hook.Add("PlayerButtonDown", "luctus_scp173_forceblink", function(ply, but)
+    if but ~= MOUSE_RIGHT then return end
+    if ply ~= scp173_ply then return end
+    local wep = ply:GetActiveWeapon()
+    if not IsValid(wep) or wep:GetClass() ~= "weapon_scp173" then return end
+    wep:SecondaryAttack()
+end)
+
+print("[scp173] sv loaded")
