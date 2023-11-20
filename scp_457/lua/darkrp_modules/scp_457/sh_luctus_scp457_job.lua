@@ -12,7 +12,7 @@ TEAM_SCP457 = DarkRP.createJob("SCP 457", {
     model = "models/player/charple.mdl",
     description = [[Euclid
     457 ist ein wesen aus Flammen was oft Humanoid geformt ist sofern genug brennbare masse gegeben ist, die masse von 457 ist unbekannt.]],
-    weapons = {"weapon_scp457"},
+    weapons = {"weapon_luctus_scp457"},
     command = "scp457",
     max = 1,
     salary = GAMEMODE.Config.normalsalary * 5,
@@ -23,7 +23,7 @@ TEAM_SCP457 = DarkRP.createJob("SCP 457", {
     category = "SCP",
     PlayerSpawn = function(ply) 
       ply:StripWeapons()
-      ply:Give("weapon_scp457")
+      ply:Give("weapon_luctus_scp457")
       ply:SetHealth(3000)
       ply:SetMaxHealth(3000)
       scp457_shouldburn = true
