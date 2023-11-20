@@ -141,13 +141,13 @@ function SWEP:DrawHUD()
     local cdrmb = self:GetNextSecondaryFire()-CurTime()
     if cdlmb > 0 and SCP173_PRIMARY_DELAY > 0.8 then
         draw.SimpleTextOutlined("Kill Cooldown", "Trebuchet24", scrw/2-100, scrh/1.3, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1, color_black)
-        draw.RoundedBox(5,scrw/2-95,scrh/1.3,200,24,color_black)
-        draw.RoundedBox(5,scrw/2-95,scrh/1.3,(cdlmb*200)/SCP173_PRIMARY_DELAY,24,color_white)
+        draw.RoundedBox(0,scrw/2-95,scrh/1.3,200,24,color_black)
+        draw.RoundedBox(0,scrw/2-95,scrh/1.3,(cdlmb*200)/SCP173_PRIMARY_DELAY,24,color_white)
     end
     if cdrmb > 0 and SCP173_SECONDARY_DELAY > 0.9 then
         draw.SimpleTextOutlined("Force-Blink Cooldown", "Trebuchet24", scrw/2-100, scrh/1.3+30, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1, color_black)
-        draw.RoundedBox(5,scrw/2-95,scrh/1.3+30,200,24,color_black)
-        draw.RoundedBox(5,scrw/2-95+1,scrh/1.3+30+1,(cdrmb*200)/SCP173_SECONDARY_DELAY-2,24-2,color_white)
+        draw.RoundedBox(0,scrw/2-95,scrh/1.3+30,200,24,color_black)
+        draw.RoundedBox(0,scrw/2-95+1,scrh/1.3+30+1,(cdrmb*200)/SCP173_SECONDARY_DELAY-2,24-2,color_white)
     end
     if ply:IsFlagSet(FL_FROZEN) then
         draw.SimpleTextOutlined("SEEN", "Trebuchet24", scrw/2,scrh/1.8,color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,1,color_black)
