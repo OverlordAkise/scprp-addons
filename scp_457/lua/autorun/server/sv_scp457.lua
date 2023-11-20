@@ -20,11 +20,13 @@ hook.Add("OnPlayerChangedTeam", "luctus_scp457", function(ply, beforeNum, afterN
     if string.EndsWith(RPExtraTeams[afterNum].name,"457") then
         scp457_ply = ply
         ply.lNoBurn = 0
+        scp457_shouldburn = true
         timer.Create("luctus_scp457_burn",1,0,LuctusSCP457Burn)
     end
     
     if string.EndsWith(RPExtraTeams[beforeNum].name,"457") then
         scp457_ply = nil
+        scp457_shouldburn = true
         timer.Remove("luctus_scp457_burn")
     end
 end)

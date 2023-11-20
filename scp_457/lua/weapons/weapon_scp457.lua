@@ -33,6 +33,8 @@ SWEP.Secondary.Delay = 2
 SWEP.Secondary.Automatic = true
 SWEP.Secondary.Ammo = "None"
 
+SWEP.IsBurning = true
+
 function SWEP:Deploy()
     self.Owner:DrawViewModel(false)
 end
@@ -64,7 +66,7 @@ function SWEP:PrimaryAttack()
     effectdata:SetNormal(tr.Normal)
     effectdata:SetRadius(30)
     util.Effect("AR2Explosion", effectdata)
-    owner:EmitSound(self.Sound,75,100,0.25)
+    owner:EmitSound(self.Sound,75,100,0.10)
     
     if CLIENT then return end
     local hitEnt = tr.Entity
@@ -106,12 +108,43 @@ function SWEP:SecondaryAttack()
 end
 
 SWEP.lastReload = 0
+local reload_toggle_delay = 1
 function SWEP:Reload()
     if self.lastReload > CurTime() then return end
-    self.lastReload = CurTime()+0.5
+    self.lastReload = CurTime()+reload_toggle_delay
     if SERVER then
         scp457_shouldburn = not scp457_shouldburn
     else
+        self.IsBurning = not self.IsBurning
         surface.PlaySound("buttons/lightswitch2.wav")
+    end
+end
+
+function SWEP:DrawHUD()
+    local ply = self:GetOwner()
+    local scrw = ScrW()/2
+    local scrh = ScrH()
+    --crosshair
+    draw.RoundedBox(5,scrw-1,scrh/2-1,2,2,color_white)
+    local cdlmb = self:GetNextPrimaryFire()-CurTime()
+    local cdrmb = self:GetNextSecondaryFire()-CurTime()
+    local cdrel = self.lastReload-CurTime()
+    if cdlmb > 0 and LUCTUS_SCP457_IGNITE_ATTACK_DELAY > 0.8 then
+        draw.SimpleTextOutlined("(LBM) Fire-Ray", "Trebuchet24", scrw-100, scrh/1.3, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1, color_black)
+        draw.RoundedBox(0,scrw-95,scrh/1.3,200,24,color_black)
+        draw.RoundedBox(0,scrw-95+1,scrh/1.3+1,(cdlmb*200)/LUCTUS_SCP457_IGNITE_ATTACK_DELAY-2,24-2,color_white)
+    end
+    if cdrmb > 0 then
+        draw.SimpleTextOutlined("(RMB) Door-Opener", "Trebuchet24", scrw-100, scrh/1.3+30, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1, color_black)
+        draw.RoundedBox(0,scrw-95,scrh/1.3+30,200,24,color_black)
+        draw.RoundedBox(0,scrw-95+1,scrh/1.3+30+1,cdrmb*200-2,24-2,color_white)
+    end
+    if cdrel > 0 then
+        draw.SimpleTextOutlined("(Reload) Toggle-Burn", "Trebuchet24", scrw-100, scrh/1.3+60, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1, color_black)
+        draw.RoundedBox(0,scrw-95,scrh/1.3+60,200,24,color_black)
+        draw.RoundedBox(0,scrw-95+1,scrh/1.3+60+1,(cdrel*200)/reload_toggle_delay-2,24-2,color_white)
+    end
+    if self.IsBurning then
+        draw.SimpleTextOutlined("BURNING", "Trebuchet24", scrw,scrh/1.6,color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,1,color_black)
     end
 end

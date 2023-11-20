@@ -26,5 +26,6 @@ TEAM_SCP457 = DarkRP.createJob("SCP 457", {
       ply:Give("weapon_scp457")
       ply:SetHealth(3000)
       ply:SetMaxHealth(3000)
+      scp457_shouldburn = true
     end,
 })
