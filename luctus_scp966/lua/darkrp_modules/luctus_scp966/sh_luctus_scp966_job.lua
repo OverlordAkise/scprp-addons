@@ -10,8 +10,13 @@ DarkRP.createCategory{
 TEAM_SCP966 = DarkRP.createJob("SCP 966", {
     color = Color(255, 20, 20, 255),
     model = "models/vasey105/scp/scp966/scp-966.mdl",
-    description = [[Unsichtbar.]],
-    weapons = {"weapon_scp966"},
+    description = [[Euclid
+    Invisible, can only be seen by personnel using Nightivision (!nv)
+    Looking at people makes them tired (walkingspeed reduced)
+    If they are slow enough you can use LMB to put them to sleep
+    Use LMB on sleeping players to kill them
+    Use RMB to open doors]],
+    weapons = {"weapon_luctus_scp966"},
     command = "scp966",
     max = 1,
     salary = GAMEMODE.Config.normalsalary * 5,
@@ -24,7 +29,6 @@ TEAM_SCP966 = DarkRP.createJob("SCP 966", {
       ply:SetHealth(4000)
       ply:SetMaxHealth(4000)
       ply:StripWeapons()
-      ply:Give("weapon_scp966")
+      ply:Give("weapon_luctus_scp966")
     end,
 })
-

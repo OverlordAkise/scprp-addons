@@ -1,8 +1,11 @@
+--Luctus SCP966
+--Made by OverlordAkise
+
 AddCSLuaFile()
 
 SWEP.PrintName = "SCP 966"
 SWEP.Author = "OverlordAkise"
-SWEP.Purpose = "Slowly kill people"
+SWEP.Purpose = "Slow and kill people"
 SWEP.Category = "SCP"
 SWEP.Instructions = "LMB to eat sleeping people, Stare at people to make them sleep"
 SWEP.ViewModelFOV = 60
@@ -48,8 +51,8 @@ function SWEP:Holster()
 end
 
 function SWEP:PrimaryAttack()
-    local owner = self.Owner
-    tr = {}
+    local owner = self:GetOwner()
+    local tr = {}
     tr.start = owner:GetShootPos()
     tr.endpos = owner:GetShootPos() + ( owner:GetAimVector() * 95 )
     tr.filter = owner
@@ -60,17 +63,17 @@ function SWEP:PrimaryAttack()
         trace.Entity.scp966_skelhit = true
         local ply,pid = trace.Entity:CPPIGetOwner()
         if not ply or not IsValid(ply) or not ply:IsPlayer() then return end
-        
+        local eyepos = owner:EyePos()
         for i=1,5 do
-            util.Decal("Blood", owner:EyePos(), owner:EyePos() + owner:EyeAngles():Forward()*500 + Vector(math.Rand(1,50),math.Rand(1,50),math.Rand(1,50)),trace.Entity)
+            util.Decal("Blood", eyepos, eyepos + owner:EyeAngles():Forward()*500 + Vector(math.Rand(1,50),math.Rand(1,50),math.Rand(1,50)),trace.Entity)
         end
         trace.Entity:SetModel("models/player/skeleton.mdl")
         if CLIENT then return end
         owner:EmitSound("npc/barnacle/neck_snap2.wav", 100, 100)
         owner:SetHealth(math.min(owner:GetMaxHealth(),owner:Health()+LUCTUS_SCP966_HPGAINED))
-        self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-        trace.Entity:TakeDamage(99998, self.Owner, self)
-        LuctusLog("scp",owner:Nick().."("..owner:SteamID()..") as SCP966 ate "..ply:Nick().."("..ply:SteamID()..")")
+        self:SetNextPrimaryFire(CurTime() + 1)
+        trace.Entity:TakeDamage(99998, owner, self)
+        hook.Run("LuctusSCP966Killed",owner,ply) --scp966,victim
     end
     if SERVER and trace.Hit and trace.Entity and IsValid(trace.Entity) and trace.Entity:IsPlayer() then
         local ply = trace.Entity
@@ -80,8 +83,8 @@ function SWEP:PrimaryAttack()
         else
             DarkRP.toggleSleep(ply, "force")
         end
-        self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-        LuctusLog("scp",owner:Nick().."("..owner:SteamID()..") as SCP966 sleep'd "..ply:Nick().."("..ply:SteamID()..")")
+        self:SetNextPrimaryFire(CurTime() + 1)
+        hook.Run("LuctusSCP966Sleepd",owner,ply) --scp966,victim
     end
 end
 
@@ -127,5 +130,4 @@ function SWEP:Think()
         ply:SetWalkSpeed(ply:GetWalkSpeed() - ply.loldWalkSpeed/600)
         ply:SetRunSpeed(ply:GetRunSpeed() - ply.loldRunSpeed/600)
     end
-    self:NextThink(CurTime() + 0.2)
 end

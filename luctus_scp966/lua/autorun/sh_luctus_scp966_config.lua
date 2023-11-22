@@ -21,6 +21,7 @@ LUCTUS_SCP966_UNBREACHABLE = {
     ["457_door_r"] = true,
 }
 
+--Which jobs can use !nv to see SCP966 with nightvision
 LUCTUS_SCP966_NV_JOBS = {
     ["MTF"] = true,
     ["Gun Dealer"] = true,
@@ -28,4 +29,4 @@ LUCTUS_SCP966_NV_JOBS = {
     ["SCP 966"] = true,
 }
 
-print("[SCP966] config Loaded!")
+print("[scp966] config Loaded")

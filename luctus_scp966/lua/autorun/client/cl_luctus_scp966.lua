@@ -5,27 +5,31 @@
 --Vision for scp966
 hook.Add("OnPlayerChangedTeam","luctus_fullbright_reset", function(ply, beforeNum, afterNum)
     if string.EndsWith(team.GetName(afterNum),"966") then
-        LuctusSCP966NVEnable()
+        LUCTUS_SCP966_NV_ENABLED = true
         hook.Add("PreDrawHalos", "luctus_scp966_halo",LuctusSCP966Halo)
     else
-        LuctusSCP966NVDisable()
+        LUCTUS_SCP966_NV_ENABLED = false
         hook.Remove("PreDrawHalos", "luctus_scp966_halo")
     end
 end)
 
 --NoDraw SCP966 Stuff here
 scp966_ply = scp966_ply or nil
-net.Receive("luctus_scp966_nodraw",function()
+net.Receive("luctus_scp966_get",function()
     scp966_ply = net.ReadEntity()
-    if IsValid(scp966_ply) then
-        if not LUCTUS_SCP966_NV_ENABLED then
-            scp966_ply:SetNoDraw(true)
-        end
-    else
-        for k,v in ipairs(player.GetAll()) do
-            v:SetNoDraw(false)
-        end
-    end
+end)
+
+hook.Add("PrePlayerDraw","luctus_scp966_hideply",function(ply)
+    if scp966_ply ~= ply then return end
+    if LUCTUS_SCP966_NV_ENABLED then return end
+    ply:DrawShadow(false)
+    return true
+end)
+
+--Get scp966ply if joining
+hook.Add("InitPostEntity","luctus_scp966_getinit",function()
+    net.Start("luctus_scp966_get")
+    net.SendToServer()
 end)
 
 --Code for highlighting player in a halo (around body)
@@ -42,24 +46,8 @@ end
 
 LUCTUS_SCP966_NV_ENABLED = LUCTUS_SCP966_NV_ENABLED or false
 
-function LuctusSCP966NVDisable()
-    LUCTUS_SCP966_NV_ENABLED = false
-    if IsValid(scp966_ply) then
-        scp966_ply:SetNoDraw(true)
-    end
-end
-function LuctusSCP966NVEnable()
-    LUCTUS_SCP966_NV_ENABLED = true
-    if IsValid(scp966_ply) then
-        scp966_ply:SetNoDraw(false)
-    end
-end
 function LuctusSCP966ToggleNV()
-    if LUCTUS_SCP966_NV_ENABLED then
-        LuctusSCP966NVDisable()
-    else
-        LuctusSCP966NVEnable()
-    end
+    LUCTUS_SCP966_NV_ENABLED = not LUCTUS_SCP966_NV_ENABLED
 end
 
 local LightingModeChanged = false
@@ -81,15 +69,16 @@ hook.Add("PreDrawHUD","fullbright",EndOfLightingMod)
 
 local tab = {
 	["$pp_colour_addr"] = 0,
-	["$pp_colour_addg"] = 0.3,
+	["$pp_colour_addg"] = 0.2,
 	["$pp_colour_addb"] = 0,
 	["$pp_colour_brightness"] = 0,
-	["$pp_colour_colour"] = 1,
-	["$pp_colour_contrast"] = 1,
+	["$pp_colour_colour"] = 1.1,
+	["$pp_colour_contrast"] = 1.1,
 	["$pp_colour_mulr"] = 0,
 	["$pp_colour_mulg"] = 0,
 	["$pp_colour_mulb"] = 0,
 }
+
 hook.Add("RenderScreenspaceEffects", "luctus_scp966", function()
     if not LUCTUS_SCP966_NV_ENABLED then return end
 	DrawColorModify(tab)
@@ -104,4 +93,4 @@ hook.Add("OnPlayerChat","luctus_fullbright",function(ply,text,pteam,bdead)
     LuctusSCP966ToggleNV()
 end)
 
-print("[SCP966] cl loaded")
+print("[scp966] cl loaded")
