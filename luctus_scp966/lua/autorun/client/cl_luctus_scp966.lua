@@ -93,4 +93,14 @@ hook.Add("OnPlayerChat","luctus_fullbright",function(ply,text,pteam,bdead)
     LuctusSCP966ToggleNV()
 end)
 
+--Disable overhead for scp966
+hook.Add("PostGamemodeLoaded","luctus_scp966_overheadhud_overwrite",function()
+    local plyMeta = FindMetaTable("Player")
+    local oldDrawPlayerInfo = plyMeta.drawPlayerInfo
+    plyMeta.drawPlayerInfo = function(self)
+        if self == scp966_ply and not LUCTUS_SCP966_NV_ENABLED then return end
+        oldDrawPlayerInfo(self)
+    end
+end)
+
 print("[scp966] cl loaded")
