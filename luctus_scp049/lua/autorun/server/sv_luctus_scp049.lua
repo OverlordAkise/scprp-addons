@@ -3,7 +3,6 @@
 
 util.AddNetworkString("luctus_scp049_mixing")
 resource.AddWorkshop("183901628") -- SCP049 Playermodel
-LuctusLog = LuctusLog or function()end
 
 scp049_effects = {
     ["Nothing"] = 60,
@@ -40,7 +39,7 @@ scp049_effect_functions = {
 
 function LuctusSCP049SpawnZombie(mixedFunc,ply,funcName,scpPly,spawnPos)
     if not ply or not IsValid(ply) then return end
-    LuctusLog("scp",scpPly:Nick().."("..scpPly:SteamID()..") SCP049-revived "..ply:Nick().."("..ply:SteamID()..")".." with mixture "..funcName)
+    hook.Run("LuctusSCP049Zombified",scpPly,ply,funcName)
     ply:Spawn()
     timer.Simple(0.1,function()--needed for spawnPos
         if not IsValid(ply) then return end
@@ -49,8 +48,8 @@ function LuctusSCP049SpawnZombie(mixedFunc,ply,funcName,scpPly,spawnPos)
         ply.scp049_oldJob = ply:getDarkRPVar("job")
         ply:setDarkRPVar("job","SCP049-2")
         ply:StripWeapons()
-        ply:Give("weapon_scp049_2")
-        ply:SetModel(SCP049_ZOMBIE_MODEL)
+        ply:Give("weapon_luctus_scp049_2")
+        ply:SetModel(LUCTUS_SCP049_ZOMBIE_MODEL)
         mixedFunc(ply)
     end)
 end
@@ -66,10 +65,11 @@ function luctusMixTable()
         lootChc[k] = { min = chc+1, max = chc + v }
         chc = chc + v
     end
-    print("[SCP049] The Mixtable is:")
-    for i=1,7 do
+    if not LUCTUS_SCP049_PRINT_MIXTABLE then return end
+    print("[scp049] The Mixtable is:")
+    for i=1,#LUCTUS_SCP049_MIX_INGREDIENTS do
         scp049_mixtable[i] = {}
-        for j=1,7 do
+        for j=1,#LUCTUS_SCP049_MIX_INGREDIENTS do
             local rNumber = math.random( 1, chc )
             for k, v in pairs ( lootChc ) do
                 if ( rNumber >= v.min and rNumber <= v.max ) then
@@ -80,7 +80,7 @@ function luctusMixTable()
             end
         end
     end
-    print("[SCP049] End of mixtable")
+    print("[scp049] End of mixtable")
 end
 
 hook.Add("InitPostEntity","luctus_scp049_mix_init",function()
@@ -88,6 +88,7 @@ hook.Add("InitPostEntity","luctus_scp049_mix_init",function()
 end)
 
 hook.Add("OnPlayerChangedTeam", "luctus_scp049_mix_new", function(ply, beforeNum, afterNum)
+    if not LUCTUS_SCP049_REMIX_ON_PLY_CHANGE then return end
     if string.EndsWith(RPExtraTeams[afterNum].name,"049") then
         luctusMixTable()
     end
@@ -106,4 +107,4 @@ net.Receive("luctus_scp049_mixing",function(len,ply)
     ply:PrintMessage(HUD_PRINTTALK, "Your mixed ID is "..ply.scp049_col_one..ply.scp049_col_two)
 end)
 
-print("[SCP049] sv loaded")
+print("[scp049] sv loaded")

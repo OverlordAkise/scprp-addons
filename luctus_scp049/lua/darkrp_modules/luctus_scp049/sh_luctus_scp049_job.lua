@@ -12,7 +12,7 @@ TEAM_SCP049 = DarkRP.createJob("SCP 049", {
   model = "models/vinrax/player/Scp049_player.mdl",
   description = [[Euclid
   SCP049 kills everything it touches.]],
-  weapons = {"weapon_scp049"},
+  weapons = {"weapon_luctus_scp049"},
   command = "scp049",
   max = 1,
   salary = GAMEMODE.Config.normalsalary * 5,

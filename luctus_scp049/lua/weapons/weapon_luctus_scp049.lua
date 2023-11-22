@@ -1,14 +1,7 @@
-AddCSLuaFile()
+--Luctus SCP049
+--Made by OverlordAkise
 
-scp049_colors = {
-    ["Red"] = {1,Color(255,0,0)},
-    ["Green"] = {2,Color(0,255,0)},
-    ["Blue"] = {3,Color(0,0,255)},
-    ["Yellow"] = {4,Color(255,215,0)},
-    ["Purple"] = {5,Color(128,0,128)},
-    ["Cyan"] = {6,Color(0,255,255)},
-    ["Grey"] = {7,Color(211,211,211)},
-}
+AddCSLuaFile()
 
 SWEP.Slot = 2
 SWEP.SlotPos = 1
@@ -72,86 +65,11 @@ function SWEP:SecondaryAttack()
     if not IsValid(Owner) then return end
     self:SetNextPrimaryFire(CurTime() + 0.1)
     if SERVER then return end
-  
-    local col1 = nil
-    local col2 = nil
-    local sel1 = nil
-    local sel2 = nil
-    local window = vgui.Create("DFrame")
-    window:SetTitle("Mix Medicine")
-    window:SetSize(600,400)
-    window:Center()
-    window:MakePopup()
-    local saveButton = vgui.Create("DButton",window)
-    saveButton:SetText("MIX!")
-    saveButton:Dock(BOTTOM)
-    function saveButton:DoClick()
-        if col1 and col2 then
-            net.Start("luctus_scp049_mixing")
-                net.WriteInt(col1,17)
-                net.WriteInt(col2,17)
-            net.SendToServer()
-            window:Close()
-        end
-    end
-    local list1 = vgui.Create("DPanel",window)
-    list1:Dock(LEFT)
-    list1:SetSize(290,400)
-    list1:SetPaintBackground(false)
-    local list2 = vgui.Create("DPanel",window)
-    list2:Dock(RIGHT)
-    list2:SetSize(290,400)
-    list2:SetPaintBackground(false)
-    local button = vgui.Create("DButton",list1)
-    button:SetText("First Mixture")
-    button:Dock(TOP)
-    button = vgui.Create("DButton",list2)
-    button:SetText("Second Mixture")
-    button:Dock(TOP)
-    
-    for k,v in pairs(scp049_colors) do
-        button = vgui.Create("DButton",list1)
-        button:Dock(TOP)
-        button:SetText(k)
-        button.selected = false
-        button.col = v[2]
-        button.id = v[1]
-        function button:Paint(w,h)
-            draw.RoundedBox(0,0,0,w,h,self.col)
-            if sel1 == self then
-                surface.SetDrawColor(0,0,0,255)
-                surface.DrawOutlinedRect(0, 0, w, h, 3)
-            end
-        end
-        function button:DoClick()
-            col1 = self.id
-            sel1 = self
-        end
-    end
-    
-    for k,v in pairs(scp049_colors) do
-        button = vgui.Create("DButton",list2)
-        button:Dock(TOP)
-        button:SetText(k)
-        button.selected = false
-        button.col = v[2]
-        button.id = v[1]
-        function button:Paint(w,h)
-            draw.RoundedBox(0,0,0,w,h,self.col)
-            if sel2 == self then
-                surface.SetDrawColor(0,0,0,255)
-                surface.DrawOutlinedRect(0, 0, w, h, 3)
-            end
-        end
-        function button:DoClick()
-            col2 = self.id
-            sel2 = self
-        end
-    end
+    LuctusSCP049OpenMixMenu()
 end
 
 function SWEP:TouchKill(owner,target,tr)
-    if SCP049_SAVE_PMODELS[target:GetModel()] then return end
+    if LUCTUS_SCP049_SAVE_PMODELS[target:GetModel()] then return end
     local edata = EffectData()
     edata:SetStart(owner:GetShootPos())
     edata:SetOrigin(tr.HitPos)
@@ -167,7 +85,7 @@ function SWEP:OpenDoor(ply,ent,trace)
     if CLIENT then return end
     if hook.Call("canDoorRam", nil, ply, trace, ent) ~= nil then return end
     
-    if SCP049_UNBREACHABLE[trace.Entity:GetName()] or SCP049_UNBREACHABLE[trace.Entity:MapCreationID()] then
+    if LUCTUS_SCP049_UNBREACHABLE[trace.Entity:GetName()] or LUCTUS_SCP049_UNBREACHABLE[trace.Entity:MapCreationID()] then
         DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
         return false
     end
