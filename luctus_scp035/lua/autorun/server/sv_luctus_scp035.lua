@@ -3,10 +3,10 @@
 
 resource.AddWorkshop("268195264")
 
-hook.Add("OnPlayerChangedTeam","scp035_jobname_reset", function(ply, beforeNum, afterNum)
+hook.Add("OnPlayerChangedTeam","luctus_scp035_dropmask", function(ply, beforeNum, afterNum)
     if ply:GetNWBool("isSCP035",false) then
         ply:SetNWBool("isSCP035",false)
-        local maskent = ents.Create("scp035_mask")
+        local maskent = ents.Create("luctus_scp035")
         maskent:SetPos(ply:GetPos()+Vector(0,0,20))
         maskent:Spawn()
         maskent:Activate()
@@ -17,10 +17,10 @@ hook.Add("OnPlayerChangedTeam","scp035_jobname_reset", function(ply, beforeNum, 
     end
 end)
 
-hook.Add("PostPlayerDeath","scp035_spawn_mask",function(ply)
+hook.Add("PostPlayerDeath","luctus_scp035_dropmask",function(ply)
     if ply:GetNWBool("isSCP035",false) then
         ply:SetNWBool("isSCP035",false)
-        local maskent = ents.Create("scp035_mask")
+        local maskent = ents.Create("luctus_scp035")
         maskent:SetPos(ply:GetPos()+Vector(0,0,20))
         maskent:Spawn()
         maskent:Activate()
@@ -31,4 +31,4 @@ hook.Add("PostPlayerDeath","scp035_spawn_mask",function(ply)
     end
 end)
 
-print("[SCP035] sv loaded!")
+print("[scp035] sv loaded")

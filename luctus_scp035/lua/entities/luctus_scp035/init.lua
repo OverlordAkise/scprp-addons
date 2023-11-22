@@ -9,7 +9,7 @@ function ENT:Initialize()
     self:SetSolid( SOLID_VPHYSICS )
     self:SetUseType(SIMPLE_USE)
     local phys = self:GetPhysicsObject()
-    if (phys:IsValid()) then
+    if phys:IsValid() then
         phys:Wake()
     end
     --Vars
@@ -24,6 +24,7 @@ function ENT:Use( activator, caller, usetype )
         activator:SetNWBool("isSCP035",true)
         activator.loldJobName = activator:getDarkRPVar("job")
         activator:setDarkRPVar("job","SCP 035")
+        hook.Run("LuctusSCP035Became",activator)
         self:Remove()
     end
 end

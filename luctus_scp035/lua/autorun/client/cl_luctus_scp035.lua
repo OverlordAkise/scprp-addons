@@ -2,9 +2,9 @@
 --Made by OverlordAkise
 
 local model = ClientsideModel("models/vinrax/props/scp035/035_mask.mdl")
-model:SetNoDraw( true )
+model:SetNoDraw(true)
 
-hook.Add( "PostPlayerDraw" , "luctus_scp035_mask" , function( ply )
+hook.Add("PostPlayerDraw", "luctus_scp035_mask", function(ply)
     if ply:GetNWBool("isSCP035",false) then
         if not IsValid(ply) or not ply:Alive() then return end
 
@@ -39,7 +39,7 @@ end)
 
 timer.Create("luctus_scp035_proximitycheck",1,0,function()
     if not IsValid(LocalPlayer()) then return end
-    local tEnts = ents.FindByClass("scp035_mask")[1]
+    local tEnts = ents.FindByClass("luctus_scp035")[1]
     if not IsValid(tEnts) then return end
     if LocalPlayer():IsLineOfSightClear(tEnts) and tEnts:GetPos():Distance(LocalPlayer():GetPos()) < 512 then
         hook.Add("CreateMove","luctus_scp035",LuctusSCP035Angles)
@@ -49,15 +49,15 @@ timer.Create("luctus_scp035_proximitycheck",1,0,function()
 end)
 
 function LuctusSCP035Angles(ccmd, x, y, angle)
-    local tEnt = ents.FindByClass("scp035_mask")[1]
+    local tEnt = ents.FindByClass("luctus_scp035")[1]
     if not IsValid(tEnt) then return end
     local targetAng = tEnt:GetPos() - LocalPlayer():GetShootPos()
     targetAng = targetAng:Angle()
     targetAng:Normalize()
     targetAng = Angle(targetAng.p, targetAng.y, 0)
-    local newAng = LerpAngle(0.05,LocalPlayer():EyeAngles(),targetAng)
+    local newAng = LerpAngle(0.03,LocalPlayer():EyeAngles(),targetAng)
     newAng.r = 0
     ccmd:SetViewAngles(newAng)
 end
 
-print("[SCP035] cl loaded!")
+print("[scp035] cl loaded")
