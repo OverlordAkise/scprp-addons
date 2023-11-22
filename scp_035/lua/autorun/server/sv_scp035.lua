@@ -7,7 +7,7 @@ hook.Add("OnPlayerChangedTeam","scp035_jobname_reset", function(ply, beforeNum, 
     if ply:GetNWBool("isSCP035",false) then
         ply:SetNWBool("isSCP035",false)
         local maskent = ents.Create("scp035_mask")
-        maskent:SetPos(ply:GetPos())
+        maskent:SetPos(ply:GetPos()+Vector(0,0,20))
         maskent:Spawn()
         maskent:Activate()
         if ply.loldJobName then
@@ -21,7 +21,7 @@ hook.Add("PostPlayerDeath","scp035_spawn_mask",function(ply)
     if ply:GetNWBool("isSCP035",false) then
         ply:SetNWBool("isSCP035",false)
         local maskent = ents.Create("scp035_mask")
-        maskent:SetPos(ply:GetPos())
+        maskent:SetPos(ply:GetPos()+Vector(0,0,20))
         maskent:Spawn()
         maskent:Activate()
         if ply.loldJobName then
