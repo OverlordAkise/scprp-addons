@@ -12,8 +12,8 @@ hook.Add("OnPlayerChangedTeam", "luctus_scp939_nodraw_plys", function(ply, befor
         timer.Create("luctus_scp939_main",0.5,0,LuctusSCP939MoveVisibility)
         hook.Add("PrePlayerDraw","luctus_scp939_hideply",LuctusSCP939HidePlayers)
         hook.Add("RenderScreenspaceEffects", "luctus_scp939", LuctusSCP939BadVision)
-        hook.Add("PlayerEndVoice","luctus_scp939", LuctusSCP939TalkVisibilityOn)
-        hook.Add("PlayerStartVoice","luctus_scp939", LuctusSCP939TalkVisibilityOff)
+        hook.Add("PlayerEndVoice","luctus_scp939", LuctusSCP939TalkVisibilityOff)
+        hook.Add("PlayerStartVoice","luctus_scp939", LuctusSCP939TalkVisibilityOn)
         hook.Add("PreDrawHalos", "luctus_scp939_halo", LuctusSCP939Halo)
         hook.Add("HUDShouldDraw","luctus_scp939_hide_overhead",LuctusSCP939HideOverhead)
         scp939_plycolors = {}
@@ -137,6 +137,5 @@ function LuctusSCP939Halo()
         halo.Add({ply}, Color(255,0,0,alpha), 1, 1, 5, true, true)
     end
 end
-
 
 print("[scp939] cl loaded")
