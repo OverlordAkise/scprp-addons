@@ -1,3 +1,4 @@
+
 DarkRP.createCategory{
   name = "SCP",
   categorises = "jobs",
@@ -6,12 +7,15 @@ DarkRP.createCategory{
   canSee = function(ply) return true end,
   sortOrder = 100,
 }
+
 TEAM_SCP999 = DarkRP.createJob("SCP 999", {
     color = Color(255, 20, 20, 255),
     model = "models/scp/999/jq/scp_999_pmjq.mdl",
-    description = [[Sicher
-    999 ist ein großes amorphes Wesen aus orangener, transparenter Masse die sich wie Erdnussbutter anfühlt und so riecht. Es will jedem Menschen Liebhaben, dies tut es mit kuscheln oder kitzeln. 999 liebt süßes und kann sich damit locken lassen.]],
-    weapons = {"weapon_scp999"},
+    description = [[Safe
+    999 is a sweet yellow blob.
+    Leftclick heals the person you are looking at.
+    Rightclick heals in an area around you]],
+    weapons = {"weapon_luctus_scp999"},
     command = "scp999",
     max = 1,
     salary = GAMEMODE.Config.normalsalary * 5,
@@ -24,6 +28,6 @@ TEAM_SCP999 = DarkRP.createJob("SCP 999", {
       ply:SetHealth(4000)
       ply:SetMaxHealth(4000)
       ply:StripWeapons()
-      ply:Give("weapon_scp999")
+      ply:Give("weapon_luctus_scp999")
     end,
 })
