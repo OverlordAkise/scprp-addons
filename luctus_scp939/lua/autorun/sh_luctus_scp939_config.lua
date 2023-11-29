@@ -20,4 +20,13 @@ LUCTUS_SCP939_SCREAM_SEARCH_DURATION = 5
 --How far away should players max be found?
 LUCTUS_SCP939_SCREAM_SEARCH_DISTANCE = 2048
 
+--Doors which SCP939 can't open with leftclick
+--This can either be
+-- The :GetName() string of the entity
+-- The :MapCreationID() number of the entity
+LUCTUS_SCP939_UNBREACHABLE = {
+    [3052] = true,
+    ["173_containment_door_r"] = true,
+}
+
 print("[scp939] config loaded")

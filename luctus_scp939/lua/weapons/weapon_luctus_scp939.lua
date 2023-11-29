@@ -68,7 +68,7 @@ end
 function SWEP:OpenDoor(ent,ply,trace)
     if hook.Call("canDoorRam", nil, ply, trace, ent) ~= nil then return end
     
-    if SCP173_UNBREACHABLE[ent:GetName()] or SCP173_UNBREACHABLE[ent:MapCreationID()] then
+    if LUCTUS_SCP939_UNBREACHABLE[ent:GetName()] or LUCTUS_SCP939_UNBREACHABLE[ent:MapCreationID()] then
         DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
         return false
     end
