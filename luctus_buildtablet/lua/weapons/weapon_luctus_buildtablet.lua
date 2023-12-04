@@ -36,9 +36,26 @@ SWEP.useCD = 0
 SWEP.csmodel = nil
 SWEP.PropModel = nil
 SWEP.PropAngOffset = nil
+SWEP.PropSpawnTime = 3
+SWEP.PropHeightOffset = 0
+SWEP.PropHealth = 100
 
 function SWEP:Initialize()
     self:SetHoldType("slam")
+    local k,v = next(LUCTUS_BUILDTABLET_PROPS)
+    self.PropModel = v[1]
+    self.PropHealth = v[2]
+    self.PropSpawnTime = v[3]
+    self.PropAngOffset = v[4]
+    self.PropHeightOffset = v[5]
+    if SERVER then return end
+    timer.Simple(0.1,function()
+        if not IsValid(self) then return end
+        if not IsValid(self:GetOwner()) then return end
+        if self:GetOwner() ~= LocalPlayer() then return end
+        if self.csmodel then return end
+        self:Deploy()
+    end)
 end
 
 function SWEP:UpdateCSModel()
@@ -48,7 +65,7 @@ end
 
 function SWEP:Deploy()
     if SERVER then return true end
-    if not self.csmodel then 
+    if not self.csmodel then
         local k,v = next(LUCTUS_BUILDTABLET_PROPS)
         self.csmodel = ClientsideModel(v[1])
         self.csmodel:SetMaterial("models/wireframe")
@@ -181,7 +198,12 @@ end
 
 function SWEP:ShouldDrawViewModel() return false end
 
-function SWEP:DrawWorldModel()
+function SWEP:DrawWorldModel(flags)
+    local owner = self:GetOwner()
+    if not IsValid(owner) then
+        self:DrawModel(flags)
+        return
+    end
     local bi = self:GetOwner():LookupBone("ValveBiped.Bip01_R_Hand")
     if not bi then return end
     local bpos,bang = self:GetOwner():GetBonePosition(bi)
