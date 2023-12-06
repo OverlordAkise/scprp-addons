@@ -7,6 +7,9 @@ lresearch_page = 0
 lresearch_searchid = 0
 lresearch_searchtext = ""
 
+
+luctus_research_windows = luctus_research_windows or {}
+
 net.Receive("luctus_research_getall",function()
     local lenge = net.ReadInt(17)
     local data = net.ReadData(lenge)
@@ -19,7 +22,7 @@ net.Receive("luctus_research_getall",function()
     if IsValid(lresearch_list) then
         lresearch_list:Clear()
         for k,v in pairs(tab) do
-            lresearch_list:AddLine( v.rowid, v.date, v.researcher, v.summary )
+            lresearch_list:AddLine(v.rowid, v.date, v.researcher, v.summary)
         end
     end
 end)
@@ -36,7 +39,7 @@ end)
 function luctusOpenMainResearchWindow()
     --if lresearch then return end
     lresearch = vgui.Create("DFrame")
-    lresearch:SetTitle("Research DB | v1.1 | Made by Luctus")
+    lresearch:SetTitle("Research DB | v1.2 | Made by Luctus")
     lresearch:SetSize(800,600)
     lresearch:Center()
     lresearch:MakePopup()
@@ -45,20 +48,23 @@ function luctusOpenMainResearchWindow()
         lresearch_page = 0
         lresearch_searchid = 0
         lresearch_searchtext = ""
+        luctus_research_windows[self] = nil
     end
-    function lresearch:OnKeyCodePressed(button) 
+    function lresearch:OnKeyCodePressed(button)
         if not self.closing and button == LUCTUS_RESEARCH_OPEN_BIND then
             self.closing = true
-                timer.Simple(0.05,function() lresearch:Close() end)
+            timer.Simple(0.05,function() lresearch:Close() end)
         end
 	end
+    luctus_research_windows[lresearch] = true
 
     local MenuBar = vgui.Create( "DMenuBar", lresearch )
     MenuBar:DockMargin( 0, 0, 0, 0 )
 
     local M1 = MenuBar:AddMenu( "Paper" )
     M1:AddOption("New", function()
-        luctusOpenPaperWindow()
+        luctusOpenPaperWindow(nil,true)
+        lresearch:Close()
     end):SetIcon("icon16/page_add.png")
   
     M1:AddOption("Open by ID", function()
@@ -158,7 +164,7 @@ function luctusOpenMainResearchWindow()
         )
     end):SetIcon("icon16/text_allcaps.png")
   
-    M2:AddOption("Reset", function()
+    M2:AddOption("Reset Search Filters", function()
         lresearch_searchid = 0
         lresearch_searchtext = ""
         net.Start("luctus_research_getall")
@@ -169,14 +175,11 @@ function luctusOpenMainResearchWindow()
     end):SetIcon("icon16/arrow_rotate_anticlockwise.png")
   
     local M3 = MenuBar:AddMenu("Settings")
-    M3:AddOption("Refresh", function()
+    M3:AddOption("Refresh List", function()
         net.Start("luctus_research_getall")
             net.WriteInt(lresearch_page,32)
         net.SendToServer()
     end):SetIcon("icon16/arrow_rotate_clockwise.png")
-    M3:AddOption("Paper Template", function()
-        luctusOpenHelpWindow()
-    end):SetIcon("icon16/help.png")
   
     lresearch_list = lresearch:Add("DListView")
     lresearch_list:Dock(FILL)
@@ -223,32 +226,73 @@ function luctusOpenMainResearchWindow()
 
 end
 
+LUCTUS_RESEARCH_PAPER_TEMPLATE = [[
+Involved SCP
+
+
+Involved Facility Staff
+
+
+Preparation
+
+
+Execution
+
+
+Result
+
+
+]]
+
 --rowid,date,researcher,summary,fulltext
-function luctusOpenPaperWindow(tab)
+function luctusOpenPaperWindow(tab,ShouldCache)
+    if not tab and ShouldCache then --load last edited paper
+        local fileContent = file.Read("luctus_research_cache.txt","DATA")
+        if fileContent and fileContent ~= "" then 
+            tab = util.JSONToTable(fileContent)
+        end
+    end
     local mainFrame = vgui.Create("DFrame")
     mainFrame:SetTitle("Research DB | Paper #"..(tab and tab.rowid or "X"))
     mainFrame:SetSize(400,600)
     mainFrame:Center()
     mainFrame:MakePopup()
     mainFrame.rowid = tab and tab.rowid or nil
-
+    mainFrame.ShouldCache = ShouldCache
+    luctus_research_windows[mainFrame] = true
+    function mainFrame:OnKeyCodePressed(button)
+        if button == KEY_LALT then
+            LuctusResearchUnfocusAllWindows()
+        end
+    end
+    
     local summaryLabel = vgui.Create("DLabel",mainFrame)
     summaryLabel:Dock(TOP)
-    summaryLabel:SetText("Summary")
+    summaryLabel:SetText("Summary / Headline")
     local summaryText = vgui.Create("DTextEntry",mainFrame)
     summaryText:Dock(TOP)
     summaryText:SetDrawLanguageID(false)
     summaryText:SetPlaceholderText("Put your short summary here")
     summaryText:SetText(tab and tab.summary or "")
+    function summaryText:OnKeyCode(button)
+        if button == KEY_LALT then
+            LuctusResearchUnfocusAllWindows()
+        end
+    end
 
     local nameLabel = vgui.Create("DLabel",mainFrame)
     nameLabel:Dock(TOP)
-    nameLabel:SetText("Researcher Name")
+    nameLabel:SetText("Leading Researcher / Creator")
     local nameText = vgui.Create("DTextEntry",mainFrame)
     nameText:Dock(TOP)
     nameText:SetDrawLanguageID(false)
     nameText:SetPlaceholderText("Put your own name here")
     nameText:SetText(tab and tab.researcher or "")
+    function nameText:OnKeyCode(button)
+        if button == KEY_LALT then
+            LuctusResearchUnfocusAllWindows()
+        end
+    end
 
     local descLabel = vgui.Create("DLabel",mainFrame)
     descLabel:Dock(TOP)
@@ -258,14 +302,22 @@ function luctusOpenPaperWindow(tab)
     descText:SetDrawLanguageID(false)
     descText:SetMultiline(true)
     descText:SetPlaceholderText("")
-    descText:SetText(tab and tab.fulltext or "")
+    descText:SetText(tab and tab.fulltext or LUCTUS_RESEARCH_PAPER_TEMPLATE)
+    function descText:OnKeyCode(button)
+        if button == KEY_LALT then
+            LuctusResearchUnfocusAllWindows()
+        end
+    end
 
     if tab and tab.rowid and not tab.edit then return end
     local saveButton = vgui.Create("DButton",mainFrame)
     saveButton:SetText("SAVE PAPER")
     saveButton:Dock(BOTTOM)
     function saveButton:DoClick()
-        if summaryText:GetText() == "" or nameText:GetText() == "" or descText:GetText() == "" then
+        local psummary = summaryText:GetText()
+        local pname = nameText:GetText()
+        local pcontent = descText:GetText()
+        if psummary == "" or pname == "" or pcontent == "" then
             Derma_Message("Please fill in every field!", "Research DB | error", "OK")
             return
         end
@@ -275,12 +327,16 @@ function luctusOpenPaperWindow(tab)
         else
             net.Start("luctus_research_save")
         end
-        net.WriteString(summaryText:GetText())
-        net.WriteString(nameText:GetText())
-        local a = util.Compress(descText:GetText())
+        net.WriteString(psummary)
+        net.WriteString(pname)
+        local a = util.Compress(pcontent)
         net.WriteInt(#a,17)
         net.WriteData(a,#a)
         net.SendToServer()
+        
+        LuctusResearchSaveLocal(psummary,pname,pcontent)
+        mainFrame.ShouldCache = false
+        
         mainFrame:Close()
         timer.Simple(0.1,function()
             net.Start("luctus_research_getall")
@@ -288,46 +344,54 @@ function luctusOpenPaperWindow(tab)
             net.SendToServer()
         end)
     end
+    
+    local OnVanish = function(self)
+        if not self.ShouldCache then return end
+        luctus_research_windows[self] = nil
+        file.Write("luctus_research_cache.txt",util.TableToJSON({
+            ["summary"] = summaryText:GetText(),
+            ["researcher"] = nameText:GetText(),
+            ["fulltext"] = descText:GetText(),
+        }))
+    end
+    mainFrame.OnClose = OnVanish
+    mainFrame.OnRemove = OnVanish
 end
 
-function luctusOpenHelpWindow()
-    local mainFrame = vgui.Create("DFrame")
-    mainFrame:SetTitle("Research DB | Template")
-    mainFrame:SetSize(400,500)
-    mainFrame:Center()
-    mainFrame:MakePopup()
+function LuctusResearchSaveLocal(summary,name,content)
+    file.Delete("luctus_research_cache.txt")
+    file.Write("luctus_research_"..os.date("%Y_%m_%d_%H_%M_%S")..".txt",util.TableToJSON({
+        ["summary"] = summary,
+        ["researcher"] = name,
+        ["fulltext"] = content,
+    }))
+end
 
-    local mainText = vgui.Create("DTextEntry",mainFrame)
-    mainText:Dock(FILL)
-    mainText:SetDrawLanguageID(false)
-    mainText:SetMultiline(true)
-    mainText:SetText([[
-Summary: Testing if tears will work like blinking with SCP173
-Content:
-
-Researcher: Dr. Hustensaft
-Test-Subject: SCP173
-Duration of contact with Test-Subject: 10min
-
-Tested with: 1 D-Class Personell
-Names: 
-  Peter Peterovsky
-
-Goal:
-Verify if tears and the resulting blurry vision enable SCP173 to move, even if the subject doesn't blink.
-
-Preperation:
-One D-Class subject was picked randomly and has been carefully moved into the cell of SCP173.
-
-Execution:
-Peter Peterovsky, the D-Class Personell, was forced to cry and was alone with SCP173 for 10 minutes.
-
-Result:
-The D-Class Personell survived the test and said that SCP173 couldn't move, no matter how many tears were in his eyes.
-The tester, Peter Peterovsky, was released and is save again.
-
--Hustensaft
-  ]])
+function LuctusResearchUnfocusAllWindows()
+    --gui.EnableScreenClicker(false)
+    for pnl,n in pairs(luctus_research_windows) do
+        if not IsValid(pnl) then
+            luctus_research_windows[pnl] = nil
+            continue
+        end
+        pnl:SetMouseInputEnabled(false)
+        pnl:SetKeyboardInputEnabled(false)
+    end
+    hook.Add("KeyPress","luctus_research_focusagain",function(ply,key)
+        if key == IN_WALK then
+            --gui.EnableScreenClicker(true)
+            for pnl,n in pairs(luctus_research_windows) do
+                if not IsValid(pnl) then
+                    luctus_research_windows[pnl] = nil
+                    continue
+                end
+                pnl:SetMouseInputEnabled(true)
+                pnl:SetKeyboardInputEnabled(true)
+                pnl:RequestFocus()
+            end
+            hook.Remove("KeyPress","luctus_research_focusagain")
+        end
+    end)
 end
 
 hook.Add("PlayerButtonDown","luctus_research_open",function(ply,button)
@@ -338,4 +402,4 @@ hook.Add("PlayerButtonDown","luctus_research_open",function(ply,button)
     end
 end)
 
-print("[luctus_research] loaded cl")
+print("[luctus_research] cl loaded")

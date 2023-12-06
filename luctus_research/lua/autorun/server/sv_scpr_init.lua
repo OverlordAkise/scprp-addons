@@ -168,4 +168,4 @@ net.Receive("luctus_research_deleteid",function(len,ply)
     hook.Run("LuctusResearchDelete",ply,rowid)
 end)
 
-print("[luctus_research] loaded sv")
+print("[luctus_research] sv loaded")
