@@ -256,8 +256,8 @@ function SWEP:Think()
         end
         if not alive then continue end
         if LUCTUS_SCP096_IMMUNE_JOBS[team.GetName(v:Team())] then continue end
-        local a1 = Entity(1):GetAimVector()
-        local a2 = Entity(2):GetAimVector():GetNegated()
+        local a1 = ply:GetAimVector()
+        local a2 = v:GetAimVector():GetNegated()
         if a1:Distance(a2) < 0.8 then
             if ply:IsLineOfSightClear(v) then 
                 luctus_update_hunted(v,true)
