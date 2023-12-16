@@ -16,11 +16,20 @@ LUCTUS_SCP457_IGNITE_ATTACK_DURATION = 10
 LUCTUS_SCP457_IGNITE_ATTACK_BURN_RANGE = 512
 --Delay of firelasers
 LUCTUS_SCP457_IGNITE_ATTACK_DELAY = 60
-
-SCP457_UNBREACHABLE = {
+--Which doors should SCP457 not be able to open with RMB
+LUCTUS_SCP457_UNBREACHABLE = {
     ["blastdoor_tru4571"] = true,
     ["blastdoor_tru4572"] = true,
     ["lcz_door_2_25"] = true,
 }
+--Which models are immune to burning from being near SCP457
+LUCTUS_SCP457_IMMUNE_MODELS = {
+    ["models/player/corpse1.mdl"] = true,
+}
+--Which jobs are immune to burning from being near SCP457
+LUCTUS_SCP457_IMMUNE_JOBS = {
+    ["Citizen"] = true,
+}
 
-print("[SCP457] config Loaded!")
+
+print("[SCP457] config loaded")

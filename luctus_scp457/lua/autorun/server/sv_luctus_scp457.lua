@@ -36,10 +36,9 @@ function LuctusSCP457Burn()
     if not scp457_shouldburn then return end
     if CurTime() < scp457_ply.lNoBurn then return end
     scp457_ply:Ignite(1,LUCTUS_SCP457_IGNITE_RADIUS)
-    for k,v in ipairs(ents.FindInSphere(scp457_ply:GetPos(),LUCTUS_SCP457_IGNITE_RADIUS)) do
-        if v:IsPlayer() then
-            v:Ignite(LUCTUS_SCP457_IGNITE_DURATION,50)
-        end
+    for k,ply in ipairs(ents.FindInSphere(scp457_ply:GetPos(),LUCTUS_SCP457_IGNITE_RADIUS)) do
+        if not ply:IsPlayer() or LUCTUS_SCP457_IMMUNE_JOBS[team.GetName(ply:Team())] or LUCTUS_SCP457_IMMUNE_MODELS[ply:GetModel()] then continue end
+        ply:Ignite(LUCTUS_SCP457_IGNITE_DURATION,50)
     end
 end
 
