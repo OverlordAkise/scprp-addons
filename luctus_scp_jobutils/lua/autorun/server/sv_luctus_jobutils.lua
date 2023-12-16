@@ -27,6 +27,14 @@
     
 --]]
 
+--Which weapons should be pickup-able even though noWeaponPickup is true
+--Aka: WeaponPickup Whitelist for blacklisted jobs
+--This should include e.g. handcuffs and scp173-cell-handcuffs
+--or you won't be able to handcuff SCPs
+LuctusSCPUtilsWeaponPickupWhitelist = {
+    ["weapon_handcuffed"] = true
+}
+
 --This is the "eye height" of the job
 --If you are playing e.g. SCP999 then your viewpoint should be lower than a human
 LuctusSCPUtilsJobOffsets = {
@@ -145,7 +153,8 @@ hook.Add("PostPlayerDeath", "luctus_scp_jobutils", function(ply)
     ply.noWeaponPickup = false
 end)
 
-hook.Add("PlayerCanPickupWeapon", "luctus_scp_jobutils", function(ply)
+hook.Add("PlayerCanPickupWeapon", "luctus_scp_jobutils", function(ply,ent)
+    if LuctusSCPUtilsWeaponPickupWhitelist[ent:GetClass()] then return end
     if ply.noWeaponPickup then return false end
 end)
 
