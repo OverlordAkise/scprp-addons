@@ -18,6 +18,7 @@ end)
 
 hook.Add( "HUDPaint", "luctus_lootsystem_hud", function()
     local ent = LocalPlayer():GetEyeTraceNoCursor().Entity
+    if not IsValid(ent) then return end
     local SW, SH = ScrW(), ScrH()
 
     if not ent:GetNWBool("isLoot") or LocalPlayer():GetPos():Distance(ent:GetPos()) > 110 then return end
