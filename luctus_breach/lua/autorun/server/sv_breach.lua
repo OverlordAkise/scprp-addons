@@ -35,17 +35,37 @@ function LuctusBreachDo(ply)
     end
 end
 
+function LuctusBreachOpenAllDoors(ply)
+    hook.Run("LuctusBreachContainment",ply)
+    for jobname,doors in pairs(LUCTUS_BREACH_JOBS) do
+        for k,v in ipairs(doors) do
+            if type(v) == "string" then
+                if ents.FindByName(v)[1] and IsValid(ents.FindByName(v)[1]) then
+                    ents.FindByName(v)[1]:Use(Entity(0)) --entity0=worldspawn
+                end
+            else
+                if IsValid(ents.GetMapCreatedEntity(v)) then
+                    ents.GetMapCreatedEntity(v):Use(Entity(0))
+                end
+            end
+        end
+    end
+end
+
 function LuctusBreachSeekApproval(breacher)
     hook.Run("LuctusBreachRequested",breacher)
+    LuctusBreachTellAdmins("[breach] '"..breacher:Nick().."' wants to breach! Type '"..LUCTUS_BREACH_ALLOWCMD.." "..breacher.breachid.."' to approve this breach (or "..LUCTUS_BREACH_DENYCMD..")")
+end
+
+function LuctusBreachTellAdmins(text)
     for k,v in ipairs(player.GetHumans()) do
         if not LUCTUS_BREACH_APPROVER[v:GetUserGroup()] then continue end
-        NotifyPlayer(v,"[breach] '"..breacher:Nick().."' wants to breach!")
-        NotifyPlayer(v,"[breach] Type '"..LUCTUS_BREACH_ALLOWCMD.." "..breacher.breachid.."' to approve this breach (or "..LUCTUS_BREACH_DENYCMD..")")
+        NotifyPlayer(v,text)
     end
 end
 
 hook.Add("PlayerSay", "BreachCommand", function(ply, text)
-    if text == "!breach" then
+    if text == LUCTUS_BREACH_COMMAND then
         if LUCTUS_BREACH_JOBS[ply:getJobTable().name] then
             if ply.canbreach == true then
                 if LUCTUS_BREACH_NEEDS_APPROVAL then
@@ -65,6 +85,11 @@ hook.Add("PlayerSay", "BreachCommand", function(ply, text)
         else 
             NotifyPlayer(ply,"[breach] Your job doesn't allow breaching!")
         end
+    end
+    if text == LUCTUS_BREACH_CONTAINMENT_COMMAND then
+        if not LUCTUS_BREACH_APPROVER[ply:GetUserGroup()] then return end
+        LuctusBreachOpenAllDoors(ply)
+        LuctusBreachTellAdmins("[breach] A containment breach has been started by "..ply:Nick().."/"..ply:SteamID())
     end
     if LUCTUS_BREACH_APPROVER[ply:GetUserGroup()] and string.StartWith(text,LUCTUS_BREACH_ALLOWCMD) then
         local name = string.Split(text,LUCTUS_BREACH_ALLOWCMD.." ")

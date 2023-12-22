@@ -1,7 +1,8 @@
 --Luctus Breach
 --Made by OverlordAkise
 
-
+--Command to try and breach as an SCP
+LUCTUS_BREACH_COMMAND = "!breach"
 --In seconds, after joining job when you are allowed to breach
 LUCTUS_BREACH_DELAY = 300
 --Allow a breach command
@@ -27,9 +28,15 @@ LUCTUS_BREACH_APPROVER = {
 --The button list consists of either a string name or number ID, example:
 -- ["SCP173"] = {"button_name",4100},
 LUCTUS_BREACH_JOBS = {
-    ["Hobo"] = {4100,"LCZ_door11button"},
-    ["Gun Dealer"] = {4100,"LCZ_door11button"},
+    ["Hobo"] = {4100,"lcz_door_1_61"},
+    ["Gun Dealer"] = {3322,"LCZ_door11button"},
+    ["ContainmentBreach"] = {3297}, --To press a button for containment breach you can do it like this
 }
+
+--Command to open all breachable doors at once
+--Warning: If a door is already open this command will close that door
+LUCTUS_BREACH_CONTAINMENT_COMMAND = "!containmentbreach"
+
 
 --[[ README
 
