@@ -7,6 +7,7 @@ LUCTUS_INTERCOM_POS_ONE = LUCTUS_INTERCOM_POS_ONE or nil
 LUCTUS_INTERCOM_POS_TWO = LUCTUS_INTERCOM_POS_TWO or nil
 
 util.AddNetworkString("luctus_intercom_sync")
+util.AddNetworkString("luctus_intercom_startsound")
 
 hook.Add("PlayerSay","luctus_intercom",function(ply,text)
     if not ply:IsAdmin() then return end
@@ -48,13 +49,22 @@ hook.Add("InitPostEntity","luctus_intercom",function()
     LuctusIntercomReloadPos()
 end)
 
+function LuctusIntercomPlayStartSound()
+    net.Start("luctus_intercom_startsound")
+    net.Broadcast()
+end
+
 function LuctusIntercomAdd(ply,ent)
+    local plyCountBefore = table.Count(LUCTUS_INTERCOM_SPEAKERS)
     if not LUCTUS_INTERCOM_SPEAKERS[ply] then
         ent.Speakers[ply] = true
         LUCTUS_INTERCOM_SPEAKERS[ply] = true
         net.Start("luctus_intercom_sync")
             net.WriteBool(true)
         net.Send(ply)
+        if plyCountBefore <= 0 then
+            LuctusIntercomPlayStartSound()
+        end
     end
 end
 
