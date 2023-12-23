@@ -3,9 +3,16 @@
 
 util.AddNetworkString("luctus_scp_mgmt")
 
+function LuctusMGMTGetPlyJob(ply)
+    if LUCTUS_SCP_MGMT_ENABLE_JOBRANKS then
+        return ply:getDarkRPVar("job")
+    end
+    return team.GetName(ply:Team())
+end
+
 function LuctusMGMTAllowed(ply)
     if not IsValid(ply) then return end
-    local pteam = team.GetName(ply:Team())
+    local pteam = LuctusMGMTGetPlyJob(ply)
     if not LUCTUS_SCP_MGMT_ALLOWED_JOBS[pteam] then
         DarkRP.notify(ply,1,5,"[MGMT] You arent allowed to use the management menu!")
         return false

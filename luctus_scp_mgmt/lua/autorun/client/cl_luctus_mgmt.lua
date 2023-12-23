@@ -295,9 +295,16 @@ function LuctusOpenSCPMGMTWebsite(url)
     MainPanel:OpenURL(url)
 end
 
+function LuctusMGMTGetPlyJob(ply)
+    if LUCTUS_SCP_MGMT_ENABLE_JOBRANKS then
+        return ply:getDarkRPVar("job")
+    end
+    return team.GetName(ply:Team())
+end
+
 hook.Add("PlayerButtonDown","luctus_scp_mgmt_open",function(ply,button)
     if ply != LocalPlayer() then return end
-    if not LUCTUS_SCP_MGMT_ALLOWED_JOBS[team.GetName(LocalPlayer():Team())] then return end
+    if not LUCTUS_SCP_MGMT_ALLOWED_JOBS[LuctusMGMTGetPlyJob(LocalPlayer())] then return end
     if button == LUCTUS_SCP_MGMT_BINDKEY then
         RunConsoleCommand("say",LUCTUS_SCP_MGMT_COMMAND)
     end
