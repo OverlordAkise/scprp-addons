@@ -5,12 +5,13 @@ LUCTUS_RAZZIA_ISLIVE = false
 
 util.AddNetworkString("luctus_razzia")
 
-function LuctusRazziaUpdate(state)
+function LuctusRazziaUpdate(state,ply)
     for k,v in pairs(player.GetAll()) do
         if not LUCTUS_RAZZIA_JOBS_RECV[team.GetName(v:Team())] then continue end
         net.Start("luctus_razzia")
             net.WriteBool(state)
             net.WriteBool(true)
+            net.WriteEntity(ply)
         net.Send(v)
     end
     LUCTUS_RAZZIA_ISLIVE = state
@@ -54,7 +55,7 @@ hook.Add("PlayerSay", "luctus_razzia", function(ply,text)
         if text == LUCTUS_RAZZIA_STARTCMD then toSend = true end
         if text == LUCTUS_RAZZIA_ENDCMD then toSend = false end
         if toSend == nil then return end
-        LuctusRazziaUpdate(toSend)
+        LuctusRazziaUpdate(toSend,ply)
     end
 end)
 

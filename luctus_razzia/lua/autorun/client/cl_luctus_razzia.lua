@@ -10,7 +10,12 @@ razziaPanel = nil
 net.Receive("luctus_razzia",function()
     local isStarting = net.ReadBool()
     local shouldPlaySound = net.ReadBool()
-    chat.AddText(accent,"[razzia] ",color_white,isStarting and LUCTUS_RAZZIA_STARTTEXT or LUCTUS_RAZZIA_ENDTEXT)
+    local startingPly = net.ReadEntity()
+    local entText = "<REDACTED>: "
+    if IsValid(startingPly) and startingPly:IsPlayer() then
+        entText = startingPly:Nick()..": "
+    end
+    chat.AddText(accent,"[razzia] ",color_white,entText,isStarting and LUCTUS_RAZZIA_STARTTEXT or LUCTUS_RAZZIA_ENDTEXT)
     if isStarting then
         LuctusRazziaCreateBox()
         if not shouldPlaySound then return end
