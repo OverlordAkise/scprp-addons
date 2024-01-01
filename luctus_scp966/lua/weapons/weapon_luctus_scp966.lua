@@ -36,8 +36,6 @@ SWEP.SlotPos = 0
 SWEP.Spawnable = true
 SWEP.AdminSpawnable = false
 
-LuctusLog = LuctusLog or function()end
-
 function SWEP:Initialize()
     self:SetHoldType("normal")
 end
