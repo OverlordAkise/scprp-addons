@@ -41,10 +41,10 @@ SWEP.ViewModelBoneMods = {}
 
 function SWEP:PrimaryAttack()
     if CLIENT then return end
-    local ent = self.Owner:GetEyeTrace().Entity
+    local ent = self:GetOwner():GetEyeTrace().Entity
     if ent and IsValid(ent) and ent:IsPlayer() and ent:GetPos():Distance(self.Owner:GetPos()) < 128 then
         --set bag
-        LuctusRecontain096SCP(ent)
+        LuctusRecontain096SCP(ent,self:GetOwner())
         --remove self because im now on players head
         self:Remove()
     end

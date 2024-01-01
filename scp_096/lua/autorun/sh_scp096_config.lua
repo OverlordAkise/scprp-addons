@@ -13,8 +13,8 @@ LUCTUS_SCP096_IMMUNE_JOBS = {
 --This can either be
 -- The :GetName() string of the entity
 -- The :MapCreationID() number of the entity
-SCP096_UNBREACHABLE = {
+LUCTUS_SCP096_UNBREACHABLE = {
     ["hcz_door_2_30"] = true,
 }
 
-print("[SCP096] config loaded!")
+print("[SCP096] config loaded")

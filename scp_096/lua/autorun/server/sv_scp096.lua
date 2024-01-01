@@ -12,11 +12,9 @@ resource.AddWorkshop("2488399203") -- SCP096 Hand model
 
 util.AddNetworkString("luctus_scp096_update")
 
-LuctusLog = LuctusLog or function()end
-
-scp096_ply = nil
-scp096_hunted_players = {}
-scp096_hunting = false
+scp096_ply = scp096_ply or nil
+scp096_hunted_players = scp096_hunted_players or {}
+scp096_hunting = scp096_hunting or false
 
 hook.Add("OnPlayerChangedTeam","luctus_scp096", function(ply, beforeNum, afterNum)
     if string.EndsWith(RPExtraTeams[afterNum].name,"096") then
@@ -37,7 +35,7 @@ hook.Add("PlayerDisconnected", "luctus_scp096_plynil", function(ply)
 end)
 
 function Luctus096HandlePlayerDeath(ply)
-    luctus_update_hunted(ply,false)
+    Luctus096UpdateHunted(ply,false)
     if ply == scp096_ply then
         scp096_ply:StopSound("096/scream.wav")
         scp096_ply:StopSound("096/crying1.wav")
@@ -45,7 +43,7 @@ function Luctus096HandlePlayerDeath(ply)
         net.Start("luctus_scp096_update")
             net.WriteTable({})
         net.Send(scp096_ply)
-        LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") died as SCP096, rage ended.")
+        hook.Run("LuctusSCP096UpdateRage",ply,false)
     end
     if ply:GetNW2Bool("scp096_bag",false) then
         ply:SetNW2Bool("scp096_bag",false)
@@ -58,23 +56,23 @@ hook.Add("PlayerDeath.g", "luctus_scp096_plynil_gd", Luctus096HandlePlayerDeath)
 
 
 
-function luctus_update_hunted(ply,newHunted)
+function Luctus096UpdateHunted(ply,newHunted)
     local new = false
     if newHunted and not table.HasValue(scp096_hunted_players,ply) then
         table.insert(scp096_hunted_players,ply)
         new = true
-        LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") is being hunted by SCP096.")
+        hook.Run("LuctusSCP096UpdateHunted",ply,true)
     end
     if not newHunted and table.HasValue(scp096_hunted_players,ply) then
         table.RemoveByValue(scp096_hunted_players,ply)
         new = true
-        LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") is not being hunted by SCP096 anymore.")
+        hook.Run("LuctusSCP096UpdateHunted",ply,false)
     end
 
     if #scp096_hunted_players > 0 then
         if not scp096_hunting and new then
             scp096_ply:EmitSound( "096/scream.wav" ) --only scream if triggered first time
-            LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") enraged SCP096.")
+            hook.Run("LuctusSCP096UpdateRage",ply,true)
         end
         scp096_hunting = true
         if new then
@@ -88,7 +86,7 @@ function luctus_update_hunted(ply,newHunted)
             scp096_ply:SetRunSpeed(240)
             scp096_ply:SetWalkSpeed(160)
             scp096_ply:GetActiveWeapon():SetHoldType( "normal" )
-            LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") ended rage of SCP096.")
+            hook.Run("LuctusSCP096UpdateRage",ply,false)
         end
     end
     if new then
@@ -101,7 +99,7 @@ end
 
 --Recontainment logic
 
-function LuctusRecontain096SCP(ply)
+function LuctusRecontain096SCP(ply,recontainer)
     ply:SetNW2Bool("scp096_bag",true)
     --remove hunt if applicable
     if scp096_ply and scp096_ply == ply then
@@ -115,7 +113,7 @@ function LuctusRecontain096SCP(ply)
         net.Start("luctus_scp096_update")
             net.WriteTable(scp096_hunted_players)
         net.Send(scp096_ply)
-        LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") recontained SCP096 with a bag.")
+        hook.Run("LuctusSCP096Recontain",recontainer,true)
     end
 end
 
@@ -124,7 +122,7 @@ hook.Add("PlayerUse", "luctus_scp096_bagremover", function(ply, ent)
         ent:SetNW2Bool("scp096_bag",false)
         ply:Give("weapon_scp096_rec")
         if scp096_ply and scp096_ply == ent then
-            LuctusLog("scp",ply:Nick().."("..ply:SteamID()..") removed the bag from SCP096.")
+            hook.Run("LuctusSCP096Recontain",ply,false)
         end
     end
 end)
@@ -151,4 +149,4 @@ if LUCTUS_SCP096_GDEATHSYSTEM then
     print("[SCP096] Added hook to gDeathSystem")
 end
 
-print("[SCP096] SV Loaded!")
+print("[SCP096] sv loaded")

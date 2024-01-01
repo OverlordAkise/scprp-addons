@@ -92,4 +92,4 @@ hook.Add( "PostPlayerDraw" , "luctus_scp096_bag" , function( ply )
     end    
 end)
 
-print("[SCP096] CL loaded!")
+print("[SCP096] cl loaded")

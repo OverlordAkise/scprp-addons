@@ -114,7 +114,7 @@ function SWEP:OpenDoor(ply,tr,ent)
     if ply:EyePos():Distance(trace.HitPos) > 128 then return end
     if hook.Call("canDoorRam", nil, ply, trace, ent) ~= nil then return end
     
-    if SCP096_UNBREACHABLE[trace.Entity:GetName()] or SCP096_UNBREACHABLE[trace.Entity:MapCreationID()] then
+    if LUCTUS_SCP096_UNBREACHABLE[trace.Entity:GetName()] or LUCTUS_SCP096_UNBREACHABLE[trace.Entity:MapCreationID()] then
         DarkRP.notify(ply,1,5,"Please use '!breach' to initiate a breach!")
         return false
     end
@@ -260,7 +260,7 @@ function SWEP:Think()
         local a2 = v:GetAimVector():GetNegated()
         if a1:Distance(a2) < 0.8 then
             if ply:IsLineOfSightClear(v) then 
-                luctus_update_hunted(v,true)
+                Luctus096UpdateHunted(v,true)
             end
         end
     end
