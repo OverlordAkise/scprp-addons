@@ -95,7 +95,7 @@ function SWEP:PrimaryAttack()
     local tr = owner:GetEyeTrace()
     local hitEnt = tr.Entity
     if not IsValid(hitEnt) then return end
-    if owner:GetPos():Distance(hitEnt:GetPos()) > 200 then return end
+    if owner:GetPos():Distance(hitEnt:GetPos()) > LUCTUS_SCP939_ATTACKRANGE then return end
     if hitEnt:isDoor() then
         if SERVER then
             self:OpenDoor(hitEnt,owner,tr)

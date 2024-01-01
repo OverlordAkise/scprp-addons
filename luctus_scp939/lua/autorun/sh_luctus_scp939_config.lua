@@ -5,6 +5,8 @@
 LUCTUS_SCP939_DAMAGE = 30
 --How many seconds between attacks
 LUCTUS_SCP939_ATTACKDELAY = 0.5
+--Range with leftclick to open doors or attack players
+LUCTUS_SCP939_ATTACKRANGE = 128
 --How many seconds delay between screaming to see
 LUCTUS_SCP939_SCREAM_BRIGHT_DELAY = 30
 --How long should it be bright for?
