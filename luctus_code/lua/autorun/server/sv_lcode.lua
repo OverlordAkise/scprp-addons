@@ -5,8 +5,6 @@ util.AddNetworkString("luctus_scp_code")
 
 LUCTUS_SCP_CODE_CURRENT = LUCTUS_SCP_CODE_DEFAULT
 
-LuctusLog = LuctusLog or function()end
-
 function LuctusCodeChange(code,ply)
     local oldCode = LUCTUS_SCP_CODE_CURRENT
     LUCTUS_SCP_CODE_CURRENT = code

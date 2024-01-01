@@ -4,8 +4,6 @@
 util.AddNetworkString("luctus_weaponcabinet")
 util.AddNetworkString("luctus_weaponcabinet_r")
 
-LuctusLog = LuctusLog or function()end
-
 hook.Add("PlayerSpawn","luctus_weaponcabinet_reset",function(ply)
     timer.Simple(0.1,function() --safety
         if LUCTUS_WEAPONCABINET_KEEPWEPS then
