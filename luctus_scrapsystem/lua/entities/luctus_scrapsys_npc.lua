@@ -36,6 +36,10 @@ end
 
 function ENT:Use(activator, caller)
     if not activator:IsPlayer() then return end
+    if not LUCTUS_SCRAPSYS_ACTIVE then
+        DarkRP.notify(activator,1,3,"[scrap] The Scrap-Shop is not open! Come back in "..LuctusScrapsysTimerLeft())
+        return
+    end
     net.Start("luctus_scrapsys_craft")
         net.WriteEntity(self)
     net.Send(activator)

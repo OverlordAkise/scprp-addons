@@ -15,6 +15,14 @@ LUCTUS_SCRAPSYS_JOBNAMES = {
     ["D-Class"] = true,
 }
 
+--Should crafting be limited?
+--This means you can only craft for X seconds every Y seconds
+LUCTUS_SCRAPSYS_LIMITCRAFTING = false
+--Every X seconds players will be able to craft things
+LUCTUS_SCRAPSYS_LIMIT_DELAY = 300
+--For Y seconds players will be able to craft things
+LUCTUS_SCRAPSYS_LIMIT_DURATION = 60
+
 --Scrap entities config
 --Entity name will be  luctus_scrapsys_<name>
 LUCTUS_SCRAPSYS_ENTS = {
