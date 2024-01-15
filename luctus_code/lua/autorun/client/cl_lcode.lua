@@ -37,6 +37,13 @@ if EdgeHUD then
     end
 end
 
+hook.Add("InitPostEntity","luctus_code_shud_int",function()
+    if LuctusDrawEdgeBox then
+        print("[luctus_code] luctus_shud found, loading design")
+        DrawBox = LuctusDrawEdgeBox
+    end
+end)
+
 
 hook.Add("HUDPaint","luctus_scp_code",function()
     surface.SetFont("luctus_scp_code_hud_font")
