@@ -67,4 +67,8 @@ LUCTUS_SCP_CODE_LOCKDOWN = "red"
 --Should the name of the ply who changed the code be shown in chat?
 LUCTUS_SCP_CODE_SHOW_PLY = true
 
+--Should the code HUD display be split and the "Code:" be white?
+--If this is false the whole text will be colored in the same way as the current code
+LUCTUS_CODE_STYLE_SPLIT = false
+
 print("[luctus_code] config loaded!")
