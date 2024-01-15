@@ -48,6 +48,14 @@ if EdgeHUD then
     end
 end
 
+hook.Add("InitPostEntity","luctus_activity_shud_int",function()
+    if LuctusDrawEdgeBox then
+        print("[luctus_activity] luctus_shud found, loading design")
+        DrawBox = LuctusDrawEdgeBox
+        color_black = Color(0,0,0,0)
+    end
+end)
+
 
 hook.Add("HUDPaint","luctus_activity_display",function()
     if not LUCTUS_ACTIVITY_SHOW_JOB[team.GetName(LocalPlayer():Team())] then return end
