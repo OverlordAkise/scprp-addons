@@ -3,11 +3,14 @@
 
 --CONFIG START
 
---Is the Intercom start sound a URL or a gmod sound?
+--Is the Intercom start and stop sound a URL or a gmod sound?
 LUCTUS_INTERCOM_IS_URL = false
 
 --The sound to play when someone is starting to speak on the intercom
-LUCTUS_INTERCOM_SOUND = "npc/overwatch/radiovoice/attention.wav"
+LUCTUS_INTERCOM_SOUND_START = "npc/overwatch/radiovoice/on1.wav"
+
+--The sound to play when no one is using an intercom anymore
+LUCTUS_INTERCOM_SOUND_STOP = "npc/overwatch/radiovoice/off4.wav"
 
 
 --CONFIG END
@@ -27,11 +30,16 @@ net.Receive("luctus_intercom_sync",function()
 end)
 
 local g_station = nil
-net.Receive("luctus_intercom_startsound",function()
+net.Receive("luctus_intercom_sound",function()
+    local isStarting = net.ReadBool()
+    local toplay = LUCTUS_INTERCOM_SOUND_START
+    if not isStarting then
+        toplay = LUCTUS_INTERCOM_SOUND_STOP
+    end
     if not LUCTUS_INTERCOM_IS_URL then
-        surface.PlaySound(LUCTUS_INTERCOM_SOUND)
+        surface.PlaySound(toplay)
     else
-        sound.PlayURL(LUCTUS_INTERCOM_SOUND,"",function(station,errid,errname)
+        sound.PlayURL(toplay,"",function(station,errid,errname)
             if IsValid(station) then
                 station:Play()
                 g_station = station
