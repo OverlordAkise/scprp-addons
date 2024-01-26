@@ -2,7 +2,7 @@
 GMod LUA addons for the SCPRP gamemode
 
 ** DO NOT REUPLOAD MY ADDON! **  
-** Copyright 2023 OverlordAkise. It is not allowed to upload this content on on steam except by the Steam Account OverlordAkise **
+** Copyright 2024 OverlordAkise. It is not allowed to upload this content on on steam except by the Steam Account OverlordAkise **
 
 For a screenshot of the addons visit [https://luctus.at](https://luctus.at)
 
