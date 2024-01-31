@@ -114,7 +114,7 @@ function SWEP:SecondaryAttack()
     self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
     self:SetNextSecondaryFire(CurTime() + LUCTUS_SCP682_ATTACKDELAY)
     self:EmitSound("npc/headcrab/attack1.wav",75,20)
-    if not CLIENT then return end
+    if CLIENT then return end
     
     local tr = owner:GetEyeTrace()
     local hitEnt = tr.Entity
