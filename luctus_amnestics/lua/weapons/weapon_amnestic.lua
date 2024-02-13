@@ -43,7 +43,6 @@ end
 
 function SWEP:Deploy()
     self:SendWeaponAnim(ACT_VM_DRAW)
-    self.ReadyAfterDeployAnimation = CurTime()+2.5
     return true
 end
 
@@ -55,39 +54,41 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:PrimaryAttack()
-    local Owner = self:GetOwner()
-    local Traced = self:CheckTrace()
+    local owner = self:GetOwner()
+    local target = self:CheckTrace()
 
-    if IsValid(Traced) and Traced:IsPlayer() or Traced:IsNPC() then
-        self:SetNextPrimaryFire(CurTime()+3)
-        Owner:DoAnimationEvent(ACT_GMOD_GESTURE_MELEE_SHOVE_1HAND)
-        Owner:EmitSound("darky_rust.syringe-inject-friend")
+    if not IsValid(target) or (not target:IsPlayer() and not target:IsNPC()) then return end
+    self:SetNextPrimaryFire(CurTime()+2.7)
+    owner:DoAnimationEvent(ACT_GMOD_GESTURE_MELEE_SHOVE_1HAND)
+    owner:EmitSound(LUCTUS_AMNESTICS_SYRINGE_SOUND)
+    
+    if CLIENT then return end
+    LuctusSendAmnesticsEffect(owner,target,self.mytype)
+    
+    self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
+    timer.Simple(2.7,function()
+        if not IsValid(self) or not IsValid(owner) then return end
         
-        if CLIENT then return end
-        LuctusSendAmnesticsEffect(self.Owner,Traced,self.mytype)
-        
-        self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
-        timer.Simple(3,function()
-            if not IsValid(self) or not IsValid(self.Owner) then return end
-            if self.Owner:GetActiveWeapon():GetClass() == self.myclass then
-                self:SendWeaponAnim(ACT_VM_IDLE)
-            end
-            self:TakePrimaryAmmo(1)
-            if self:Ammo1() <= 0 then
-                Owner:StripWeapon(self.myclass)
-            end
-        end)
-    end
+        if LUCTUS_AMNESTICS_ONETIMEUSE then
+            owner:StripWeapon(self.myclass)
+            return
+        end
+        self:TakePrimaryAmmo(1)
+        if self:Ammo1() <= 0 then
+            owner:StripWeapon(self.myclass)
+        end
+        self:SendWeaponAnim(ACT_VM_IDLE)
+    end)
 end
 
 function SWEP:CheckTrace()
-    local Owner = self:GetOwner()
-    Owner:LagCompensation(true)
+    local owner = self:GetOwner()
+    owner:LagCompensation(true)
     local Trace = util.TraceLine({
-        start = Owner:GetShootPos(),
-        endpos = Owner:GetShootPos() + Owner:GetAimVector() * 64,
-        filter = Owner
+        start = owner:GetShootPos(),
+        endpos = owner:GetShootPos() + owner:GetAimVector() * 64,
+        filter = owner
     })
-    Owner:LagCompensation(false)
+    owner:LagCompensation(false)
     return Trace.Entity
 end

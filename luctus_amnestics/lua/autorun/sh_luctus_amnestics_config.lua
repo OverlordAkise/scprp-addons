@@ -4,8 +4,12 @@
 --YOU NEED THE FOLLOWING WORKSHOP ADDON IN YOUR SERVER'S WORKSHOP COLLECTION FOR THIS TO WORK:
 --https://steamcommunity.com/sharedfiles/filedetails/?id=2595071184
 
-
+--What name should be displayed as the weapon name? (the level of the amnestic will be appended automatically)
 LUCTUS_AMNESTICS_WEAPONNAME = "Amnestic " -- +level
+--Should the syringe weapon have ammo or simply be a one-time-use only?
+LUCTUS_AMNESTICS_ONETIMEUSE = true
+--Which sound should play when injecting the syringe?
+LUCTUS_AMNESTICS_SYRINGE_SOUND = "darky_rust.syringe-inject-friend"
 
 
 LUCTUS_AMNESTICS_LEVELS = {

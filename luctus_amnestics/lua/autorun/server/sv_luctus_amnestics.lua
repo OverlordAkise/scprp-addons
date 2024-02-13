@@ -9,7 +9,8 @@ function LuctusSendAmnesticsEffect(sending_ply, target_ply, amnestic_type)
     if not IsValid(target_ply) or not IsValid(sending_ply) then return end
     if not target_ply:IsPlayer() then return end
     if not string.StartWith(sending_ply:GetActiveWeapon():GetClass(),"weapon_amnestic") then return end
-
+    
+    sending_ply:PrintMessage(HUD_PRINTTALK, "You administered '"..target_ply:Nick().."' amnestic type "..amnestic_type)
     net.Start("luctus_amnestics")
         net.WriteString(amnestic_type)
     net.Send(target_ply)
