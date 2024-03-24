@@ -11,7 +11,7 @@ LUCTUS_FUNKE_PREFIX = "[FUNK ENCRYPTED]"
 
 --Restrict access to funk chat commands
 --Only if you have the weapon you can use them
-LUCTUS_FUNK_WEAPONRESTRICT = true
+LUCTUS_FUNK_WEAPONRESTRICT = false
 LUCTUS_FUNK_WEAPON_CLASS = "luctus_radio"
 
 --Restrict access to funk chat commands
@@ -20,6 +20,23 @@ LUCTUS_FUNK_JOB_WHITELIST_ENABLED = false
 LUCTUS_FUNK_JOB_WHITELIST = {
     ["Medic"] = true,
     ["MTF"] = true,
+}
+
+LUCTUS_FUNK_CUSTOM_CHANNELS = {
+    ["cifunk"] = { --the chat command
+        prefix = "[CI FUNK]",
+        color = Color(50,100,50),
+        isAnonymous = false, --if playernames should be hidden
+        jobs = {"CI Commander", "CI Assault", "Citizen"}, --if this is empty every job can use it
+        needsRadioToFunk = false, --If you need to have the radio weapon to use this
+    },
+    ["anonfunk"] = { --the chat command
+        prefix = "[ANON FUNK]",
+        color = Color(200,150,250),
+        isAnonymous = true, --if playernames should be hidden
+        jobs = {}, --if this is empty every job can use it
+        needsRadioToFunk = false, --If you need to have the radio weapon to use this
+    },
 }
 
 --Users could decrypt messages automatically

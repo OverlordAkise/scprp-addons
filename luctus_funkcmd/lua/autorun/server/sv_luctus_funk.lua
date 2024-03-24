@@ -1,6 +1,7 @@
 --Luctus Funk
 --Made by OverlordAkise
 
+util.AddNetworkString("luctus_funk_chat")
 util.AddNetworkString("luctus_funk_broadcast")
 util.AddNetworkString("luctus_funk_anon")
 util.AddNetworkString("luctus_funk_anon_enc")
@@ -10,7 +11,7 @@ util.AddNetworkString("luctus_funk_decrypt")
 function luctusEncrypt(text)
     textArray = string.Explode("", string.lower(text))
     returnString = ""
-    for k, v in pairs(textArray) do
+    for k,v in ipairs(textArray) do
         if LUCTUS_FUNK_ENCTABLE[v] then
             returnString = returnString .. LUCTUS_FUNK_ENCTABLE[v]
         else
@@ -22,7 +23,7 @@ end
 
 function luctusDecrypt(text)
     textArray = string.Explode("", string.lower(text))
-    for k,v in pairs(textArray) do
+    for k,v in ipairs(textArray) do
         for kk,vv in pairs(LUCTUS_FUNK_ENCTABLE) do
             if vv == v then
                 textArray[k] = kk
@@ -35,12 +36,12 @@ end
 
 local function GetPlayer(name)
     local ret = nil
-    for k,v in pairs(player.GetAll()) do
-        if string.find( string.lower(v:Nick()), string.lower(name) ) then
+    for k,ply in ipairs(player.GetAll()) do
+        if string.find( string.lower(ply:Nick()), string.lower(name) ) then
             if ret ~= nil then
                 return nil
             end
-            ret = v
+            ret = ply
         end
     end
     return ret
@@ -53,14 +54,33 @@ local funkCommands = {
 }
 
 hook.Add("PlayerSay", "luctus_funk_commands", function(ply, text)
-    
     local sText = string.Explode(" ", text)
     local cmd = string.sub(sText[1],2)
     local rPlyName = sText[2]
     local rPly = (rPlyName and rPlyName ~= "") and GetPlayer(rPlyName) or nil
+    --Custom channels
+    if LUCTUS_FUNK_CUSTOM_CHANNELS[cmd] then
+        local msgAll = string.sub(text, #sText[1]+2, nil)
+        local tab = LUCTUS_FUNK_CUSTOM_CHANNELS[cmd]
+        if not table.HasValue(tab.jobs,team.GetName(ply:Team())) and not table.IsEmpty(tab.jobs) then
+            DarkRP.notify(ply,1,5,"You are not in the correct job for this channel!")
+            return ""
+        end
+        if tab.needsRadioToFunk and not ply:HasWeapon(LUCTUS_FUNK_WEAPON_CLASS) then
+            DarkRP.notify(ply,1,5,"You need a radio for this channel!")
+            return ""
+        end
+        net.Start("luctus_funk_chat")
+            net.WriteString(cmd)
+            net.WriteEntity(ply)
+            net.WriteString(msgAll)
+        net.Broadcast()
+        return ""
+    end
     
     if not rPlyName or rPlyName == "" then return end
     if not funkCommands[cmd] then return end
+    local msg = string.sub(text, #sText[1] + #sText[2] + 2, nil)
     
     if LUCTUS_FUNK_WEAPONRESTRICT then
         local wep = IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() or false
@@ -75,30 +95,27 @@ hook.Add("PlayerSay", "luctus_funk_commands", function(ply, text)
     end
     
     if cmd == LUCTUS_FUNK_COMMAND then
-        local msgcontent = string.sub(text, #sText[1] + #sText[2] + 2, nil)
         net.Start("luctus_funk_broadcast")
             net.WriteEntity(ply)
             net.WriteString(rPlyName)
-            net.WriteString(msgcontent)
+            net.WriteString(msg)
         net.Broadcast()
         return ""
     end
     if cmd == LUCTUS_FUNK_COMMAND_ANON then
-        local amsgcontent = string.sub(text, #sText[1] + #sText[2] + 2, nil)
         net.Start("luctus_funk_anon")
-            net.WriteString(" Anonymous: *to " .. rPlyName .. "* " .. amsgcontent)
+            net.WriteString(" Anonymous: *to " .. rPlyName .. "* " .. msg)
         net.Broadcast()
         return ""
     end
     
     if not IsValid(rPly) then return end
     if cmd == LUCTUS_FUNK_COMMAND_ENCRYPTED then
-        local vmsgcontent = string.sub(text, #sText[1] + #sText[2] + 2, nil)
         net.Start("luctus_funk_anon_enc")
-            net.WriteString(" Anonymous: *" .. rPlyName .. "* " .. luctusEncrypt(vmsgcontent))
+            net.WriteString(" Anonymous: *" .. rPlyName .. "* " .. luctusEncrypt(msg))
         net.Broadcast()
         net.Start("luctus_funk_anon_enc")
-            net.WriteString(" [DECODED] Anonymous: *" .. rPlyName .. "* " .. vmsgcontent)
+            net.WriteString(" [DECODED] Anonymous: *" .. rPlyName .. "* " .. msg)
         net.Send(rPly)
         return ""
     end
