@@ -4,14 +4,15 @@
 local raid_members = {}
 
 timer.Create("luctus_raidmembers_sync",1,0,function()
-    if not IsValid(LocalPlayer()) then return end
+    local me = LocalPlayer()
+    if not IsValid(me) then return end
     raid_members = {}
     if not LUCTUS_RAIDHELPER_HUD_ENABLE then return end
-    local raid = LocalPlayer():GetNW2String("IsRaiding","")
+    local raid = me:GetNW2String("IsRaiding","")
     if raid == "" then return end
-    for k,v in pairs(player.GetAll()) do
-        if v:GetNW2String("IsRaiding","") == raid then
-            table.insert(raid_members,v)
+    for k,ply in ipairs(player.GetAll()) do
+        if ply:GetNW2String("IsRaiding","") == raid and me:GetPos():Distance(ply:GetPos()) < LUCTUS_RAIDHELPER_XRAY_MAXDISTANCE then
+            table.insert(raid_members,ply)
         end
     end
 end)

@@ -29,6 +29,8 @@ LUCTUS_RAIDHELPER_JOBS = {
 
 --Should the raiders have vision of each other through walls?
 LUCTUS_RAIDHELPER_XRAYVISION = true
+--Max. distance you can see others with xray through walls
+LUCTUS_RAIDHELPER_XRAY_MAXDISTANCE = 2048
 --Should the raiders see their teammates health in the HUD?
 LUCTUS_RAIDHELPER_HUD_ENABLE = true
 
