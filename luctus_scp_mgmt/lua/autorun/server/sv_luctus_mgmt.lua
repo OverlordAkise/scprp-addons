@@ -24,9 +24,9 @@ net.Receive("luctus_scp_mgmt",function(len,ply)
     if not LuctusMGMTAllowed(ply) then return end
     local cmd = net.ReadString()
     if string.StartsWith(cmd,"emergencyon ") then
-        LuctusMGMTEmergency(true,ply,string.Split(cmd," ")[2])
+        LuctusMGMTEmergency(true,ply,string.sub(cmd,13))
     elseif string.StartsWith(cmd,"emergencyoff ") then
-        LuctusMGMTEmergency(false,ply,string.Split(cmd," ")[2])
+        LuctusMGMTEmergency(false,ply,string.sub(cmd,14))
     elseif cmd == "demote" then
         local targetID = net.ReadString()
         local reason = net.ReadString()
