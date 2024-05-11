@@ -65,29 +65,33 @@ end
 
 hook.Add("PlayerSay", "luctus_corrupt", function(ply, text)
     if string.StartWith(text,LUCTUS_CORRUPT_COMMAND) then
-        if LUCTUS_CORRUPT_JOBS[ply:getJobTable().name] then
-            if ply.cancorrupt == true then
-                local reason = string.Split(text,LUCTUS_CORRUPT_COMMAND.." ")[2]
-                if not reason then
-                    NotifyPlayer(ply,"[corrupt] Usage: !corrupt <reason>")
-                    return
-                end
-                if LUCTUS_CORRUPT_NEEDS_APPROVAL then
-                    if ply.corruptid then
-                        NotifyPlayer(ply,"[corrupt] You already requested a corruption! Your ID: "..ply.corruptid)
-                        return
-                    end
-                    ply.corruptid = ""..math.random(1,9999)
-                    LuctusCorruptSeekApproval(ply,reason)
-                    NotifyPlayer(ply,"[corrupt] Your request has been created! Your ID: "..ply.corruptid)
-                else
-                    LuctusCorruptStart(ply,reason)
-                end
-            else
-                NotifyPlayer(ply,"[corrupt] You can't become corrupt yet! Time left: "..math.Round(timer.TimeLeft(ply:SteamID64().."_corrupttimer")).." seconds.")
-            end
-        else 
+        if not LUCTUS_CORRUPT_JOBS[ply:getJobTable().name] then
             NotifyPlayer(ply,"[corrupt] Your job doesn't allow corruption!")
+            return
+        end
+        if not ply.cancorrupt then
+            local timeLeft = ""
+            if timer.Exists(ply:SteamID64().."_corrupttimer") then
+                timeLeft = " yet! Time left: "..string.NiceTime(timer.TimeLeft(ply:SteamID64().."_corrupttimer"))
+            end
+            NotifyPlayer(ply,"[corrupt] You can't become corrupt"..timeLeft)
+            return
+        end
+        local reason = string.Split(text,LUCTUS_CORRUPT_COMMAND.." ")[2]
+        if not reason then
+            NotifyPlayer(ply,"[corrupt] Usage: !corrupt <reason>")
+            return
+        end
+        if LUCTUS_CORRUPT_NEEDS_APPROVAL then
+            if ply.corruptid then
+                NotifyPlayer(ply,"[corrupt] You already requested a corruption! Your ID: "..ply.corruptid)
+                return
+            end
+            ply.corruptid = ""..math.random(1,9999)
+            LuctusCorruptSeekApproval(ply,reason)
+            NotifyPlayer(ply,"[corrupt] Your request has been created! Your ID: "..ply.corruptid)
+        else
+            LuctusCorruptStart(ply,reason)
         end
     end
     if LUCTUS_CORRUPT_APPROVER[ply:GetUserGroup()] and string.StartWith(text,LUCTUS_CORRUPT_ALLOWCMD) then

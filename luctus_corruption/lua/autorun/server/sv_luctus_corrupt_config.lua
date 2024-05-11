@@ -6,7 +6,7 @@ LUCTUS_CORRUPT_JOBS = {
     ["Citizen"] = true,
     ["Hobo"] = true,
 }
---In seconds, after joining job when are you allowed to become corrupt
+--In seconds, after joining job when are you allowed to become corrupt, in seconds
 LUCTUS_CORRUPT_DELAY = 3
 --Chat command for becoming corrupt
 LUCTUS_CORRUPT_COMMAND = "!corrupt"
