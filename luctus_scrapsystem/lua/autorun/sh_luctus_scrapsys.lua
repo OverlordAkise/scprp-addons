@@ -14,8 +14,8 @@ function LuctusLoadScrapsys()
         ENT.scrapmax = tab.scrapmax or 1
         ENT.getmin = 1
         ENT.getmax = tab.getmax or 1
-        ENT.invis = tab.invis or true
-        ENT.hascollision = tab.collision or false
+        ENT.invis = tab.invis
+        ENT.hascollision = tab.collision
         
         ENT.ClassName = myname
         ENT.PrintName = name

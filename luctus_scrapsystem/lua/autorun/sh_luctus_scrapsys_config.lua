@@ -35,8 +35,14 @@ LUCTUS_SCRAPSYS_ENTS = {
         collision = false, --should have collision
     },
     --this also works, 1 scrap 1 time with no collision and invis after loot:
-    ["noodlebox"] = {
-        model = "models/props_junk/garbage_takeoutcarton001a.mdl",
+    ["paintcan"] = {
+        model = "models/props_junk/metal_paintcan001a.mdl",
+    },
+    --another example
+    ["trashbin"] = {
+        model = "models/props_junk/TrashBin01a.mdl",
+        invis = false,
+        collision = false,
     }
 }
 
