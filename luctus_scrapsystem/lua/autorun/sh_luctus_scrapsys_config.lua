@@ -41,8 +41,7 @@ LUCTUS_SCRAPSYS_ENTS = {
     --another example
     ["trashbin"] = {
         model = "models/props_junk/TrashBin01a.mdl",
-        invis = false,
-        collision = false,
+        collision = true,
     }
 }
 

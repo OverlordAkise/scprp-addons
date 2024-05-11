@@ -48,7 +48,10 @@ end
 function ENT:Use(ply, caller)
     if not IsValid(ply) or not ply:IsPlayer() then return end
     if LUCTUS_SCRAPSYS_JOBWHITELIST and not LUCTUS_SCRAPSYS_JOBNAMES[team.GetName(ply:Team())] then return end
-    if not self.Lootable then return end
+    if not self.Lootable then
+        DarkRP.notify(ply,1,5,"no scrap left!")
+        return
+    end
     
     self.scrapLeft = self.scrapLeft - 1
     local scrapToGet = math.random(self.scrapmin,self.scrapmax)
