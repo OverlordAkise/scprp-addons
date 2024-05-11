@@ -32,9 +32,6 @@ hook.Add("HUDPaint", "luctus_shud_pickup", function()
 
         v.x = Lerp(FrameTime() * 10, v.x, v.time > CurTime() and ScrW() - v.w - 10 or ScrW() + 1)
         v.y = Lerp(FrameTime() * 10, v.y, (startHeight)+(k-1)*(v.h+5))
-    end
-
-    for k,v in ipairs(Pickups) do
         if v.x >= ScrW() and v.time+1 < CurTime() then
             table.remove(Pickups, k)
         end

@@ -37,7 +37,7 @@ local function DrawNotification(x, y, w, h, text, icon, col, progress)
     end
 end
 
-function notification.AddLegacy( text, type, time )
+function notification.AddLegacy(text, type, time)
     surface.SetFont( "Trebuchet24" )
     table.insert( Notifications, 1, {
         x = ScrW(),
@@ -75,7 +75,7 @@ function notification.AddProgress(id, text, frac)
     })    
 end
 
-function notification.Kill( id )
+function notification.Kill(id)
     for k,v in ipairs(Notifications) do
         if v.id == id then v.time = 0 end
     end
@@ -83,17 +83,14 @@ end
 
 hook.Add("HUDPaint", "luctus_shud_notifications", function()
     for k,v in ipairs(Notifications) do
-        DrawNotification(math.floor(v.x), math.floor(v.y), v.w, v.h, v.text, v.icon, v.col, v.progress)
+        DrawNotification(v.x, v.y, v.w, v.h, v.text, v.icon, v.col, v.progress)
 
         v.x = Lerp(FrameTime() * 10, v.x, v.time > CurTime() and ScrW() - v.w - 10 or ScrW() + 1)
         v.y = Lerp(FrameTime() * 10, v.y, (ScrH()-200)-(k-1)*(v.h+5))
-    end
-
-    for k,v in ipairs(Notifications) do
         if v.x >= ScrW() and v.time < CurTime() then
             table.remove(Notifications, k)
         end
     end
 end)
 
-print("[luctus_hud] notif loaded!")
+print("[luctus_hud] notif loaded")

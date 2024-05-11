@@ -135,13 +135,12 @@ hook.Add( "HUDPaint", "luctus_hud", function()
         surface.DrawRect(startX+barX, barY + 56, ((LocalPlayer():getDarkRPVar("Energy")*maxBarSize)/100), barHeight)
         draw.SimpleText(ply:getDarkRPVar("Energy"), "LucidHUDFont", startX+barX+(maxBarSize/2), barY+60, color_white, TEXT_ALIGN_CENTER)
     end
-    wep = ply:GetActiveWeapon()
+    local wep = ply:GetActiveWeapon()
     if wep:IsValid() then
         local veh = ply:GetVehicle()
-        if veh:IsValid() and !ply:GetAllowWeaponsInVehicle() then return end
-        wep_class = wep:GetClass()
-        wep_name = wep:GetPrintName() or wep_class or "Unbekannt"
-        ammo_type = wep:GetPrimaryAmmoType()
+        if IsValid(veh) and not ply:GetAllowWeaponsInVehicle() then return end
+        local wep_name = wep:GetPrintName() or wep:GetClass() or "<UNKNOWN>"
+        local ammo_type = wep:GetPrimaryAmmoType()
         if ammo_type == -1 then
             LuctusDrawEdgeBox(scrw-245, scrh-170, 200, 30)
             draw.SimpleText(wep_name, "LucidHUDFont", scrw-235, scrh-155, color_white, TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER)
@@ -176,4 +175,4 @@ hook.Add( "HUDPaint", "luctus_hud", function()
     end
 end)
 
-print("[luctus_hud] hud loaded!")
+print("[luctus_hud] hud loaded")

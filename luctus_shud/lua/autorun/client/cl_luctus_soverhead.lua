@@ -32,38 +32,38 @@ local playersToRender = {}
 timer.Create("luctus_shud_overhead_cache",0.2,0,function(  )
     --if not LUCTUS_SHUD_OVERHEAD_SHOULD_DRAW then return end
     playersToRender = {}
-    local players = player.GetAll()
-    for k,v in pairs(players) do
-        if not IsValid(v) then continue end
-        if v == LocalPlayer() then continue end
-        if LocalPlayer():GetPos():Distance(v:GetPos()) < 256 or v:IsSpeaking() then
-            table.insert(playersToRender,v)
+    for k,ply in ipairs(player.GetAll()) do
+        if not IsValid(ply) then continue end
+        if ply == LocalPlayer() then continue end
+        if LocalPlayer():GetPos():Distance(ply:GetPos()) < 256 or ply:IsSpeaking() then
+            table.insert(playersToRender,ply)
         end
     end
 end)
 
 --Create the hook to draw the player overhead.
 hook.Add("PostDrawTranslucentRenderables","luctus_shud_overhead",function()
-    local ply = LocalPlayer()
-    for k,v in pairs(playersToRender) do
-        if not IsValid(v) then continue end
-        if not v:Alive() then continue end
-        if v:IsDormant() then continue end
-        if v:GetColor().a < 100 or v:GetNoDraw() then continue end
+    local eyeAngs = LocalPlayer():EyeAngles()
+    local myPos = LocalPlayer():GetPos()
+    for k,ply in ipairs(playersToRender) do
+        if not IsValid(ply) then continue end
+        if not ply:Alive() then continue end
+        if ply:IsDormant() then continue end
+        if ply:GetColor().a < 100 or ply:GetNoDraw() then continue end
 
-        local eyeAngs = ply:EyeAngles()
-        local name = v:Nick()
-        local jobname = v:getDarkRPVar("job") or "Unknown"
-        local health = v:Health()
+        
+        local name = ply:Nick()
+        local jobname = ply:getDarkRPVar("job") or "Unknown"
+        local health = ply:Health()
         local boxWidth = LuctusGetWidth(name,jobname)+margin*2
         local boxPos = -1*((margin + boxWidth) / 2)
-        local eyePos = v:EyePos()
-        local scale = LocalPlayer():GetPos():Distance(v:GetPos())*0.0017
+        local eyePos = ply:EyePos()
+        local scale = myPos:Distance(ply:GetPos())*0.0017
         
 
-        local playerHeightOffset = eyePos.z - v:GetPos().z + scale*35
+        local playerHeightOffset = eyePos.z - ply:GetPos().z + scale*35
 
-        cam.Start3D2D(Vector(eyePos.x, eyePos.y,v:GetPos().z) + Vector(0,0,math.max(playerHeightOffset + 18, 
+        cam.Start3D2D(Vector(eyePos.x, eyePos.y,ply:GetPos().z) + Vector(0,0,math.max(playerHeightOffset + 18, 
         55)),Angle(0,eyeAngs.y - 90,90),scale)
             LuctusDrawEdgeBox(boxPos,0,boxWidth,50)
             if LUCTUS_SHUD_OVERHEAD_SHOW_JOB then
