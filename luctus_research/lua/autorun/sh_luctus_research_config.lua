@@ -5,6 +5,8 @@
 LUCTUS_RESEARCH_CHAT_COMMAND = "!research"
 --Button to open the menu
 LUCTUS_RESEARCH_OPEN_BIND = KEY_F7
+--Only open the menu by pressing E on the PC
+LUCTUS_RESEARCH_PC_ONLY = false
 --Which jobs are allowed to create research papers
 LUCTUS_RESEARCH_ALLOWED_JOBS = {
     ["Citizen"] = true,
@@ -19,7 +21,7 @@ LUCTUS_RESEARCH_ADMINS = {
     ["Team on duty"] = true,
 }
 
---The title of the windows
+--The title of the windows (and above the PC)
 LUCTUS_RESEARCH_TITLE = "Research DB"
 
 --The template when creating new papers

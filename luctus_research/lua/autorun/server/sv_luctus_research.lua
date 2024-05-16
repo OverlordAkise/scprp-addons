@@ -99,14 +99,22 @@ function LuctusResearchDeletePaper(_rowid)
     return "Successfully deleted the paper!"
 end
 
+function LuctusResearchShowPlyHome(ply)
+    net.Start("luctus_research_getall")
+    local t = util.TableToJSON(LuctusResearchGetPapers(0))
+    local a = util.Compress(t)
+    net.WriteInt(#a,17)
+    net.WriteData(a,#a)
+    net.Send(ply)
+end
+
 hook.Add("PlayerSay","luctus_research",function(ply,text,team)
     if text == LUCTUS_RESEARCH_CHAT_COMMAND and LuctusResearchHasAccess(ply) then
-        net.Start("luctus_research_getall")
-        local t = util.TableToJSON(LuctusResearchGetPapers(0))
-        local a = util.Compress(t)
-        net.WriteInt(#a,17)
-        net.WriteData(a,#a)
-        net.Send(ply)
+        if LUCTUS_RESEARCH_PC_ONLY then
+            ply:PrintMessage(HUD_PRINTTALK,"You can only open this menu by interacting with a PC!")
+            return
+        end
+        LuctusResearchShowPlyHome(ply)
         return ""
     end
 end)
