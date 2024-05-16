@@ -19,20 +19,28 @@ LUCTUS_WEAPONCABINET = {
     },
 }
 
---CONFIG END
-
-
-LUCTUS_WEAPONCABINET_S = {} --create beautified lookup table here
-for cat,info in pairs(LUCTUS_WEAPONCABINET) do
-    LUCTUS_WEAPONCABINET_S[cat] = {}
-    LUCTUS_WEAPONCABINET_S[cat]["jobs"] = {}
-    LUCTUS_WEAPONCABINET_S[cat]["weps"] = {}
-    for _,job in pairs(info[1]) do
-        LUCTUS_WEAPONCABINET_S[cat]["jobs"][job] = true
-    end
-    for _,wep in pairs(info[2]) do
-        LUCTUS_WEAPONCABINET_S[cat]["weps"][wep] = true
-    end
-end
+--The weapons you can buy
+LUCTUS_WEAPONNPC_WEAPONS = {
+    ["Pistols"] = {
+        AllowedJobs = {"Citizen","Gangster"},
+        Weapons = {
+            ["m9k_luger"] = 500,
+            ["m9k_scoped_taurus"] = 500,
+            ["m9k_coltpython"] = 500,
+            ["m9k_remington1858"] = 500,
+            ["m9k_model3russian"] = 500,
+            ["m9k_model500"] = 500,
+            ["m9k_model627"] = 500,
+            ["m9k_sig_p229r"] = 700,
+        },
+    },
+    ["Rifles"] = {
+        AllowedJobs = {"Medic","Gangster"},
+        Weapons = {
+            ["m9k_acr"] = 1100,
+            ["m9k_ak47"] = 1300,
+        },
+    },
+}
 
 print("[luctus_weaponcabinet] config loaded")

@@ -4,6 +4,13 @@
 local accent_col = Color(0, 195, 165)
 local wcFrame = nil
 
+surface.CreateFont("luctus_weaponcabinet", {
+	font = "Arial",
+	size = 24,
+	weight = 5000,
+	-- antialias = true,
+} )
+
 local wcLastTime = {}
 
 local ncd = 0
@@ -32,6 +39,132 @@ local function LuctusPrettifyScrollbar(el)
 	end
 end
 
+function luctusWCcreateFrameAndLeftPanel()
+    local frame = vgui.Create("DFrame")
+    frame:SetSize(700, 500)
+    frame:Center()
+    frame:SetTitle("Luctus' Weapon Cabinet")
+    frame:SetDraggable(true)
+    frame:ShowCloseButton(false)
+    frame:MakePopup()
+    function frame:Paint(w,h)
+        draw.RoundedBox(0, 0, 0, w, h, Color(32, 34, 37))
+        draw.RoundedBox(0, 1, 1, w - 2, h - 2, Color(54, 57, 62))
+    end
+
+    local parent_x, parent_y = frame:GetSize()
+    local CloseButton = vgui.Create( "DButton", frame )
+    CloseButton:SetPos( parent_x-30, 0 )
+    CloseButton:SetSize( 30, 30 )
+    CloseButton:SetText("X")
+    CloseButton:SetTextColor(Color(255,0,0))
+    CloseButton.DoClick = function()
+        frame:Close()
+    end
+    CloseButton.Paint = function(self, w, h)
+        draw.RoundedBox(0, 0, 0, w, h, Color(47, 49, 54))
+        if (self.Hovered) then
+            draw.RoundedBox(0, 0, 0, w, h, Color(66, 70, 77))
+        end
+    end
+    
+    return frame
+end
+
+net.Receive("luctus_weaponcabinet_buy",function()
+    if IsValid(wcFrame) then return end
+    local wcEnt = net.ReadEntity()
+    
+    local currentCategory = ""
+    wcFrame = luctusWCcreateFrameAndLeftPanel()
+    
+    local categoryButtons = vgui.Create("DScrollPanel", wcFrame)
+    categoryButtons:Dock(LEFT)
+    categoryButtons:SetWide(150)
+    categoryButtons:DockMargin(5,5,5,5)
+    LuctusPrettifyScrollbar(categoryButtons:GetVBar())
+    
+    local iconScroller = vgui.Create("DScrollPanel", wcFrame)
+    iconScroller:Dock(FILL)
+    LuctusPrettifyScrollbar(iconScroller:GetVBar())
+    
+    for catName,tab in pairs(LUCTUS_WEAPONNPC_WEAPONS) do
+        --tab.AllowedJobs, tab.Weapons
+        if not table.HasValue(tab.AllowedJobs,team.GetName(LocalPlayer():Team())) then continue end
+        local catBut = vgui.Create("DButton",categoryButtons)
+        catBut.catName = catName
+        catBut.cabinEnt = wcEnt
+        catBut.weps = tab.Weapons
+        catBut:Dock(TOP)
+        catBut:SetHeight(30)
+        catBut:SetCursor("hand")
+        catBut:SetText("")
+        catBut.Paint = function(self, w, h)
+            draw.RoundedBox(0, 0, 0, w, h, Color(44, 47, 52))
+            if (self.Hovered) then
+                draw.RoundedBox(0, 0, 0, w, h, Color(66, 70, 77))
+            end
+            if currentCategory == self.catName then
+                DrawHighlightBorder(self,w,h)
+            end
+            draw.DrawText(catName, "Trebuchet18", 10, 7, Color(255,255,255))
+        end
+        catBut.DoClick = function(self)
+            currentCategory = self.catName
+            iconScroller:Clear()
+            luctusWCNAddWeapons(iconScroller, self.weps, self.catName, self.cabinEnt)
+        end
+    end
+end)
+
+function luctusWCNAddWeapons(scrollPanel,weaponList,catName,ent)
+    for wep,price in pairs(weaponList) do
+        local ewep = weapons.Get(wep)
+        local panel = scrollPanel:Add("DPanel")
+        panel:SetHeight(64)
+        panel:DockMargin(5,5,5,5)
+        panel:Dock(TOP)
+        panel.Paint = function()end
+        
+        local icon = vgui.Create("DModelPanel",panel)
+        icon:SetModel(ewep and ewep.WorldModel or "models/error.mdl")
+        icon:Dock(LEFT)
+        icon:SetSize(64,64)
+        icon:SetLookAt(icon.Entity:GetPos()+Vector(0,-10,0))
+        icon:SetFOV(10)
+        function icon:LayoutEntity(Entity) return end --disables rotation
+        
+        local button = vgui.Create("DButton",panel)
+        button:SetText("")
+        button.wtext = (ewep and ewep.PrintName or wep)
+        button.ptext = "$"..price
+        button:Dock(RIGHT)
+        button:SetSize(scrollPanel:GetWide()-96,64)
+        button.ent = ent
+        button.cat = catName
+        button.wep = wep
+        button.DoClick = function(self)
+            net.Start("luctus_weaponcabinet_buy")
+                net.WriteEntity(self.ent)
+                net.WriteString(self.cat)
+                net.WriteString(self.wep)
+            net.SendToServer()
+            if IsValid(wcFrame) then wcFrame:Close() end
+        end
+        function button:Paint(w,h)
+            if self.Hovered then
+                draw.RoundedBox(0, 0, 0, w, h, Color(66, 70, 77))
+                -- self:SetText(self.wepname)
+            else
+                DrawHighlightBorder(self,w,h)
+                -- self:SetText("")
+            end
+            draw.SimpleText(self.wtext, "luctus_weaponcabinet", 10, 32, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+            draw.SimpleText(self.ptext, "luctus_weaponcabinet", self:GetWide()-10, 32, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER )
+        end
+    end
+end
+
 net.Receive("luctus_weaponcabinet",function()
     if IsValid(wcFrame) then return end
     local wcEnt = net.ReadEntity()
@@ -39,8 +172,8 @@ net.Receive("luctus_weaponcabinet",function()
     if LocalPlayer():KeyDown(IN_WALK) and not table.IsEmpty(wcLastTime) then
         for _,ClassWeapons in pairs(wcLastTime) do
             net.Start("luctus_weaponcabinet")
-                net.WriteString(ClassWeapons[1])
                 net.WriteEntity(wcEnt)
+                net.WriteString(ClassWeapons[1])
                 net.WriteString(ClassWeapons[2])
             net.SendToServer()
         end
@@ -61,33 +194,8 @@ net.Receive("luctus_weaponcabinet",function()
         NotifyIfNoCooldown()
         return
     end
-    wcFrame = vgui.Create("DFrame")
-    wcFrame:SetSize(700, 500)
-    wcFrame:Center()
-    wcFrame:SetTitle("Luctus' Weapon Cabinet")
-    wcFrame:SetDraggable(true)
-    wcFrame:ShowCloseButton(false)
-    wcFrame:MakePopup()
-    function wcFrame:Paint(w,h)
-        draw.RoundedBox(0, 0, 0, w, h, Color(32, 34, 37))
-        draw.RoundedBox(0, 1, 1, w - 2, h - 2, Color(54, 57, 62))
-    end
-
-    local parent_x, parent_y = wcFrame:GetSize()
-    local CloseButton = vgui.Create( "DButton", wcFrame )
-    CloseButton:SetPos( parent_x-30, 0 )
-    CloseButton:SetSize( 30, 30 )
-    CloseButton:SetText("X")
-    CloseButton:SetTextColor(Color(255,0,0))
-    CloseButton.DoClick = function()
-        wcFrame:Close()
-    end
-    CloseButton.Paint = function(self, w, h)
-        draw.RoundedBox(0, 0, 0, w, h, Color(47, 49, 54))
-        if (self.Hovered) then
-            draw.RoundedBox(0, 0, 0, w, h, Color(66, 70, 77))
-        end
-    end
+    
+    wcFrame = luctusWCcreateFrameAndLeftPanel()
     
     local categoryButtons = vgui.Create("DScrollPanel", wcFrame)
     categoryButtons:Dock(LEFT)
@@ -186,8 +294,8 @@ function LuctusWCAddWeaponIcons(iconList, weplist, catName, cabinEnt)
             if not LocalPlayer():HasWeapon(self.wep) then
                 table.insert(wcLastTime,{self.catName,self.wep})
                 net.Start("luctus_weaponcabinet")
-                    net.WriteString(self.catName)
                     net.WriteEntity(self.cabinEnt)
+                    net.WriteString(self.catName)
                     net.WriteString(self.wep)
                 net.SendToServer()
             else

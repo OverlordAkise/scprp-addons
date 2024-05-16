@@ -6,7 +6,7 @@ AddCSLuaFile()
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
  
-ENT.PrintName = "Weapon Cabinet"
+ENT.PrintName = "Weapon Cabinet (Retrieve)"
 ENT.Author = "OverlordAkise"
 ENT.Contact = "OverlordAkise@Steam"
 ENT.Purpose = "Retrieve weapons!"
@@ -34,12 +34,11 @@ function ENT:Initialize()
     end
 end
 
-function ENT:Use( activator, caller )
-	if activator:IsPlayer() then
-        net.Start("luctus_weaponcabinet")
-            net.WriteEntity(self)
-        net.Send(activator)
-	end
+function ENT:Use(activator, caller)
+    if not activator:IsPlayer() then return end
+    net.Start("luctus_weaponcabinet")
+        net.WriteEntity(self)
+    net.Send(activator)
 end
 
 if SERVER then return end
@@ -58,6 +57,6 @@ function ENT:Draw()
     ang:RotateAroundAxis(ang:Up(), 90)
     ang:RotateAroundAxis(ang:Forward(),90)
     cam.Start3D2D(pos, ang, 0.4)
-    draw.SimpleTextOutlined("Weapons", "DermaLarge", 37, 0, Color( 255, 255, 255, 255 ),TEXT_ALIGN_CENTER,2,3,color_black)
+        draw.SimpleTextOutlined("Weapons", "DermaLarge", 37, 0, Color( 255, 255, 255, 255 ),TEXT_ALIGN_CENTER,2,3,color_black)
     cam.End3D2D()
 end

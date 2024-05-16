@@ -3,6 +3,7 @@
 
 util.AddNetworkString("luctus_weaponcabinet")
 util.AddNetworkString("luctus_weaponcabinet_r")
+util.AddNetworkString("luctus_weaponcabinet_buy")
 
 hook.Add("PlayerSpawn","luctus_weaponcabinet_reset",function(ply)
     timer.Simple(0.1,function() --safety
@@ -22,13 +23,14 @@ hook.Add("PlayerInitialSpawn","luctus_weaponcabinet_reset",function(ply)
 end)
 
 net.Receive("luctus_weaponcabinet",function(len,ply)
-    local cat = net.ReadString()
-    if not LUCTUS_WEAPONCABINET_S[cat] then return end
-    
-    if not LUCTUS_WEAPONCABINET_S[cat]["jobs"][ply:getDarkRPVar("job")] then return end
     local ent = net.ReadEntity()
     if ent:GetClass() ~= "luctus_weaponcabinet" then return end
     if ent:GetPos():Distance(ply:GetPos()) > 512 then return end
+    
+    local cat = net.ReadString()
+    if not LUCTUS_WEAPONCABINET_S[cat] then return end
+    if not LUCTUS_WEAPONCABINET_S[cat]["jobs"][ply:getDarkRPVar("job")] then return end
+    
     if table.Count(ply.luctus_wc_weps) >= LUCTUS_WEAPONCABINET_MAX then
         DarkRP.notify(ply,1,5,"You took out too many weapons already!")
         return
@@ -41,18 +43,35 @@ net.Receive("luctus_weaponcabinet",function(len,ply)
     hook.Run("LuctusWeaponCabinetGet",ply,wep)
 end)
 
+net.Receive("luctus_weaponcabinet_buy",function(len,ply)
+    local ent = net.ReadEntity()
+    if ent:GetClass() ~= "luctus_weaponnpc" then return end
+    if ent:GetPos():Distance(ply:GetPos()) > 512 then return end
+    local cat = net.ReadString()
+    if not LUCTUS_WEAPONNPC_WEAPONS[cat] then return end
+    local catConfig = LUCTUS_WEAPONNPC_WEAPONS[cat]
+    if not table.HasValue(catConfig.AllowedJobs,ply:getDarkRPVar("job")) then return end
+    local wep = net.ReadString()
+    if ply:HasWeapon(wep) then return end
+    local price = catConfig.Weapons[wep]
+    if not price then return end
+    if not ply:canAfford(price) then return end
+    ply:addMoney(-price)
+    ply:Give(wep)
+    hook.Run("LuctusWeaponCabinetBuy",ply,wep,price)
+end)
+
 net.Receive("luctus_weaponcabinet_r",function(len,ply)
     local ent = net.ReadEntity()
     if ent:GetClass() ~= "luctus_weaponcabinet" then return end
     if ent:GetPos():Distance(ply:GetPos()) > 512 then return end
     local wep = net.ReadString()
-    if ply:HasWeapon(wep) then
-        ply:StripWeapon(wep)
-        if ply.luctus_wc_weps[wep] then
-            ply.luctus_wc_weps[wep] = nil
-        end
-        hook.Run("LuctusWeaponCabinetReturn",ply,wep)
+    if not ply:HasWeapon(wep) then return end
+    ply:StripWeapon(wep)
+    if ply.luctus_wc_weps[wep] then
+        ply.luctus_wc_weps[wep] = nil
     end
+    hook.Run("LuctusWeaponCabinetReturn",ply,wep)
 end)
 
 hook.Add("OnPlayerChangedTeam", "luctus_wc_reset_weps", function(ply, beforeNum, afterNum)
