@@ -16,14 +16,11 @@ net.Receive("luctus_research_getall",function()
     local jtext = util.Decompress(data)
     local tab = util.JSONToTable(jtext)
     if tab == nil then return end
-
     if not IsValid(lresearch) then luctusOpenMainResearchWindow() end
-
-    if IsValid(lresearch_list) then
-        lresearch_list:Clear()
-        for k,v in pairs(tab) do
-            lresearch_list:AddLine(v.rowid, v.date, v.researcher, v.summary)
-        end
+    if not IsValid(lresearch_list) then return end
+    lresearch_list:Clear()
+    for k,v in ipairs(tab) do
+        lresearch_list:AddLine(v.rowid, v.date, v.researcher, v.summary)
     end
 end)
 
@@ -39,7 +36,7 @@ end)
 function luctusOpenMainResearchWindow()
     --if lresearch then return end
     lresearch = vgui.Create("DFrame")
-    lresearch:SetTitle("Research DB | v1.2 | Made by Luctus")
+    lresearch:SetTitle(LUCTUS_RESEARCH_TITLE.." | v1.3")
     lresearch:SetSize(800,600)
     lresearch:Center()
     lresearch:MakePopup()
@@ -69,7 +66,7 @@ function luctusOpenMainResearchWindow()
   
     M1:AddOption("Open by ID", function()
         Derma_StringRequest(
-        "Research DB | Request by ID", 
+        LUCTUS_RESEARCH_TITLE.." | Request by ID", 
         "Please enter the paper ID, numbers only!",
         "1",
         function(text)
@@ -85,11 +82,11 @@ function luctusOpenMainResearchWindow()
   
     M1:AddOption("Edit by ID", function()
         if not LocalPlayer():IsAdmin() then
-            Derma_Message("Only Admins can edit papers!", "Research DB | error", "OK")
+            Derma_Message("Only Admins can edit papers!", LUCTUS_RESEARCH_TITLE.." | error", "OK")
             return
         end
         Derma_StringRequest(
-        "Research DB | Edit by ID", 
+        LUCTUS_RESEARCH_TITLE.." | Edit by ID", 
         "Please enter the ID of the paper you want to edit, numbers only!",
         "1",
         function(text)
@@ -105,11 +102,11 @@ function luctusOpenMainResearchWindow()
   
     M1:AddOption("Delete by ID", function()
         if not LocalPlayer():IsAdmin() then
-            Derma_Message("Only Admins can delete papers!", "Research DB | error", "OK")
+            Derma_Message("Only Admins can delete papers!", LUCTUS_RESEARCH_TITLE.." | error", "OK")
             return
         end
         Derma_StringRequest(
-        "Research DB | Delete by ID", 
+        LUCTUS_RESEARCH_TITLE.." | Delete by ID", 
         "Please enter the ID of the paper you want to delete, numbers only!",
         "1",
         function(text)
@@ -130,7 +127,7 @@ function luctusOpenMainResearchWindow()
     local M2 = MenuBar:AddMenu("Search")
     M2:AddOption("Researcher", function()
         Derma_StringRequest(
-        "Research DB | Search by Researcher", 
+        LUCTUS_RESEARCH_TITLE.." | Search by Researcher", 
         "Please enter the name of the researcher!",
         "Dr. Hustensaft",
         function(text)
@@ -148,7 +145,7 @@ function luctusOpenMainResearchWindow()
   
     M2:AddOption("Summary", function()
         Derma_StringRequest(
-        "Research DB | Search by Summary", 
+        LUCTUS_RESEARCH_TITLE.." | Search by Summary", 
         "Please enter the text that the summary should contain!",
         "SCP",
         function(text)
@@ -199,7 +196,8 @@ function luctusOpenMainResearchWindow()
     local bottomPanel = vgui.Create("DPanel",lresearch)
     bottomPanel:Dock(BOTTOM)
     bottomPanel:SetPaintBackground(false)
-    button = vgui.Create("DButton",bottomPanel)
+    
+    local button = vgui.Create("DButton",bottomPanel)
     button:Dock(RIGHT)
     button:SetText(">")
     function button:DoClick()
@@ -226,23 +224,6 @@ function luctusOpenMainResearchWindow()
 
 end
 
-LUCTUS_RESEARCH_PAPER_TEMPLATE = [[
-Involved SCP
-
-
-Involved Facility Staff
-
-
-Preparation
-
-
-Execution
-
-
-Result
-
-
-]]
 
 --rowid,date,researcher,summary,fulltext
 function luctusOpenPaperWindow(tab,ShouldCache)
@@ -253,7 +234,7 @@ function luctusOpenPaperWindow(tab,ShouldCache)
         end
     end
     local mainFrame = vgui.Create("DFrame")
-    mainFrame:SetTitle("Research DB | Paper #"..(tab and tab.rowid or "X"))
+    mainFrame:SetTitle(LUCTUS_RESEARCH_TITLE.." | Paper #"..(tab and tab.rowid or "X"))
     mainFrame:SetSize(400,600)
     mainFrame:Center()
     mainFrame:MakePopup()
@@ -318,7 +299,7 @@ function luctusOpenPaperWindow(tab,ShouldCache)
         local pname = nameText:GetText()
         local pcontent = descText:GetText()
         if psummary == "" or pname == "" or pcontent == "" then
-            Derma_Message("Please fill in every field!", "Research DB | error", "OK")
+            Derma_Message("Please fill in every field!", LUCTUS_RESEARCH_TITLE.." | error", "OK")
             return
         end
         if tab and tab.edit then
@@ -395,11 +376,10 @@ function LuctusResearchUnfocusAllWindows()
 end
 
 hook.Add("PlayerButtonDown","luctus_research_open",function(ply,button)
-    if ply != LocalPlayer() then return end
-    if not LUCTUS_RESEARCH_ALLOWED_JOBS[team.GetName(LocalPlayer():Team())] then return end
-    if button == LUCTUS_RESEARCH_OPEN_BIND then
-        RunConsoleCommand("say",LUCTUS_RESEARCH_CHAT_COMMAND)
-    end
+    if ply ~= LocalPlayer() then return end
+    if not LUCTUS_RESEARCH_ALLOWED_JOBS[team.GetName(LocalPlayer():Team())] and not LUCTUS_RESEARCH_ADMINS[LocalPlayer():GetUserGroup()] then return end
+    if button ~= LUCTUS_RESEARCH_OPEN_BIND then return end
+    RunConsoleCommand("say",LUCTUS_RESEARCH_CHAT_COMMAND)
 end)
 
 print("[luctus_research] cl loaded")

@@ -11,22 +11,34 @@ hook.Add("PostGamemodeLoaded","luctus_research",function()
     sql.Query("CREATE TABLE IF NOT EXISTS luctus_research(date DATETIME, researcher TEXT, summary TEXT, fulltext TEXT, active INT)")
 end)
 
+function LuctusResearchHasAccess(ply)
+    if not IsValid(ply) then return false end
+    local jobName = team.GetName(ply:Team())
+    if LUCTUS_RESEARCH_ALLOWED_JOBS[jobName] or LUCTUS_RESEARCH_ADMINS[jobName] or LUCTUS_RESEARCH_ADMINS[ply:GetUserGroup()] then return true end
+    return false
+end
 
-local function luctusGetPaper(_rowid)
+function LuctusResearchIsAdmin(ply)
+    if LUCTUS_RESEARCH_ADMINS[ply:getJobTable().name] then return true end
+    if LUCTUS_RESEARCH_ADMINS[ply:GetUserGroup()] then return true end
+    return false
+end
+
+function LuctusResearchGetPaper(_rowid)
     local rowid = tonumber(_rowid)
     if not rowid then return {} end
-    local ret = sql.Query("SELECT rowid,* FROM luctus_research WHERE rowid = "..rowid)
+    local ret = sql.QueryRow("SELECT rowid,* FROM luctus_research WHERE rowid = "..rowid)
     if ret == false then
         ErrorNoHaltWithStack(sql.LastError())
         return {}
     end
-    if ret and ret[1] then
-        return ret[1]
+    if ret then
+        return ret
     end
     return {}
 end
 
-local function luctusGetPapers(_page,_category,_filter)
+function LuctusResearchGetPapers(_page,_category,_filter)
     local page = tonumber(_page)
     if not page then return {} end
     local filter = _filter or ""
@@ -48,13 +60,13 @@ local function luctusGetPapers(_page,_category,_filter)
         ErrorNoHaltWithStack(sql.LastError())
         return {}
     end
-    if ret and ret ~= nil then
+    if ret then
         return ret
     end
     return {}
 end
 
-local function luctusSavePaper(researcher,summary,fulltext)
+function LuctusResearchSavePaper(researcher,summary,fulltext)
     local res = sql.Query("INSERT INTO luctus_research VALUES( datetime('now') , "..SQLStr(researcher)..", "..SQLStr(summary)..", "..SQLStr(fulltext)..",1)")
     if res == false then
         ErrorNoHaltWithStack(sql.LastError())
@@ -63,7 +75,7 @@ local function luctusSavePaper(researcher,summary,fulltext)
     return "Successfully saved the paper!"
 end
 
-local function luctusEditPaper(_rowid,researcher,summary,fulltext)
+function LuctusResearchEditPaper(_rowid,researcher,summary,fulltext)
     local rowid = tonumber(_rowid)
     if not rowid then return "ERROR SAVING PAPER; ROWID WAS NOT A NUMBER!" end
 
@@ -75,10 +87,22 @@ local function luctusEditPaper(_rowid,researcher,summary,fulltext)
     return "Successfully edited the paper!"
 end
 
+function LuctusResearchDeletePaper(_rowid)
+    if not tonumber(_rowid) then return end
+    local rowid = tonumber(_rowid)
+    if rowid < 1 then return end
+    local res = sql.Query("UPDATE luctus_research SET active = 0 WHERE rowid = "..rowid)
+    if res == false then
+        ErrorNoHaltWithStack(sql.LastError())
+        return "ERROR DELETING PAPER!"
+    end
+    return "Successfully deleted the paper!"
+end
+
 hook.Add("PlayerSay","luctus_research",function(ply,text,team)
-    if text == LUCTUS_RESEARCH_CHAT_COMMAND and LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then
+    if text == LUCTUS_RESEARCH_CHAT_COMMAND and LuctusResearchHasAccess(ply) then
         net.Start("luctus_research_getall")
-        local t = util.TableToJSON(luctusGetPapers(0))
+        local t = util.TableToJSON(LuctusResearchGetPapers(0))
         local a = util.Compress(t)
         net.WriteInt(#a,17)
         net.WriteData(a,#a)
@@ -93,13 +117,13 @@ local categories = {
 }
 
 net.Receive("luctus_research_getall",function(len,ply)
-    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
+    if not LuctusResearchHasAccess(ply) then return end
     local page = net.ReadInt(32)
     local category = net.ReadInt(4)
     local filter = net.ReadString()
     if category ~= 0 and not categories[category] then return end
     net.Start("luctus_research_getall")
-        local t = util.TableToJSON(luctusGetPapers(page,categories[category],filter))
+        local t = util.TableToJSON(LuctusResearchGetPapers(page,categories[category],filter))
         local a = util.Compress(t)
         net.WriteInt(#a,17)
         net.WriteData(a,#a)
@@ -107,10 +131,10 @@ net.Receive("luctus_research_getall",function(len,ply)
 end)
 
 net.Receive("luctus_research_getid",function(len,ply)
-    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
+    if not LuctusResearchHasAccess(ply) then return end
     local rid = net.ReadInt(32)
     local edit = net.ReadBool()
-    local paper = luctusGetPaper(rid)
+    local paper = LuctusResearchGetPaper(rid)
     paper.edit = edit
     net.Start("luctus_research_getid")
         local t = util.TableToJSON(paper)
@@ -122,49 +146,37 @@ net.Receive("luctus_research_getid",function(len,ply)
 end)
 
 net.Receive("luctus_research_save",function(len,ply)
-    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
+    if not LuctusResearchHasAccess(ply) then return end
     local summary = net.ReadString()
     local researcher = net.ReadString()
     local lenge = net.ReadInt(17)
     local data = net.ReadData(lenge)
     local fulltext = util.Decompress(data)
-    local ret = luctusSavePaper(researcher,summary,fulltext)
+    local ret = LuctusResearchSavePaper(researcher,summary,fulltext)
     ply:PrintMessage(HUD_PRINTTALK, ret)
     hook.Run("LuctusResearchCreate",ply,summary)
 end)
 
-local function isAdmin(ply)
-    if LUCTUS_RESEARCH_ADMINS[ply:getJobTable().name] then return true end
-    if LUCTUS_RESEARCH_ADMINS[ply:GetUserGroup()] then return true end
-    return false
-end
-
 net.Receive("luctus_research_editid",function(len,ply)
-    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
-    if not isAdmin(ply) then return end
+    if not LuctusResearchHasAccess(ply) then return end
+    if not LuctusResearchIsAdmin(ply) then return end
     local rowid = net.ReadInt(32)
     local summary = net.ReadString()
     local researcher = net.ReadString()
     local lenge = net.ReadInt(17)
     local data = net.ReadData(lenge)
     local fulltext = util.Decompress(data)
-    local ret = luctusEditPaper(rowid,researcher,summary,fulltext)
+    local ret = LuctusResearchEditPaper(rowid,researcher,summary,fulltext)
     ply:PrintMessage(HUD_PRINTTALK, ret)
     hook.Run("LuctusResearchEdit",ply,rowid)
 end)
 
 net.Receive("luctus_research_deleteid",function(len,ply)
-    if not LUCTUS_RESEARCH_ALLOWED_JOBS[ply:getJobTable().name] then return end
-    if not isAdmin(ply) then return end
-    local _rowid = net.ReadInt(32)
-    if not tonumber(_rowid) then return end
-    local rowid = tonumber(_rowid)
-    if rowid < 1 then return end
-    local res = sql.Query("UPDATE luctus_research SET active = 0 WHERE rowid = "..rowid)
-    if res == false then
-        error(sql.LastError())
-    end
-    ply:PrintMessage(HUD_PRINTTALK, "Successfully deleted paper!")
+    if not LuctusResearchHasAccess(ply) then return end
+    if not LuctusResearchIsAdmin(ply) then return end
+    local rowid = net.ReadInt(32)
+    local ret = LuctusResearchDeletePaper(rowid)
+    ply:PrintMessage(HUD_PRINTTALK, ret)
     hook.Run("LuctusResearchDelete",ply,rowid)
 end)
 

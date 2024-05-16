@@ -19,4 +19,26 @@ LUCTUS_RESEARCH_ADMINS = {
     ["Team on duty"] = true,
 }
 
+--The title of the windows
+LUCTUS_RESEARCH_TITLE = "Research DB"
+
+--The template when creating new papers
+LUCTUS_RESEARCH_PAPER_TEMPLATE = [[
+Involved SCP
+
+
+Involved Facility Staff
+
+
+Preparation
+
+
+Execution
+
+
+Result
+
+
+]]
+
 print("[luctus_research] loaded config")
