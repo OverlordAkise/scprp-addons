@@ -125,10 +125,10 @@ function luctusOpenMainResearchWindow()
     end):SetIcon("icon16/folder_delete.png")
   
     local M2 = MenuBar:AddMenu("Search")
-    M2:AddOption("Researcher", function()
+    M2:AddOption("Creator", function()
         Derma_StringRequest(
-        LUCTUS_RESEARCH_TITLE.." | Search by Researcher", 
-        "Please enter the name of the researcher!",
+        LUCTUS_RESEARCH_TITLE.." | Search by Creator", 
+        "Please enter the name of the Creator!",
         "Dr. Hustensaft",
         function(text)
             lresearch_searchid = 2
@@ -147,7 +147,7 @@ function luctusOpenMainResearchWindow()
         Derma_StringRequest(
         LUCTUS_RESEARCH_TITLE.." | Search by Summary", 
         "Please enter the text that the summary should contain!",
-        "SCP",
+        "death",
         function(text)
             lresearch_searchid = 1
             lresearch_searchtext = text
@@ -183,7 +183,7 @@ function luctusOpenMainResearchWindow()
     lresearch_list:SetMultiSelect( false )
     lresearch_list:AddColumn("ID"):SetWidth(20)
     lresearch_list:AddColumn("Date"):SetWidth(120)
-    lresearch_list:AddColumn("Researcher"):SetWidth(150)
+    lresearch_list:AddColumn("Creator"):SetWidth(150)
     lresearch_list:AddColumn("Summary"):SetWidth(500)
     function lresearch_list:DoDoubleClick( lineID, line )
         if not tonumber(line:GetColumnText(1)) then return end
@@ -263,7 +263,7 @@ function luctusOpenPaperWindow(tab,ShouldCache)
 
     local nameLabel = vgui.Create("DLabel",mainFrame)
     nameLabel:Dock(TOP)
-    nameLabel:SetText("Leading Researcher / Creator")
+    nameLabel:SetText("Creator")
     local nameText = vgui.Create("DTextEntry",mainFrame)
     nameText:Dock(TOP)
     nameText:SetDrawLanguageID(false)
