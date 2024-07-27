@@ -43,20 +43,21 @@ end
 
 if SERVER then return end
 
-surface.CreateFont( "lucid_food_font", {
+surface.CreateFont("luctus_weaponcabinet_ent", {
     font = "Roboto Lt",
-    size = 65,
+    size = 160,
     weight = 500,
 })
+local color_white = Color(255,255,255,255)
 
 function ENT:Draw()
     self:DrawModel()
     if (self:GetPos():Distance(LocalPlayer():GetPos()) > 512) then return end
-    local pos = self:GetPos() + (self:GetAngles():Forward()*25) + (self:GetAngles():Up() * 90) + (self:GetAngles():Right() *15)
+    local pos = self:GetPos() + (self:GetAngles():Forward()*25) + (self:GetAngles():Up() * 90) + (self:GetAngles():Right() *4)
     local ang = self:GetAngles()
     ang:RotateAroundAxis(ang:Up(), 90)
     ang:RotateAroundAxis(ang:Forward(),90)
-    cam.Start3D2D(pos, ang, 0.4)
-        draw.SimpleTextOutlined("Weapons", "DermaLarge", 37, 0, Color( 255, 255, 255, 255 ),TEXT_ALIGN_CENTER,2,3,color_black)
+    cam.Start3D2D(pos, ang, 0.1)
+        draw.SimpleTextOutlined("Weapons", "luctus_weaponcabinet_ent", 37, 0, color_white,TEXT_ALIGN_CENTER,2,3,color_black)
     cam.End3D2D()
 end
