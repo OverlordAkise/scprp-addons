@@ -20,29 +20,25 @@ ENT.AdminSpawnable = true
 
 if CLIENT then
     function ENT:Initialize()
-        if not LUCTUS_SCP008_DEBUG then
-            self:SetNoDraw(true)
-        end
+        self:SetNoDraw(not LUCTUS_SCP008_DEBUG)
     end
 end
 
-if SERVER then
-    function ENT:Initialize()
-        self:SetModel(self.Model)
-        self:PhysicsInit( SOLID_VPHYSICS )
-        self:SetMoveType( MOVETYPE_VPHYSICS )
-        self:SetSolid( SOLID_VPHYSICS )
-        local phys = self:GetPhysicsObject()
-        if (phys:IsValid()) then
-            phys:Wake()
-        end
-        self:SetTrigger(true)
-        self:DrawShadow(false)
-        if not LUCTUS_SCP008_DEBUG then
-            self:SetNoDraw(true)
-        end
+if CLIENT then return end
+
+function ENT:Initialize()
+    self:SetModel(self.Model)
+    self:PhysicsInit(SOLID_VPHYSICS)
+    self:SetMoveType(MOVETYPE_VPHYSICS)
+    self:SetSolid(SOLID_VPHYSICS)
+    local phys = self:GetPhysicsObject()
+    if phys:IsValid() then
+        phys:Wake()
     end
-    
-    function ENT:Use(activator,caller) return end
-    function ENT:Think() end
+    self:SetTrigger(true)
+    self:DrawShadow(false)
+    self:SetNoDraw(not LUCTUS_SCP008_DEBUG)
 end
+
+function ENT:Use() return end
+function ENT:Think() end

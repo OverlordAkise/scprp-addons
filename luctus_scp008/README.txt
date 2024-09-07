@@ -1,12 +1,46 @@
-To setup SCP008 you need both entities:
+# luctus_scp008
 
-The "SCP 008 DoorChecker" entity has to be placed INSIDE the hatch that opens with SCP008.
-You can do this by opening the hatch, placing the DoorChecker where the hatch was, perma-prop'ing it and closing the hatc.
+## HOW IT WORKS
 
-The entity checks if the door doesnt touch the DoorChecker anymore, if yes then the infections start.
-If the hatch closes it touches the DoorChecker again and the infections stop.
+If the hatch is opened everyone who has line of sight with a "scp008_spreader" entity will be infected.  
+You know if you got infected if you cough ingame.  
+You can infect others only if you turn into a zombie. You turn into a zombie after being infected for a longer time.  
 
-The "SCP 008 Spreader" needs to be placed where it can see all of the room and the hallway leading to the room.
-It can simply be permapropped where it should be. Only one Spreader can be used at once (for performance reasons).
+There is no cure after becoming a zombie.
 
-Every player who has a direct line between the spreader and themselves start getting infected if the Hatch opens. (aka.: The DoorChecker doesnt touch the hatch anymore)
+
+## SETUP
+
+To setup SCP-008 you need to do 2 things:
+
+1. Set your hatch correctly  
+
+Go singleplayer on your SCP map and look at the hatch.  
+Run the following command in your console:  
+
+    lua_run print(Entity(1):GetEyeTrace().Entity:MapCreationID())
+
+It should print out an ID that is bigger than 0. Copy it and paste it into the config at line 9 (LUCTUS_SCP008_HATCH_ENTMAPID = XXXX)
+
+
+2. Spawn SCP008 spreader entities
+
+These entities control who gets infected if the hatch opens.  
+You can spawn them and permaprop them on walls.  
+Everyone who was line of sight with these entities will be infected if the hatch is open.
+
+---
+
+When you are done with the setup set the DEBUG variable to false in the config. The spreader entities will be invisible then and it won't show your infection details on screen.
+
+
+
+
+Hooks:
+
+    hook.Run("LuctusSCP008HatchOpened",ply)
+    hook.Run("LuctusSCP008HatchClosed")
+    hook.Run("LuctusSCP008PlayerInfected",ply,amount)
+    hook.Run("LuctusSCP008PlayerZombified",ply)
+    hook.Run("LuctusSCP008PlayerInfectionStopped",ply)
+    hook.Run("LuctusSCP008PlayerHealed",ply)
