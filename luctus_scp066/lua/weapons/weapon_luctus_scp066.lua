@@ -3,6 +3,12 @@
 
 AddCSLuaFile()
 
+SWEP.PrintName = "SCP 066"
+SWEP.Author = "OverlordAkise"
+SWEP.Purpose = "SCPRP Job SCP066"
+SWEP.Category = "SCP"
+SWEP.Instructions = "LMB Eric, RMB Damage, R random sound"
+
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
 SWEP.Primary.Delay = 2
@@ -19,15 +25,10 @@ SWEP.AutoSwitchFrom = false
 SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = false
 SWEP.UseHands = false
-SWEP.Author = "OverlordAkise"
-SWEP.Purpose = "SCPRP Job SCP066"
-SWEP.Category = "SCP"
-SWEP.Instructions = "LMB Eric, RMB Damage, R random sound"
 SWEP.ViewModelFOV = 60
 SWEP.ViewModelFlip = false
 SWEP.ViewModel = ""
 SWEP.WorldModel = ""
-SWEP.PrintName = "SCP 066"
 SWEP.HoldType = "normal"
 SWEP.Slot = 0
 SWEP.SlotPos = 0
@@ -89,11 +90,11 @@ function SWEP:Think()
     self.nextThink = CurTime()+0.5
     if CurTime() > self.endTime then self:StopKillSound() end
     if CLIENT then return end
-    local _ents = ents.FindInSphere(self:GetOwner():GetPos(), 512)
-    local plys = {}
-    for i=1,#_ents do
-        if _ents[i]:IsPlayer() and self:GetOwner():IsLineOfSightClear(_ents[i]) and _ents[i] ~= self:GetOwner() then
-            _ents[i]:TakeDamage(5,self:GetOwner(),self)
+    local me = self:GetOwner()
+    for k,ply in ipairs(player.GetAll()) do
+        if ply == me then continue end
+        if me:IsLineOfSightClear(ply)  then
+            ply:TakeDamage(5,me,self)
         end
     end
 end
