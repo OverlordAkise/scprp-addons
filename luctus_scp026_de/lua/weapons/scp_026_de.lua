@@ -173,6 +173,7 @@ function SWEP:Think()
     plyAimVec.z = 0
     local eyePos = ply:EyePos()
     local entities_in_view = ents.FindInCone(eyePos-plyAimVec*50, ply:GetAimVector(), 512, cosRad15)
+    local myAimVec = ply:GetAimVector()
     for k,v in ipairs(entities_in_view) do
         if not v:IsPlayer() then continue end
         if v == ply then continue end
@@ -183,9 +184,8 @@ function SWEP:Think()
         if not alive then continue end
         if not ply:IsLineOfSightClear(v) then return end
         if v:GetNW2Bool("scp026de_visoron",false) then continue end
-        local a1 = ply:GetAimVector()
         local a2 = v:GetAimVector():GetNegated()
-        if a1:Distance(a2) < 0.9 then
+        if myAimVec:Distance(a2) < 0.9 then
             LuctusSCP026DEActivateTimer(v,true)
         end
     end
