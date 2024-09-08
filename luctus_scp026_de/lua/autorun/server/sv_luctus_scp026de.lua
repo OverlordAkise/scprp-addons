@@ -1,8 +1,6 @@
 --Luctus SCP 026 DE
 --Made by OverlordAkise
 
---If you look into her eyes you will be killed if you can not solve her puzzle
-
 util.AddNetworkString("luctus_scp026de")
 
 LUCTUS_SCP026DE_INFECTED = LUCTUS_SCP026DE_INFECTED or {}
@@ -53,7 +51,7 @@ net.Receive("luctus_scp026de",function(len,ply)
     end
 end)
 
-hook.Add("OnPlayerChangedTeam","luctus_scp966_view", function(ply, beforeNum, afterNum)
+hook.Add("OnPlayerChangedTeam","luctus_scp026de", function(ply)
     LuctusSCP026DERemove(ply)
 end)
 hook.Add("PlayerDeath","luctus_scp026de",function(ply)
@@ -69,10 +67,10 @@ hook.Add("PlayerSay","luctus_scp026de",function(ply,text)
     local currentVisor = ply:GetNW2Bool("scp026de_visoron",false)
     if currentVisor then
         ply:SetNW2Bool("scp026de_visoron",false)
-        DarkRP.notify(ply,0,3,"Removed visor")
+        DarkRP.notify(ply,0,3,"Visor helmet removed")
     else
         ply:SetNW2Bool("scp026de_visoron",true)
-        DarkRP.notify(ply,0,3,"Visor equipped")
+        DarkRP.notify(ply,0,3,"Visor helmet equipped")
     end
     
 end)

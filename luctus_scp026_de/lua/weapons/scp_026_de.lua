@@ -3,9 +3,6 @@
 
 AddCSLuaFile()
 
---The maximum size that a prop shall have to be copyable
-local MAXSIZE = 100
-
 if CLIENT then
     SWEP.Slot = 2
     SWEP.SlotPos = 1
@@ -166,6 +163,7 @@ function SWEP:PrimaryAttack()
 end
 
 SWEP.next_think = 0
+local cosRad15 = math.cos(math.rad(15))
 function SWEP:Think()
     if CLIENT then return end
     local ply = self:GetOwner()
@@ -174,7 +172,7 @@ function SWEP:Think()
     local plyAimVec = ply:GetAimVector()
     plyAimVec.z = 0
     local eyePos = ply:EyePos()
-    local entities_in_view = ents.FindInCone(eyePos-plyAimVec*50, ply:GetAimVector(), 512, math.cos(math.rad(15)))
+    local entities_in_view = ents.FindInCone(eyePos-plyAimVec*50, ply:GetAimVector(), 512, cosRad15)
     for k,v in ipairs(entities_in_view) do
         if not v:IsPlayer() then continue end
         if v == ply then continue end
@@ -183,13 +181,12 @@ function SWEP:Think()
             alive = not v._IsDead
         end
         if not alive then continue end
+        if not ply:IsLineOfSightClear(v) then return end
         if v:GetNW2Bool("scp026de_visoron",false) then continue end
-        local a1 = Entity(1):GetAimVector()
-        local a2 = Entity(2):GetAimVector():GetNegated()
+        local a1 = ply:GetAimVector()
+        local a2 = v:GetAimVector():GetNegated()
         if a1:Distance(a2) < 0.9 then
-            if ply:IsLineOfSightClear(v) then 
-                LuctusSCP026DEActivateTimer(v,true)
-            end
+            LuctusSCP026DEActivateTimer(v,true)
         end
     end
 end

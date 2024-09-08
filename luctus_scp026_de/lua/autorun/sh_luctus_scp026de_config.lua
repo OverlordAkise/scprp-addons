@@ -2,6 +2,7 @@
 --Made by OverlordAkise
 
 --If you look into her eyes you will be killed if you can not solve her puzzle
+--Your view will automatically, slowly move towards her face if you are near her
 --Jobs which use !visor are immune to her death stare
 
 --Jobs which can use !visor
