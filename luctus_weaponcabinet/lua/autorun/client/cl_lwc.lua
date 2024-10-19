@@ -120,6 +120,10 @@ end)
 function luctusWCNAddWeapons(scrollPanel,weaponList,catName,ent)
     for wep,price in pairs(weaponList) do
         local ewep = weapons.Get(wep)
+        if not ewep then
+            print("[luctus_weaponcabinet] ERROR: ",wepClass,"not found!")
+            continue
+        end
         local panel = scrollPanel:Add("DPanel")
         panel:SetHeight(64)
         panel:DockMargin(5,5,5,5)
@@ -127,11 +131,13 @@ function luctusWCNAddWeapons(scrollPanel,weaponList,catName,ent)
         panel.Paint = function()end
         
         local icon = vgui.Create("DModelPanel",panel)
-        icon:SetModel(ewep and ewep.WorldModel or "models/error.mdl")
-        icon:Dock(LEFT)
         icon:SetSize(64,64)
-        icon:SetLookAt(icon.Entity:GetPos()+Vector(0,-10,0))
-        icon:SetFOV(10)
+        icon:Dock(LEFT)
+        
+        model, optOffset, optFov = LuctusWCGetWeaponWorldModel(wep,ewep)
+        icon:SetModel(model)
+        icon:SetLookAt(icon.Entity:GetPos()+(optOffset or Vector(0,-10,0)))
+        icon:SetFOV(optFov or 10)
         function icon:LayoutEntity(Entity) return end --disables rotation
         
         local button = vgui.Create("DButton",panel)
@@ -257,12 +263,17 @@ end
 function LuctusWCAddWeaponIcons(iconList, weplist, catName, cabinEnt)
     for wepClass,_ in pairs(weplist) do
         local wep = weapons.Get(wepClass)
+        if not wep then
+            print("[luctus_weaponcabinet] ERROR: ",wepClass,"not found!")
+            continue
+        end
         
         local icon = iconList:Add("DModelPanel")
-        icon:SetModel(wep and wep.WorldModel or "models/error.mdl")
         icon:SetSize(120, 120)
-        icon:SetLookAt(icon.Entity:GetPos()+Vector(10,0,0))
-        icon:SetFOV(30)
+        model, optOffset, optFov = LuctusWCGetWeaponWorldModel(wepClass,wep)
+        icon:SetModel(model)
+        icon:SetLookAt(icon.Entity:GetPos()+(optOffset or Vector(10,0,0)))
+        icon:SetFOV(optFov or 30)
         function icon:LayoutEntity(Entity) return end --disables rotation
         
         
@@ -306,6 +317,22 @@ function LuctusWCAddWeaponIcons(iconList, weplist, catName, cabinEnt)
             end
         end
     end
+end
+
+function LuctusWCGetWeaponWorldModel(wepClass,wep)
+    if string.StartsWith(wepClass, "rw_sw_") and wep.WElements then
+        for k,wepEl in pairs(wep.WElements) do
+            if wepEl.type == "Model" and wepEl.model and wepEl.model != "" then
+                return wepEl.model, Vector(-2,0,4), 12
+            end
+        end
+    end
+    
+    if wep.WorldModel then
+        return wep.WorldModel
+    end
+    
+    return "models/error.mdl"
 end
 
 print("[luctus_weaponcabinet] cl loaded")

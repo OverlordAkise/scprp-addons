@@ -17,6 +17,10 @@ LUCTUS_WEAPONCABINET = {
         {"Citizen (Rekrut)","Citizen"},
         {"m9k_winchester73","m9k_ak47"},
     },
+    ["Stormtrooper"] = {
+        {"Citizen"},
+        {"rw_sw_e11"},
+    }
 }
 
 --The weapons you can buy
@@ -41,6 +45,12 @@ LUCTUS_WEAPONNPC_WEAPONS = {
             ["m9k_ak47"] = 1300,
         },
     },
+    ["Stormtrooper"] = {
+        AllowedJobs = {"Citizen"},
+        Weapons = {
+            ["rw_sw_e11"] = 1100,
+        },
+    }
 }
 
 print("[luctus_weaponcabinet] config loaded")
