@@ -54,6 +54,9 @@ LUCTUS_SCP_CODE_ALLOWEDRANKS = {
     ["moderator"] = true,
 }
 
+--Should the HUD element be enabled?
+LUCTUS_SCP_CODE_HUD_ENABLED = true
+
 --The code after a server restart, has to exist in the config above!
 LUCTUS_SCP_CODE_DEFAULT = "green"
 

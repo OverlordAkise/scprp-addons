@@ -44,19 +44,20 @@ hook.Add("InitPostEntity","luctus_code_shud_int",function()
     end
 end)
 
-
-hook.Add("HUDPaint","luctus_scp_code",function()
-    surface.SetFont("luctus_scp_code_hud_font")
-    --local wx, wy = surface.GetTextSize("Code: "..LUCTUS_CODE_CURRENT)
-    local wx = 160 --box size, now fixed size because of requests
-    DrawBox(ScrW()-wx-20, 125, wx+20, 40)
-    if LUCTUS_CODE_STYLE_SPLIT then
-        draw.DrawText("Code:", font, ScrW()-wx-20+10, 130, color_white, TEXT_ALIGN_LEFT)
-        draw.DrawText(LUCTUS_CODE_CURRENT, font, ScrW()-10, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_RIGHT)
-    else
-        draw.DrawText("Code: "..LUCTUS_CODE_CURRENT, font, ScrW()-wx-20+(wx/2)+10, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_CENTER)
-    end
-end)
+if LUCTUS_SCP_CODE_HUD_ENABLED then
+    hook.Add("HUDPaint","luctus_scp_code",function()
+        surface.SetFont("luctus_scp_code_hud_font")
+        --local wx, wy = surface.GetTextSize("Code: "..LUCTUS_CODE_CURRENT)
+        local wx = 160 --box size, now fixed size because of requests
+        DrawBox(ScrW()-wx-20, 125, wx+20, 40)
+        if LUCTUS_CODE_STYLE_SPLIT then
+            draw.DrawText("Code:", font, ScrW()-wx-20+10, 130, color_white, TEXT_ALIGN_LEFT)
+            draw.DrawText(LUCTUS_CODE_CURRENT, font, ScrW()-10, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_RIGHT)
+        else
+            draw.DrawText("Code: "..LUCTUS_CODE_CURRENT, font, ScrW()-wx-20+(wx/2)+10, 130, LUCTUS_CODE_CURRENT_COLOR, TEXT_ALIGN_CENTER)
+        end
+    end)
+end
 
 hook.Add("InitPostEntity", "luctus_scp_code", function()
     net.Start("luctus_scp_code")
